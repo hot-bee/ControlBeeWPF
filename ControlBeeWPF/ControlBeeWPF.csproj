@@ -5,6 +5,13 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ImplicitUsings>enable</ImplicitUsings>
+    <PackageId>ControlBeeWPF</PackageId>
+    <Version>0.0.1</Version>
+    <Authors>Leo</Authors>
+    <Company>Hotbee</Company>
+    <RepositoryUrl>https://github.com/hot-bee/ControlBeeWPF</RepositoryUrl>
+    <IncludeSymbols>True</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
 </Project>
