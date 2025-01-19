@@ -14,4 +14,8 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="ControlBee" Version="0.0.8" />
+  </ItemGroup>
+
 </Project>

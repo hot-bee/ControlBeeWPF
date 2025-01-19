@@ -19,5 +19,9 @@
   <ItemGroup>
     <ProjectReference Include="..\ControlBeeWPF\ControlBeeWPF.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
   
 </Project>
