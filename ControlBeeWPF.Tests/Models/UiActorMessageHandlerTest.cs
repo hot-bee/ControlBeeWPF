@@ -18,9 +18,12 @@ public class UiActorMessageHandlerTest
         var ui = new UiActor(
             new ActorConfig(
                 "ui",
-                new EmptyAxisFactory(),
-                new EmptyVariableManager(),
-                new FrozenTimeManager()
+                EmptyAxisFactory.Instance,
+                EmptyDigitalInputFactory.Instance,
+                EmptyDigitalOutputFactory.Instance,
+                EmptyVariableManager.Instance,
+                EmptyTimeManager.Instance,
+                EmptyActorItemInjectionDataSource.Instance
             )
         );
 
@@ -43,7 +46,7 @@ public class UiActorMessageHandlerTest
         mainThread.Start();
 
         sync1.WaitOne();
-        ui.Send(new Message(Actor.Empty, "_hello"));
+        ui.Send(new Message(EmptyActor.Instance, "_hello"));
         mainThread.Join();
         Assert.True(called);
     }
