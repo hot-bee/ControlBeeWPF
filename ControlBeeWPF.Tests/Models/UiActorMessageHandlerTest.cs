@@ -1,10 +1,10 @@
 ﻿using System.Threading;
 using System.Windows;
+using ControlBee.Interfaces;
 using ControlBee.Models;
-using ControlBee.Services;
-using ControlBee.Variables;
 using ControlBeeWPF.Models;
 using JetBrains.Annotations;
+using Moq;
 using Xunit;
 
 namespace ControlBeeWPF.Tests.Models;
@@ -15,15 +15,21 @@ public class UiActorMessageHandlerTest
     [Fact]
     public void CallbackIntoMainThreadTest()
     {
+        var systemConfigurations = new SystemConfigurations();
         var ui = new UiActor(
             new ActorConfig(
                 "ui",
-                EmptyAxisFactory.Instance,
-                EmptyDigitalInputFactory.Instance,
-                EmptyDigitalOutputFactory.Instance,
-                EmptyVariableManager.Instance,
-                EmptyTimeManager.Instance,
-                EmptyActorItemInjectionDataSource.Instance
+                systemConfigurations,
+                Mock.Of<IAxisFactory>(),
+                Mock.Of<IDigitalInputFactory>(),
+                Mock.Of<IDigitalOutputFactory>(),
+                Mock.Of<IInitializeSequenceFactory>(),
+                Mock.Of<IBinaryActuatorFactory>(),
+                Mock.Of<IVariableManager>(),
+                Mock.Of<ITimeManager>(),
+                Mock.Of<IScenarioFlowTester>(),
+                Mock.Of<IActorItemInjectionDataSource>(),
+                null
             )
         );
 

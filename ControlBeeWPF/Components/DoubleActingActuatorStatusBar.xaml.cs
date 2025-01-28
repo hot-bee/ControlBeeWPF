@@ -42,8 +42,8 @@ public partial class DoubleActingActuatorStatusBar : UserControl
     private void Binder_DataChanged(object? sender, Dictionary<string, object?> e)
     {
         _value = (bool)e["On"]!;
-        InputOffRect.Fill = e["InputOffValue"] is true ? Brushes.OrangeRed : Brushes.RosyBrown;
-        InputOnRect.Fill = e["InputOnValue"] is true ? Brushes.OrangeRed : Brushes.RosyBrown;
+        InputOffRect.Fill = e["OffDetect"] is true ? Brushes.OrangeRed : Brushes.RosyBrown;
+        InputOnRect.Fill = e["OnDetect"] is true ? Brushes.OrangeRed : Brushes.RosyBrown;
         ValueRect.Fill = _value is true ? Brushes.LawnGreen : Brushes.DarkOliveGreen;
     }
 
