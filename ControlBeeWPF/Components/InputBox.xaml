@@ -1,0 +1,14 @@
+﻿<Window x:Class="ControlBeeWPF.Components.InputBox"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="InputBox" Width="200"
+        SizeToContent="Height">
+    <StackPanel Margin="10">
+        <TextBlock Text="Enter some value" Margin="0 0 0 10"/>
+        <TextBox x:Name="ResponseTextBox"  Margin="0 0 0 10"/>
+        <Button Content="OK" Click="OKButton_Click"/>
+    </StackPanel>
+</Window>
