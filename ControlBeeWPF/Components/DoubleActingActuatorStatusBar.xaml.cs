@@ -25,7 +25,6 @@ public partial class DoubleActingActuatorStatusBar : UserControl
     {
         InitializeComponent();
         _itemPath = itemPath;
-        InitializeComponent();
         _actor = actorRegistry.Get(actorName)!;
         _uiActor = actorRegistry.Get("ui")!;
         var binder = new ActorItemBinder(actorRegistry, actorName, itemPath);

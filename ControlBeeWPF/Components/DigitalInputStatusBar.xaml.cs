@@ -16,7 +16,6 @@ public partial class DigitalInputStatusBar : UserControl
     public DigitalInputStatusBar(IActorRegistry actorRegistry, string actorName, string itemPath)
     {
         InitializeComponent();
-        InitializeComponent();
         var binder = new ActorItemBinder(actorRegistry, actorName, itemPath);
         binder.MetaDataChanged += BinderOnMetaDataChanged;
         binder.DataChanged += Binder_DataChanged;
