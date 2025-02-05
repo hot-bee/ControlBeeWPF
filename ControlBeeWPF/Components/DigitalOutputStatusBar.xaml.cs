@@ -37,7 +37,7 @@ public partial class DigitalOutputStatusBar : UserControl
     private void Binder_DataChanged(object? sender, Dictionary<string, object?> e)
     {
         _value = (bool)e["On"]!;
-        ValueRect.Fill = _value is true ? Brushes.LawnGreen : Brushes.DarkOliveGreen;
+        ValueRect.Fill = _value is true ? Brushes.LawnGreen : Brushes.WhiteSmoke;
     }
 
     private void ValueRect_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

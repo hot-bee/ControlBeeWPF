@@ -30,6 +30,6 @@ public partial class DigitalInputStatusBar : UserControl
     private void Binder_DataChanged(object? sender, Dictionary<string, object?> e)
     {
         _value = (bool)e["IsOn"]!;
-        ValueRect.Fill = _value is true ? Brushes.OrangeRed : Brushes.RosyBrown;
+        ValueRect.Fill = _value is true ? Brushes.OrangeRed : Brushes.WhiteSmoke;
     }
 }
