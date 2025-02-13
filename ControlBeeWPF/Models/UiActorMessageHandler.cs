@@ -10,17 +10,19 @@ public class UiActorMessageHandler(Dispatcher dispatcher) : IUiActorMessageHandl
 
     public void ProcessMessage(Message message)
     {
-        dispatcher.Invoke(
-            (Message innerMessage) =>
-            {
-                _publishMessage?.Invoke(innerMessage);
-            },
-            message
-        );
+        dispatcher.InvokeAsync(() =>
+        {
+            Publish(message);
+        });
     }
 
     public void SetCallback(Action<Message> publishMessage)
     {
         _publishMessage = publishMessage;
+    }
+
+    private void Publish(Message innerMessage)
+    {
+        _publishMessage?.Invoke(innerMessage);
     }
 }
