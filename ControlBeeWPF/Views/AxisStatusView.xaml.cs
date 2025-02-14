@@ -49,7 +49,7 @@ public partial class AxisStatusView : UserControl, IDisposable
                     : Brushes.WhiteSmoke;
                 break;
             case nameof(_viewModel.IsInitializing):
-                AlarmLabel.Background = _viewModel.IsInitializing
+                InitLabel.Background = _viewModel.IsInitializing
                     ? Brushes.GreenYellow
                     : Brushes.White;
                 break;

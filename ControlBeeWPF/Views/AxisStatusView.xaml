@@ -66,9 +66,10 @@
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <Label Grid.Row="0" Content="Init"
+            <Label Grid.Row="0" Name="InitLabel" Content="Init"
                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="8" />
-            <Button Grid.Row="1" Content="Click" FontSize="8" />
+            <Button Grid.Row="1" Content="Click" Command="{Binding InitializeCommand}"
+                    FontSize="8" />
         </Grid>
         <Grid Grid.Column="7" Background="WhiteSmoke"
               Margin="2 0 2 0">

@@ -73,13 +73,13 @@ public partial class AxisStatusViewModel : ObservableObject, IDisposable
         _binder.Dispose();
     }
 
-    private void BinderOnMetaDataChanged(object? sender, Dictionary<string, object?> e)
+    private void BinderOnMetaDataChanged(object? sender, Dict e)
     {
         Name = e["Name"] as string ?? _itemPath;
         Desc = e["Desc"] as string ?? string.Empty;
     }
 
-    private void Binder_DataChanged(object? sender, Dictionary<string, object?> e)
+    private void Binder_DataChanged(object? sender, Dict e)
     {
         CommandPosition = (double)e[nameof(CommandPosition)]!;
         ActualPosition = (double)e[nameof(ActualPosition)]!;
@@ -103,5 +103,11 @@ public partial class AxisStatusViewModel : ObservableObject, IDisposable
                 new Dict { ["Enable"] = !IsEnabled }
             )
         );
+    }
+
+    [RelayCommand]
+    private void Initialize()
+    {
+        _actor.Send(new ActorItemMessage(_uiActor, _itemPath, "_initialize"));
     }
 }
