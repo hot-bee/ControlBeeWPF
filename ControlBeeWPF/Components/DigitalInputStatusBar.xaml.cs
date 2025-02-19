@@ -9,16 +9,24 @@ namespace ControlBeeWPF.Components;
 ///     Interaction logic for IOStatusBar.xaml
 /// </summary>
 // ReSharper disable once InconsistentNaming
-public partial class DigitalInputStatusBar : UserControl
+public partial class DigitalInputStatusBar : UserControl, IDisposable
 {
+    private readonly ActorItemBinder _binder;
     private bool? _value;
 
     public DigitalInputStatusBar(IActorRegistry actorRegistry, string actorName, string itemPath)
     {
         InitializeComponent();
-        var binder = new ActorItemBinder(actorRegistry, actorName, itemPath);
-        binder.MetaDataChanged += BinderOnMetaDataChanged;
-        binder.DataChanged += Binder_DataChanged;
+        _binder = new ActorItemBinder(actorRegistry, actorName, itemPath);
+        _binder.MetaDataChanged += BinderOnMetaDataChanged;
+        _binder.DataChanged += Binder_DataChanged;
+    }
+
+    public void Dispose()
+    {
+        _binder.MetaDataChanged -= BinderOnMetaDataChanged;
+        _binder.DataChanged -= Binder_DataChanged;
+        _binder.Dispose();
     }
 
     private void BinderOnMetaDataChanged(object? sender, Dictionary<string, object?> e)

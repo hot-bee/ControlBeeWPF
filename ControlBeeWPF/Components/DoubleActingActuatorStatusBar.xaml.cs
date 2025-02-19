@@ -10,11 +10,12 @@ namespace ControlBeeWPF.Components;
 ///     Interaction logic for DoubleActingActuatorStatusBar.xaml
 /// </summary>
 // ReSharper disable once InconsistentNaming
-public partial class DoubleActingActuatorStatusBar : UserControl
+public partial class DoubleActingActuatorStatusBar : UserControl, IDisposable
 {
     private readonly IActor _actor;
     private readonly string _itemPath;
     private readonly IActor _uiActor;
+    private readonly ActorItemBinder _binder;
     private bool? _value;
 
     public DoubleActingActuatorStatusBar(
@@ -27,9 +28,16 @@ public partial class DoubleActingActuatorStatusBar : UserControl
         _itemPath = itemPath;
         _actor = actorRegistry.Get(actorName)!;
         _uiActor = actorRegistry.Get("ui")!;
-        var binder = new ActorItemBinder(actorRegistry, actorName, itemPath);
-        binder.MetaDataChanged += BinderOnMetaDataChanged;
-        binder.DataChanged += Binder_DataChanged;
+        _binder = new ActorItemBinder(actorRegistry, actorName, itemPath);
+        _binder.MetaDataChanged += BinderOnMetaDataChanged;
+        _binder.DataChanged += Binder_DataChanged;
+    }
+
+    public void Dispose()
+    {
+        _binder.MetaDataChanged -= BinderOnMetaDataChanged;
+        _binder.DataChanged -= Binder_DataChanged;
+        _binder.Dispose();
     }
 
     private void BinderOnMetaDataChanged(object? sender, Dictionary<string, object?> e)

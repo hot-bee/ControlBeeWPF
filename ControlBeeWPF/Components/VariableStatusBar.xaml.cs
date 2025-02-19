@@ -11,27 +11,34 @@ namespace ControlBeeWPF.Components;
 /// <summary>
 ///     Interaction logic for VariableStatusBar.xaml
 /// </summary>
-public partial class VariableStatusBar : UserControl
+public partial class VariableStatusBar : UserControl, IDisposable
 {
     private static readonly ILog Logger = LogManager.GetLogger(
         MethodBase.GetCurrentMethod()!.DeclaringType!
     );
+
     private readonly IActor _actor;
-    private readonly IActorRegistry _actorRegistry;
+    private readonly ActorItemBinder _binder;
     private readonly string _itemPath;
     private readonly IActor _uiActor;
     private object? _value;
 
     public VariableStatusBar(IActorRegistry actorRegistry, string actorName, string itemPath)
     {
-        _actorRegistry = actorRegistry;
         _itemPath = itemPath;
         InitializeComponent();
         _actor = actorRegistry.Get(actorName)!;
         _uiActor = actorRegistry.Get("ui")!;
-        var binder = new ActorItemBinder(actorRegistry, actorName, itemPath);
-        binder.MetaDataChanged += BinderOnMetaDataChanged;
-        binder.DataChanged += Binder_DataChanged;
+        _binder = new ActorItemBinder(actorRegistry, actorName, itemPath);
+        _binder.MetaDataChanged += BinderOnMetaDataChanged;
+        _binder.DataChanged += Binder_DataChanged;
+    }
+
+    public void Dispose()
+    {
+        _binder.MetaDataChanged -= BinderOnMetaDataChanged;
+        _binder.DataChanged -= Binder_DataChanged;
+        _binder.Dispose();
     }
 
     private void BinderOnMetaDataChanged(object? sender, Dictionary<string, object?> e)

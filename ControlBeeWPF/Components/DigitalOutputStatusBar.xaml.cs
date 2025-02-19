@@ -10,9 +10,10 @@ namespace ControlBeeWPF.Components;
 ///     Interaction logic for DigitalOutputStatusBar.xaml
 /// </summary>
 // ReSharper disable once InconsistentNaming
-public partial class DigitalOutputStatusBar : UserControl
+public partial class DigitalOutputStatusBar : UserControl, IDisposable
 {
     private readonly IActor _actor;
+    private readonly ActorItemBinder _binder;
     private readonly string _itemPath;
     private readonly IActor _uiActor;
     private bool? _value;
@@ -23,9 +24,16 @@ public partial class DigitalOutputStatusBar : UserControl
         _itemPath = itemPath;
         _actor = actorRegistry.Get(actorName)!;
         _uiActor = actorRegistry.Get("ui")!;
-        var binder = new ActorItemBinder(actorRegistry, actorName, itemPath);
-        binder.MetaDataChanged += BinderOnMetaDataChanged;
-        binder.DataChanged += Binder_DataChanged;
+        _binder = new ActorItemBinder(actorRegistry, actorName, itemPath);
+        _binder.MetaDataChanged += BinderOnMetaDataChanged;
+        _binder.DataChanged += Binder_DataChanged;
+    }
+
+    public void Dispose()
+    {
+        _binder.MetaDataChanged -= BinderOnMetaDataChanged;
+        _binder.DataChanged -= Binder_DataChanged;
+        _binder.Dispose();
     }
 
     private void BinderOnMetaDataChanged(object? sender, Dictionary<string, object?> e)
