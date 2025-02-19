@@ -1,0 +1,40 @@
+﻿<UserControl x:Class="ControlBeeWPF.Views.ActorItemExplorerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:ControlBeeWPF.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=viewModels:ActorItemExplorerViewModel}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <GroupBox Grid.Column="0" Header="Items">
+            <TreeView 
+                DataContext="{Binding ActorItemTreeViewModel}"
+                ItemsSource="{Binding ActorItemTreeCollection.Root.Children}"
+                SelectedItemChanged="TreeView_OnSelectedItemChanged"
+                Margin="10">
+                <TreeView.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type viewModels:ActorItemTreeNode}" 
+                                              ItemsSource="{Binding Children}">
+                        <TextBlock Text="{Binding Data.Title}"/>
+                    </HierarchicalDataTemplate>
+                </TreeView.Resources>
+            </TreeView>
+        </GroupBox>
+        <GroupBox Grid.Column="1" Header="Details">
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Name="MyContentLabel"></Label>
+                <ContentControl Grid.Row="1" Name="MyContentControl"></ContentControl>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>
