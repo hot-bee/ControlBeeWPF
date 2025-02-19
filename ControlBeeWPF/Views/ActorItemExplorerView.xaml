@@ -12,12 +12,12 @@
             <ColumnDefinition Width="3*" />
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
-        <GroupBox Grid.Column="0" Header="Items">
+        <GroupBox Grid.Column="0" Header="Items" Margin="5">
             <TreeView 
                 DataContext="{Binding ActorItemTreeViewModel}"
                 ItemsSource="{Binding ActorItemTreeCollection.Root.Children}"
                 SelectedItemChanged="TreeView_OnSelectedItemChanged"
-                Margin="10">
+                Margin="5">
                 <TreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type viewModels:ActorItemTreeNode}" 
                                               ItemsSource="{Binding Children}">
@@ -26,8 +26,8 @@
                 </TreeView.Resources>
             </TreeView>
         </GroupBox>
-        <GroupBox Grid.Column="1" Header="Details">
-            <Grid Margin="10">
+        <GroupBox Grid.Column="1" Header="Details" Margin="5">
+            <Grid Margin="5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition />

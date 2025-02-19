@@ -66,10 +66,7 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
                 _actorRegistry,
                 _actorName,
                 nodeModel.ItemPath
-            )
-            {
-                MaxWidth = 300,
-            };
+            );
         }
     }
 
