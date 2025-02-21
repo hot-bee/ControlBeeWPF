@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using ControlBeeWPF.ViewModels;
@@ -13,12 +14,19 @@ public partial class AxisStatusView : UserControl, IDisposable
 {
     private readonly AxisStatusViewModel _viewModel;
 
-    public AxisStatusView(AxisStatusViewModel viewModel)
+    public AxisStatusView(AxisStatusViewModel viewModel, bool shortMode)
     {
         _viewModel = viewModel;
         DataContext = viewModel;
         InitializeComponent();
         viewModel.PropertyChanged += ViewModelOnPropertyChanged;
+
+        if (shortMode)
+        {
+            // PositionColumn.Width = new GridLength(0);
+            JogColumn.Width = new GridLength(0);
+            // TODO: Gray area should be fixed.
+        }
     }
 
     public void Dispose()

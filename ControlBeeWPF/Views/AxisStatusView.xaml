@@ -10,16 +10,15 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="30" />
-            <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="60" />
-            <ColumnDefinition Width="60" />
-            <ColumnDefinition Width="50" />
-            <ColumnDefinition Width="50" />
-            <ColumnDefinition Width="150" />
-            <ColumnDefinition Width="80" />
-            <ColumnDefinition Width="50" />
+            <ColumnDefinition Name="IndexColumn" Width="30"/>
+            <ColumnDefinition Name="NameColumn" Width="50" />
+            <ColumnDefinition Name="PositionColumn" Width="100" />
+            <ColumnDefinition Name="IsMovingColumn" Width="60" />
+            <ColumnDefinition Name="IsAlarmedColumn" Width="60" />
+            <ColumnDefinition Name="IsEnabledColumn" Width="50" />
+            <ColumnDefinition Name="InitializeColumn" Width="50" />
+            <ColumnDefinition Name="JogColumn" Width="150" />
+            <ColumnDefinition Name="SensorColumn" Width="80" />
         </Grid.ColumnDefinitions>
         <Label Grid.Column="0" Content="{Binding Index}"
                ToolTip="Index" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
@@ -35,12 +34,12 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" Content="{Binding CommandPosition}" 
-                       ContentStringFormat="F3"
+                       ContentStringFormat="N3"
                        HorizontalAlignment="Right"
                        ToolTip="Command Pos" FontSize="8" Margin="0 0 5 0"/>
                 <Label Grid.Row="1" HorizontalAlignment="Right"
                        Content="{Binding ActualPosition}"
-                       ContentStringFormat="F3"
+                       ContentStringFormat="N3"
                        ToolTip="Actual Pos" FontSize="8" Margin="0 0 5 0"/>
             </Grid>
         </Grid>

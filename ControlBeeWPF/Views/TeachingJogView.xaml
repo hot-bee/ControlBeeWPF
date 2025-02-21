@@ -1,0 +1,95 @@
+﻿<UserControl x:Class="ControlBeeWPF.Views.TeachingJogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:views1="clr-namespace:ControlBeeWPF.Views"
+             mc:Ignorable="d"
+             d:DesignHeight="650" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <GroupBox Grid.Row="0" Header="Move to Position">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="Move to Home" Width="120" Height="60"
+                        Margin="10" />
+                <Rectangle Width="80" />
+                <Button Content="Move to Saved &#x0a;Position" Width="120" Height="60"
+                        Margin="10" />
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Grid.Row="1" Header="Jog Control"
+                  Margin="0 5 0 0">
+
+            <TabControl Margin="5">
+                <TabItem Header="Continuous" Padding="10">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <GroupBox Grid.Row="0" Header="Speed" Margin="5">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                                        Margin="10">
+                                <RadioButton Name="SpeedLowRadio" Content="Low"
+                                             VerticalContentAlignment="Center" />
+                                <Rectangle Width="100" />
+                                <RadioButton Name="SpeedMidRadio" Content="Mid" IsChecked="True"
+                                             VerticalContentAlignment="Center" />
+                                <Rectangle Width="100" />
+                                <RadioButton Name="SpeedHighRadio" Content="High"
+                                             VerticalContentAlignment="Center" />
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Grid.Row="1" Header="Axes" Margin="5 0 5 5">
+                            <ContentControl Name="ContinuousAxesContent">
+                                <views1:TeachingJogAxesView />
+                            </ContentControl>
+                        </GroupBox>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Discrete" Padding="10">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <GroupBox Grid.Row="0" Header="Step Distance" Margin="5">
+                            <StackPanel Name="DiscreteStepOptions"
+                                Orientation="Horizontal" HorizontalAlignment="Center"
+                                        Margin="10">
+                                <RadioButton Content="0.1mm"
+                                             VerticalContentAlignment="Center" />
+                                <Rectangle Width="100" />
+                                <RadioButton Content="1mm"
+                                             VerticalContentAlignment="Center" />
+                                <Rectangle Width="100" />
+                                <RadioButton Content="10mm"
+                                             VerticalContentAlignment="Center" />
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Grid.Row="1" Header="Axes" Margin="5 0 5 5">
+                            <ContentControl Name="DiscreteAxesContent">
+                                <views1:TeachingJogAxesView />
+                            </ContentControl>
+                        </GroupBox>
+                    </Grid>
+
+                </TabItem>
+            </TabControl>
+        </GroupBox>
+        <GroupBox Grid.Row="2" Header="Position Saving"
+                  Margin="0 5 0 0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="Save" Width="120" Height="60"
+                        Margin="10" />
+                <Rectangle Width="80" />
+                <Button Content="Restore" Width="120" Height="60"
+                        Margin="10" />
+            </StackPanel>
+        </GroupBox>
+    </Grid>
+</UserControl>
