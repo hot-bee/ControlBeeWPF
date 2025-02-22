@@ -85,10 +85,27 @@ public partial class TeachingDataViewModel : ObservableObject, IDisposable
     private void PositionBinderOnDataChanged(object? sender, Dictionary<string, object?> e)
     {
         var newValue = e.GetValueOrDefault("NewValue")!;
-        if (e.GetValueOrDefault("NewValue") is Position2D position2D)
+        if (e.GetValueOrDefault("NewValue") is Position1D position1D)
+        {
+            _itemValueRow[1] = position1D.Values[0];
+        }
+        else if (e.GetValueOrDefault("NewValue") is Position2D position2D)
         {
             _itemValueRow[1] = position2D.Values[0];
             _itemValueRow[2] = position2D.Values[1];
+        }
+        else if (e.GetValueOrDefault("NewValue") is Position3D position3D)
+        {
+            _itemValueRow[1] = position3D.Values[0];
+            _itemValueRow[2] = position3D.Values[1];
+            _itemValueRow[3] = position3D.Values[2];
+        }
+        else if (e.GetValueOrDefault("NewValue") is Position4D position4D)
+        {
+            _itemValueRow[1] = position4D.Values[0];
+            _itemValueRow[2] = position4D.Values[1];
+            _itemValueRow[3] = position4D.Values[2];
+            _itemValueRow[4] = position4D.Values[3];
         }
         else
         {

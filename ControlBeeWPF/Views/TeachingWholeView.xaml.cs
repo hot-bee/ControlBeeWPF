@@ -57,7 +57,7 @@ public partial class TeachingWholeView : UserControl, IDisposable
 
     private IActor[] GetActors()
     {
-        return _actorRegistry.GetActors().Where(x => x is not IUiActor).ToArray();
+        return _actorRegistry.GetActors().Where(x => x.GetItems().Length > 0).ToArray();
     }
 
     public (string name, string Title)[] GetActorNameTitlePairs()
