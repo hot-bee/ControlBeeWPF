@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ControlBee.Exceptions;
@@ -58,6 +59,22 @@ public partial class VariableStatusBar : UserControl, IDisposable
 
     private void ValueLabel_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
+        if (_value is bool booleanValue)
+        {
+            if (
+                MessageBox.Show(
+                    "Do you want to turn this on/off?",
+                    "Change value",
+                    MessageBoxButton.YesNoCancel,
+                    MessageBoxImage.Question
+                ) == MessageBoxResult.Yes
+            )
+                _actor.Send(
+                    new ActorItemMessage(_uiActor, _itemPath, "_itemDataWrite", !booleanValue)
+                );
+            return;
+        }
+
         var inputBox = new InputBox();
         if (inputBox.ShowDialog() is not true)
             return;
