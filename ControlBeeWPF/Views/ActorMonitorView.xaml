@@ -8,6 +8,14 @@
              mc:Ignorable="d" 
              Width="600" Height="600">
     <Grid>
-        <DataGrid ItemsSource="{Binding Data}" />
+        <DataGrid ItemsSource="{Binding Data}"
+                  CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False"
+                  CanUserSortColumns="False" IsReadOnly="True">
+            <DataGrid.Resources>
+                <Style TargetType="DataGridRow">
+                    <EventSetter Event="MouseDoubleClick" Handler="Row_DoubleClick"/>
+                </Style>
+            </DataGrid.Resources>
+        </DataGrid>
     </Grid>
 </UserControl>
