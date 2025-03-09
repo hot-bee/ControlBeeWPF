@@ -29,7 +29,7 @@ public partial class VariableStatusBar : UserControl, IDisposable
         _itemPath = itemPath;
         InitializeComponent();
         _actor = actorRegistry.Get(actorName)!;
-        _uiActor = actorRegistry.Get("ui")!;
+        _uiActor = actorRegistry.Get("Ui")!;
         _binder = new ActorItemBinder(actorRegistry, actorName, itemPath);
         _binder.MetaDataChanged += BinderOnMetaDataChanged;
         _binder.DataChanged += Binder_DataChanged;

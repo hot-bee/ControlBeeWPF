@@ -21,7 +21,7 @@ public class TeachingJogViewModel : ObservableObject
     )
     {
         _actor = actorRegistry.Get(actorName)!;
-        _uiActor = (IUiActor)actorRegistry.Get("ui")!;
+        _uiActor = (IUiActor)actorRegistry.Get("Ui")!;
         _uiActor.MessageArrived += UiActorOnMessageArrived;
 
         var axisItemPaths = new List<string>();

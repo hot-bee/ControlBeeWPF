@@ -21,7 +21,7 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
         _actorItemTreeViewModel = new ActorItemTreeViewModel();
         _actor = actorRegistry.Get(actorName)!;
 
-        _uiActor = (IUiActor)actorRegistry.Get("ui")!;
+        _uiActor = (IUiActor)actorRegistry.Get("Ui")!;
         _uiActor.MessageArrived += UiActorOnMessageArrived;
 
         foreach (var (itemPath, type) in _actor.GetItems())

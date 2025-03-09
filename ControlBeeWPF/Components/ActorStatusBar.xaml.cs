@@ -32,7 +32,7 @@ public partial class ActorStatusBar : UserControl, IDisposable
         var actor = actorRegistry.Get(actorName)!;
         _actorName = actorName;
         _statusPath = statusPath;
-        _uiActor = (IUiActor)actorRegistry.Get("ui")!;
+        _uiActor = (IUiActor)actorRegistry.Get("Ui")!;
         _uiActor.MessageArrived += UiActorOnMessageArrived;
         statusPath = statusPath.Trim('/');
         _statusPathKeys = statusPath.Split('/');

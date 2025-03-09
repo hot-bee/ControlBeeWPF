@@ -15,7 +15,7 @@ public class TeachingViewModel : ObservableObject, IDisposable
 
     public TeachingViewModel(string actorName, IActorRegistry actorRegistry)
     {
-        _uiActor = (IUiActor)actorRegistry.Get("ui")!;
+        _uiActor = (IUiActor)actorRegistry.Get("Ui")!;
         var actor = actorRegistry.Get(actorName)!;
 
         _uiActor.MessageArrived += UiActorOnMessageArrived;

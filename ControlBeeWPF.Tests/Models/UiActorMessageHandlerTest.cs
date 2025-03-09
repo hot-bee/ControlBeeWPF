@@ -16,7 +16,7 @@ public class UiActorMessageHandlerTest
         var systemConfigurations = new SystemConfigurations();
         var ui = new UiActor(
             new ActorConfig(
-                "ui",
+                "Ui",
                 systemConfigurations,
                 null!,
                 null!,

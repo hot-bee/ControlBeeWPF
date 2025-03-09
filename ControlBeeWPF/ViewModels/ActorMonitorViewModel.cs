@@ -19,7 +19,7 @@ public partial class ActorMonitorViewModel : ObservableObject, IDisposable
     public ActorMonitorViewModel(IActorRegistry actorRegistry)
     {
         _actorRegistry = actorRegistry;
-        _uiActor = (IUiActor)actorRegistry.Get("ui")!;
+        _uiActor = (IUiActor)actorRegistry.Get("Ui")!;
         _uiActor.MessageArrived += UiActor_MessageArrived;
 
         _data.Columns.Add("Actor", typeof(string));

@@ -60,7 +60,7 @@ public partial class AxisStatusViewModel : ObservableObject, IDisposable
         _itemPath = itemPath;
         _binder = new ActorItemBinder(actorRegistry, actorName, itemPath);
         _actor = actorRegistry.Get(actorName)!;
-        _uiActor = actorRegistry.Get("ui")!;
+        _uiActor = actorRegistry.Get("Ui")!;
 
         _binder.MetaDataChanged += BinderOnMetaDataChanged;
         _binder.DataChanged += Binder_DataChanged;
