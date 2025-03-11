@@ -1,11 +1,11 @@
-﻿using System.Reflection;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ControlBee.Exceptions;
 using ControlBee.Interfaces;
 using ControlBee.Models;
 using log4net;
+using Dict = System.Collections.Generic.Dictionary<string, object?>;
 
 namespace ControlBeeWPF.Components;
 
@@ -14,19 +14,26 @@ namespace ControlBeeWPF.Components;
 /// </summary>
 public partial class VariableStatusBar : UserControl, IDisposable
 {
-    private static readonly ILog Logger = LogManager.GetLogger(
-        MethodBase.GetCurrentMethod()!.DeclaringType!
-    );
+    private static readonly ILog Logger = LogManager.GetLogger(nameof(VariableStatusBar));
 
     private readonly IActor _actor;
+    private readonly string _actorName;
     private readonly ActorItemBinder _binder;
     private readonly string _itemPath;
+    private readonly string? _propertyName;
     private readonly IActor _uiActor;
     private object? _value;
 
-    public VariableStatusBar(IActorRegistry actorRegistry, string actorName, string itemPath)
+    public VariableStatusBar(
+        IActorRegistry actorRegistry,
+        string actorName,
+        string itemPath,
+        string? propertyName
+    )
     {
+        _actorName = actorName;
         _itemPath = itemPath;
+        _propertyName = propertyName;
         InitializeComponent();
         _actor = actorRegistry.Get(actorName)!;
         _uiActor = actorRegistry.Get("Ui")!;
@@ -34,6 +41,9 @@ public partial class VariableStatusBar : UserControl, IDisposable
         _binder.MetaDataChanged += BinderOnMetaDataChanged;
         _binder.DataChanged += Binder_DataChanged;
     }
+
+    public VariableStatusBar(IActorRegistry actorRegistry, string actorName, string itemPath)
+        : this(actorRegistry, actorName, itemPath, null) { }
 
     public void Dispose()
     {
@@ -53,7 +63,36 @@ public partial class VariableStatusBar : UserControl, IDisposable
 
     private void Binder_DataChanged(object? sender, Dictionary<string, object?> e)
     {
-        _value = e["NewValue"];
+        var location = e["Location"];
+        var newValue = e["NewValue"];
+        if (_propertyName != null)
+        {
+            if (location == null)
+            {
+                if (newValue == null)
+                {
+                    Logger.Warn($"NewValue is null. ({_actorName}, {_itemPath})");
+                }
+                else
+                {
+                    var propertyInfo = newValue.GetType().GetProperty(_propertyName);
+                    if (propertyInfo == null)
+                        Logger.Warn($"PropertyInfo is null. ({_actorName}, {_itemPath})");
+                    else
+                        _value = propertyInfo.GetValue(newValue);
+                }
+            }
+            else
+            {
+                if (_propertyName.Equals(location))
+                    _value = newValue;
+            }
+        }
+        else
+        {
+            _value = newValue;
+        }
+
         ValueLabel.Content = _value?.ToString() ?? string.Empty;
     }
 
@@ -69,9 +108,22 @@ public partial class VariableStatusBar : UserControl, IDisposable
                     MessageBoxImage.Question
                 ) == MessageBoxResult.Yes
             )
-                _actor.Send(
-                    new ActorItemMessage(_uiActor, _itemPath, "_itemDataWrite", !booleanValue)
-                );
+            {
+                if (_propertyName == null)
+                    _actor.Send(
+                        new ActorItemMessage(_uiActor, _itemPath, "_itemDataWrite", !booleanValue)
+                    );
+                else
+                    _actor.Send(
+                        new ActorItemMessage(
+                            _uiActor,
+                            _itemPath,
+                            "_itemDataModify",
+                            new Dict { [_propertyName] = !booleanValue }
+                        )
+                    );
+            }
+
             return;
         }
 
