@@ -4,6 +4,7 @@ using ControlBee.Models;
 using ControlBeeWPF.Models;
 using JetBrains.Annotations;
 using Xunit;
+using Message = ControlBee.Models.Message;
 
 namespace ControlBeeWPF.Tests.Models;
 

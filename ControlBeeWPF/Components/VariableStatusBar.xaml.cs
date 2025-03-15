@@ -4,6 +4,7 @@ using System.Windows.Input;
 using ControlBee.Exceptions;
 using ControlBee.Interfaces;
 using ControlBee.Models;
+using ControlBee.Variables;
 using log4net;
 using Dict = System.Collections.Generic.Dictionary<string, object?>;
 
@@ -20,7 +21,7 @@ public partial class VariableStatusBar : UserControl, IDisposable
     private readonly string _actorName;
     private readonly ActorItemBinder _binder;
     private readonly string _itemPath;
-    private readonly string? _propertyName;
+    private readonly object[] _subItemPath;
     private readonly IActor _uiActor;
     private object? _value;
 
@@ -28,12 +29,12 @@ public partial class VariableStatusBar : UserControl, IDisposable
         IActorRegistry actorRegistry,
         string actorName,
         string itemPath,
-        string? propertyName
+        object[]? subItemPath
     )
     {
         _actorName = actorName;
         _itemPath = itemPath;
-        _propertyName = propertyName;
+        _subItemPath = subItemPath ?? [];
         InitializeComponent();
         _actor = actorRegistry.Get(actorName)!;
         _uiActor = actorRegistry.Get("Ui")!;
@@ -52,7 +53,7 @@ public partial class VariableStatusBar : UserControl, IDisposable
         _binder.Dispose();
     }
 
-    private void BinderOnMetaDataChanged(object? sender, Dictionary<string, object?> e)
+    private void BinderOnMetaDataChanged(object? sender, Dict e)
     {
         NameLabel.Content = e["Name"];
         UnitLabel.Content = e["Unit"];
@@ -61,39 +62,57 @@ public partial class VariableStatusBar : UserControl, IDisposable
             ToolTip = desc;
     }
 
-    private void Binder_DataChanged(object? sender, Dictionary<string, object?> e)
+    private void Binder_DataChanged(object? sender, Dict e)
     {
-        var location = e["Location"];
-        var newValue = e["NewValue"];
-        if (_propertyName != null)
-        {
-            if (location == null)
+        var valueChangedArgs = e[nameof(ValueChangedArgs)] as ValueChangedArgs;
+        var location = valueChangedArgs?.Location!;
+        var newValue = valueChangedArgs?.NewValue!;
+        var value = GetValue(location, newValue);
+        if (value == null)
+            return;
+        _value = value;
+        ValueLabel.Content = _value.ToString();
+    }
+
+    private object? GetValue(object[] location, object newValue)
+    {
+        var paths = _subItemPath.ToArray();
+        foreach (var o in location)
+            if (paths[0].Equals(o))
+                paths = paths[1..];
+            else
+                return null;
+
+        var curValue = newValue;
+        foreach (var pathPart in paths)
+            if (curValue is IArray1D array1D)
             {
-                if (newValue == null)
-                {
-                    Logger.Warn($"NewValue is null. ({_actorName}, {_itemPath})");
-                }
+                if (pathPart is int index)
+                    curValue = array1D.GetValue(index);
                 else
-                {
-                    var propertyInfo = newValue.GetType().GetProperty(_propertyName);
-                    if (propertyInfo == null)
-                        Logger.Warn($"PropertyInfo is null. ({_actorName}, {_itemPath})");
-                    else
-                        _value = propertyInfo.GetValue(newValue);
-                }
+                    return null;
             }
             else
             {
-                if (_propertyName.Equals(location))
-                    _value = newValue;
-            }
-        }
-        else
-        {
-            _value = newValue;
-        }
+                if (pathPart is string propertyName)
+                {
+                    var propertyInfo = curValue?.GetType().GetProperty(propertyName);
+                    if (propertyInfo == null)
+                    {
+                        Logger.Warn($"PropertyInfo is null. ({_actorName}, {_itemPath})");
+                        curValue = null;
+                        break;
+                    }
 
-        ValueLabel.Content = _value?.ToString() ?? string.Empty;
+                    curValue = propertyInfo.GetValue(curValue);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
+        return curValue;
     }
 
     private void ValueLabel_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -108,22 +127,14 @@ public partial class VariableStatusBar : UserControl, IDisposable
                     MessageBoxImage.Question
                 ) == MessageBoxResult.Yes
             )
-            {
-                if (_propertyName == null)
-                    _actor.Send(
-                        new ActorItemMessage(_uiActor, _itemPath, "_itemDataWrite", !booleanValue)
-                    );
-                else
-                    _actor.Send(
-                        new ActorItemMessage(
-                            _uiActor,
-                            _itemPath,
-                            "_itemDataModify",
-                            new Dict { [_propertyName] = !booleanValue }
-                        )
-                    );
-            }
-
+                _actor.Send(
+                    new ActorItemMessage(
+                        _uiActor,
+                        _itemPath,
+                        "_itemDataWrite",
+                        new ItemDataWriteArgs(_subItemPath, !booleanValue)
+                    )
+                );
             return;
         }
 
@@ -141,7 +152,7 @@ public partial class VariableStatusBar : UserControl, IDisposable
                             _uiActor,
                             _itemPath,
                             "_itemDataWrite",
-                            int.Parse(newValue)
+                            new ItemDataWriteArgs(_subItemPath, int.Parse(newValue))
                         )
                     );
                     break;
@@ -151,7 +162,7 @@ public partial class VariableStatusBar : UserControl, IDisposable
                             _uiActor,
                             _itemPath,
                             "_itemDataWrite",
-                            double.Parse(newValue)
+                            new ItemDataWriteArgs(_subItemPath, double.Parse(newValue))
                         )
                     );
                     break;
