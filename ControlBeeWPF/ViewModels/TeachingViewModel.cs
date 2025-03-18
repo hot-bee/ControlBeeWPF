@@ -60,7 +60,9 @@ public class TeachingViewModel : ObservableObject, IDisposable
                 if (_dataIds.ContainsKey(e.RequestId))
                 {
                     var actorItemMessage = (ActorItemMessage)e;
-                    var type = e.DictPayload!["NewValue"]!.GetType();
+                    var valueChangedArgs = (ValueChangedArgs)
+                        e.DictPayload![nameof(ValueChangedArgs)]!;
+                    var type = valueChangedArgs.NewValue!.GetType();
                     ItemTypes[actorItemMessage.ItemPath] = type;
                     if (type.IsAssignableTo(typeof(Position)))
                         PositionItemPaths.Add(actorItemMessage.ItemPath);
