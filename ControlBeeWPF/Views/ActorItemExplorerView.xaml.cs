@@ -62,7 +62,7 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
         {
             MyContentControl.VerticalAlignment = VerticalAlignment.Top;
             MyContentControl.Margin = new Thickness(0, 10, 0, 0);
-            MyContentControl.Content = new VariableStatusBar(
+            MyContentControl.Content = new VariableStatusBarView(
                 _actorRegistry,
                 _actorName,
                 nodeModel.ItemPath

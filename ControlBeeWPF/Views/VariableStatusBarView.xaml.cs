@@ -1,21 +1,24 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Xml;
 using ControlBee.Exceptions;
 using ControlBee.Interfaces;
 using ControlBee.Models;
 using ControlBee.Variables;
+using ControlBeeWPF.Components;
 using log4net;
 using Dict = System.Collections.Generic.Dictionary<string, object?>;
 
-namespace ControlBeeWPF.Components;
+namespace ControlBeeWPF.Views;
 
 /// <summary>
-///     Interaction logic for VariableStatusBar.xaml
+///     Interaction logic for VariableStatusBarView.xaml
 /// </summary>
-public partial class VariableStatusBar : UserControl, IDisposable
+public partial class VariableStatusBarView : UserControl, IDisposable
 {
-    private static readonly ILog Logger = LogManager.GetLogger(nameof(VariableStatusBar));
+    private static readonly ILog Logger = LogManager.GetLogger(nameof(VariableStatusBarView));
 
     private readonly IActor _actor;
     private readonly string _actorName;
@@ -25,7 +28,30 @@ public partial class VariableStatusBar : UserControl, IDisposable
     private readonly IActor _uiActor;
     private object? _value;
 
-    public VariableStatusBar(
+    public double NameWidth
+    {
+        set => NameColumn.Width = new GridLength(value);
+    }
+
+    public double UnitWidth
+    {
+        set => UnitColumn.Width = new GridLength(value);
+    }
+
+    public Brush NameLabelBackGround
+    {
+        set => NameLabel.Background = value;
+    }
+    public Brush ValueLabelBackGround
+    {
+        set => ValueLabel.Background = value;
+    }
+    public Brush UnitLabelBackGround
+    {
+        set => UnitLabel.Background = value;
+    }
+
+    public VariableStatusBarView(
         IActorRegistry actorRegistry,
         string actorName,
         string itemPath,
@@ -43,7 +69,7 @@ public partial class VariableStatusBar : UserControl, IDisposable
         _binder.DataChanged += Binder_DataChanged;
     }
 
-    public VariableStatusBar(IActorRegistry actorRegistry, string actorName, string itemPath)
+    public VariableStatusBarView(IActorRegistry actorRegistry, string actorName, string itemPath)
         : this(actorRegistry, actorName, itemPath, null) { }
 
     public void Dispose()
