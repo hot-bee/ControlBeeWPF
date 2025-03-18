@@ -103,7 +103,16 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         if (value == null)
             return;
         _value = value;
-        ValueLabel.Content = _value.ToString();
+        if (value is bool)
+        {
+            ValueColumn.Width = new GridLength(0);
+            BoolValueRect.Fill = _value is true ? Brushes.LawnGreen : Brushes.WhiteSmoke;
+        }
+        else
+        {
+            BinaryValueColumn.Width = new GridLength(0);
+            ValueLabel.Content = _value.ToString();
+        }
     }
 
     private object? GetValue(object[] location, object newValue)
@@ -147,26 +156,31 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         return curValue;
     }
 
+    private void ToggleBoolValue(bool booleanValue)
+    {
+        if (
+            MessageBox.Show(
+                "Do you want to turn this on/off?",
+                "Change value",
+                MessageBoxButton.YesNoCancel,
+                MessageBoxImage.Question
+            ) == MessageBoxResult.Yes
+        )
+            _actor.Send(
+                new ActorItemMessage(
+                    _uiActor,
+                    _itemPath,
+                    "_itemDataWrite",
+                    new ItemDataWriteArgs(_subItemPath, !booleanValue)
+                )
+            );
+    }
+
     private void ValueLabel_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
-        if (_value is bool booleanValue)
+        if (_value is bool boolValue)
         {
-            if (
-                MessageBox.Show(
-                    "Do you want to turn this on/off?",
-                    "Change value",
-                    MessageBoxButton.YesNoCancel,
-                    MessageBoxImage.Question
-                ) == MessageBoxResult.Yes
-            )
-                _actor.Send(
-                    new ActorItemMessage(
-                        _uiActor,
-                        _itemPath,
-                        "_itemDataWrite",
-                        new ItemDataWriteArgs(_subItemPath, !booleanValue)
-                    )
-                );
+            ToggleBoolValue(boolValue);
             return;
         }
 
@@ -206,5 +220,12 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         {
             Logger.Error(error);
         }
+    }
+
+    private void BoolValueLabel_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        if (_value is not bool boolValue)
+            return;
+        ToggleBoolValue(boolValue);
     }
 }

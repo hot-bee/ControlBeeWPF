@@ -4,13 +4,10 @@ using System.Windows.Media;
 using ControlBee.Interfaces;
 using ControlBee.Models;
 
-namespace ControlBeeWPF.Components;
+namespace ControlBeeWPF.Views;
 
-/// <summary>
-///     Interaction logic for DoubleActingActuatorStatusBar.xaml
-/// </summary>
 // ReSharper disable once InconsistentNaming
-public partial class DoubleActingActuatorStatusBar : UserControl, IDisposable
+public partial class DoubleActingActuatorStatusBarView : UserControl, IDisposable
 {
     private readonly IActor _actor;
     private readonly string _itemPath;
@@ -18,7 +15,7 @@ public partial class DoubleActingActuatorStatusBar : UserControl, IDisposable
     private readonly ActorItemBinder _binder;
     private bool? _value;
 
-    public DoubleActingActuatorStatusBar(
+    public DoubleActingActuatorStatusBarView(
         IActorRegistry actorRegistry,
         string actorName,
         string itemPath

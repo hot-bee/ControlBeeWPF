@@ -4,13 +4,10 @@ using System.Windows.Media;
 using ControlBee.Interfaces;
 using ControlBee.Models;
 
-namespace ControlBeeWPF.Components;
+namespace ControlBeeWPF.Views;
 
-/// <summary>
-///     Interaction logic for DigitalOutputStatusBar.xaml
-/// </summary>
 // ReSharper disable once InconsistentNaming
-public partial class DigitalOutputStatusBar : UserControl, IDisposable
+public partial class DigitalOutputStatusBarView : UserControl, IDisposable
 {
     private readonly IActor _actor;
     private readonly ActorItemBinder _binder;
@@ -18,7 +15,7 @@ public partial class DigitalOutputStatusBar : UserControl, IDisposable
     private readonly IActor _uiActor;
     private bool? _value;
 
-    public DigitalOutputStatusBar(IActorRegistry actorRegistry, string actorName, string itemPath)
+    public DigitalOutputStatusBarView(IActorRegistry actorRegistry, string actorName, string itemPath)
     {
         InitializeComponent();
         _itemPath = itemPath;

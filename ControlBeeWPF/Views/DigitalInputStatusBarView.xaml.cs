@@ -3,18 +3,18 @@ using System.Windows.Media;
 using ControlBee.Interfaces;
 using ControlBee.Models;
 
-namespace ControlBeeWPF.Components;
+namespace ControlBeeWPF.Views;
 
 /// <summary>
 ///     Interaction logic for IOStatusBar.xaml
 /// </summary>
 // ReSharper disable once InconsistentNaming
-public partial class DigitalInputStatusBar : UserControl, IDisposable
+public partial class DigitalInputStatusBarView : UserControl, IDisposable
 {
     private readonly ActorItemBinder _binder;
     private bool? _value;
 
-    public DigitalInputStatusBar(IActorRegistry actorRegistry, string actorName, string itemPath)
+    public DigitalInputStatusBarView(IActorRegistry actorRegistry, string actorName, string itemPath)
     {
         InitializeComponent();
         _binder = new ActorItemBinder(actorRegistry, actorName, itemPath);

@@ -6,13 +6,10 @@ using ControlBee.Models;
 using ControlBee.Utils;
 using log4net;
 
-namespace ControlBeeWPF.Components;
+namespace ControlBeeWPF.Views;
 
-/// <summary>
-///     Interaction logic for IOStatusBar.xaml
-/// </summary>
 // ReSharper disable once InconsistentNaming
-public partial class ActorStatusBar : UserControl, IDisposable
+public partial class ActorStatusBarView : UserControl, IDisposable
 {
     private static readonly ILog Logger = LogManager.GetLogger(
         MethodBase.GetCurrentMethod()!.DeclaringType!
@@ -26,7 +23,7 @@ public partial class ActorStatusBar : UserControl, IDisposable
 
     private object? _value;
 
-    public ActorStatusBar(IActorRegistry actorRegistry, string actorName, string statusPath)
+    public ActorStatusBarView(IActorRegistry actorRegistry, string actorName, string statusPath)
     {
         InitializeComponent();
         var actor = actorRegistry.Get(actorName)!;
