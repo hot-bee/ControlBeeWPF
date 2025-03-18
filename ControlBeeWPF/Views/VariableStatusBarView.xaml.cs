@@ -117,10 +117,10 @@ public partial class VariableStatusBarView : UserControl, IDisposable
 
         var curValue = newValue;
         foreach (var pathPart in paths)
-            if (curValue is IArray1D array1D)
+            if (curValue is IIndex1D index1D)
             {
                 if (pathPart is int index)
-                    curValue = array1D.GetValue(index);
+                    curValue = index1D.GetValue(index);
                 else
                     return null;
             }
