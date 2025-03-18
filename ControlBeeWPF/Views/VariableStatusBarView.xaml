@@ -13,14 +13,16 @@
         </Grid.ColumnDefinitions>
         <Label Grid.Column="0" Name="NameLabel" Content="name" 
                VerticalContentAlignment="Center" HorizontalContentAlignment="Left"
-               Margin="5 0 5 0"
+               Margin="1 0 1 0"
                Background="WhiteSmoke" BorderThickness="1" BorderBrush="Silver"/>
         <Label Grid.Column="1" Name="ValueLabel" Content="value" 
-               VerticalContentAlignment="Center"  HorizontalContentAlignment="Right" MouseLeftButtonDown="ValueLabel_OnMouseLeftButtonDown"
+               VerticalContentAlignment="Center"  HorizontalContentAlignment="Right" 
+               Margin="1 0 1 0"
+               MouseLeftButtonDown="ValueLabel_OnMouseLeftButtonDown"
                BorderThickness="1" BorderBrush="Silver"/>
         <Label Grid.Column="2" Name="UnitLabel" Content="unit" 
                VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-               Margin="5 0 5 0"
+               Margin="1 0 1 0"
                Background="WhiteSmoke" BorderThickness="1" BorderBrush="Silver"/>
     </Grid>
 </UserControl>

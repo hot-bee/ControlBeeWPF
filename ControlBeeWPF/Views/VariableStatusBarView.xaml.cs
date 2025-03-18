@@ -2,7 +2,6 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Xml;
 using ControlBee.Exceptions;
 using ControlBee.Interfaces;
 using ControlBee.Models;
@@ -28,29 +27,6 @@ public partial class VariableStatusBarView : UserControl, IDisposable
     private readonly IActor _uiActor;
     private object? _value;
 
-    public double NameWidth
-    {
-        set => NameColumn.Width = new GridLength(value);
-    }
-
-    public double UnitWidth
-    {
-        set => UnitColumn.Width = new GridLength(value);
-    }
-
-    public Brush NameLabelBackGround
-    {
-        set => NameLabel.Background = value;
-    }
-    public Brush ValueLabelBackGround
-    {
-        set => ValueLabel.Background = value;
-    }
-    public Brush UnitLabelBackGround
-    {
-        set => UnitLabel.Background = value;
-    }
-
     public VariableStatusBarView(
         IActorRegistry actorRegistry,
         string actorName,
@@ -72,6 +48,31 @@ public partial class VariableStatusBarView : UserControl, IDisposable
     public VariableStatusBarView(IActorRegistry actorRegistry, string actorName, string itemPath)
         : this(actorRegistry, actorName, itemPath, null) { }
 
+    public double NameWidth
+    {
+        set => NameColumn.Width = new GridLength(value);
+    }
+
+    public double UnitWidth
+    {
+        set => UnitColumn.Width = new GridLength(value);
+    }
+
+    public Brush NameLabelBackGround
+    {
+        set => NameLabel.Background = value;
+    }
+
+    public Brush ValueLabelBackGround
+    {
+        set => ValueLabel.Background = value;
+    }
+
+    public Brush UnitLabelBackGround
+    {
+        set => UnitLabel.Background = value;
+    }
+
     public void Dispose()
     {
         _binder.MetaDataChanged -= BinderOnMetaDataChanged;
@@ -82,8 +83,13 @@ public partial class VariableStatusBarView : UserControl, IDisposable
     private void BinderOnMetaDataChanged(object? sender, Dict e)
     {
         NameLabel.Content = e["Name"];
-        UnitLabel.Content = e["Unit"];
+        var unit = e["Unit"]?.ToString();
         var desc = e["Desc"]?.ToString();
+
+        if (string.IsNullOrEmpty(unit))
+            UnitColumn.Width = new GridLength(0);
+        else
+            UnitLabel.Content = unit;
         if (!string.IsNullOrEmpty(desc))
             ToolTip = desc;
     }
