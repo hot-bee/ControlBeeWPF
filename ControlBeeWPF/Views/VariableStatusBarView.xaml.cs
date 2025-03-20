@@ -178,16 +178,18 @@ public partial class VariableStatusBarView : UserControl, IDisposable
 
     private void ValueLabel_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
+        if (_value == null)
+            return;
         if (_value is bool boolValue)
         {
             ToggleBoolValue(boolValue);
             return;
         }
 
-        var inputBox = new InputBox();
+        var inputBox = new NumpadView(_value);
         if (inputBox.ShowDialog() is not true)
             return;
-        var newValue = inputBox.ResponseText;
+        var newValue = inputBox.Value;
         try
         {
             switch (_value)
