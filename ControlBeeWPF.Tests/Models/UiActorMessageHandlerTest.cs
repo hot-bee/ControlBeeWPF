@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Windows;
 using ControlBee.Models;
+using ControlBeeTest.Utils;
 using ControlBeeWPF.Models;
 using JetBrains.Annotations;
 using Xunit;
@@ -9,7 +10,7 @@ using Message = ControlBee.Models.Message;
 namespace ControlBeeWPF.Tests.Models;
 
 [TestSubject(typeof(UiActorMessageHandler))]
-public class UiActorMessageHandlerTest
+public class UiActorMessageHandlerTest : ActorFactoryBase
 {
     [Fact]
     public void CallbackIntoMainThreadTest()
@@ -19,6 +20,7 @@ public class UiActorMessageHandlerTest
             new ActorConfig(
                 "Ui",
                 systemConfigurations,
+                null!,
                 null!,
                 null!,
                 null!,
