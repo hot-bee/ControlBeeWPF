@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using ControlBee.Constants;
-using ControlBee.Exceptions;
+using ControlBeeAbstract.Exceptions;
 using ControlBeeWPF.ViewModels;
 using log4net;
 
