@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using ControlBee.Constants;
 using ControlBee.Interfaces;
 using ControlBee.Models;
@@ -6,8 +7,9 @@ using Dict = System.Collections.Generic.Dictionary<string, object?>;
 
 namespace ControlBeeWPF.ViewModels;
 
-public class TeachingJogViewModel : ObservableObject
+public partial class TeachingJogViewModel : ObservableObject
 {
+    private readonly string _positionItemPath;
     private readonly IActor _actor;
     private readonly IUiActor _uiActor;
     public readonly string[] AxisItemPaths;
@@ -20,6 +22,7 @@ public class TeachingJogViewModel : ObservableObject
         IActorRegistry actorRegistry
     )
     {
+        _positionItemPath = positionItemPath;
         _actor = actorRegistry.Get(actorName)!;
         _uiActor = (IUiActor)actorRegistry.Get("Ui")!;
         _uiActor.MessageArrived += UiActorOnMessageArrived;
@@ -75,5 +78,29 @@ public class TeachingJogViewModel : ObservableObject
     protected virtual void OnLoaded()
     {
         Loaded?.Invoke(this, EventArgs.Empty);
+    }
+
+    [RelayCommand]
+    private void MoveToHomePos()
+    {
+        _actor.Send(new ActorItemMessage(_uiActor, _positionItemPath, "MoveToHomePos"));
+    }
+
+    [RelayCommand]
+    private void MoveToSavedPos()
+    {
+        _actor.Send(new ActorItemMessage(_uiActor, _positionItemPath, "MoveToSavedPos"));
+    }
+
+    [RelayCommand]
+    private void SavePos()
+    {
+        _actor.Send(new ActorItemMessage(_uiActor, _positionItemPath, "SavePos"));
+    }
+
+    [RelayCommand]
+    private void RestorePos()
+    {
+        // TODO
     }
 }

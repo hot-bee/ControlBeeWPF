@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:ControlBeeWPF.ViewModels"
              mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=viewModels:TeachingJogViewModel}"
              d:DesignHeight="650" d:DesignWidth="800">
     <Grid>
         <Grid.Resources>
@@ -18,10 +20,12 @@
         </Grid.RowDefinitions>
         <GroupBox Grid.Row="0" Header="Move to Position">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="Move to Home" Width="120" Height="60"
+                <Button Content="Move to Home" Command="{Binding MoveToHomePosCommand}"
+                        Width="120" Height="60"
                         Margin="10" />
                 <Rectangle Width="60" />
-                <Button Content="Move to Saved &#x0a;Position" Width="120" Height="60"
+                <Button Content="Move to Saved &#x0a;Position" Command="{Binding MoveToSavedPosCommand}"
+                        Width="120" Height="60"
                         Margin="10" />
             </StackPanel>
         </GroupBox>
@@ -86,11 +90,12 @@
         <GroupBox Grid.Row="2" Header="Position Saving"
                   Margin="0 5 0 0">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="Save" Width="120" Height="60"
+                <Button Content="Save" Command="{Binding SavePosCommand}"
+                        Width="120" Height="60"
                         Margin="10" />
                 <Rectangle Width="80" />
-                <Button Content="Restore" Width="120" Height="60"
-                        Margin="10" />
+                <Button Content="Restore" IsEnabled="False"
+                        Width="120" Height="60" Margin="10" />
             </StackPanel>
         </GroupBox>
     </Grid>

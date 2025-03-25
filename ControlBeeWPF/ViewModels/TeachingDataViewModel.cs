@@ -50,13 +50,6 @@ public partial class TeachingDataViewModel : ObservableObject, IDisposable
         _itemValueRow = TableData.Rows.Add("Name");
     }
 
-    private void AxisItemBinderOnMetaDataChanged(object? sender, Dictionary<string, object?> e)
-    {
-        var index = _axisItemBinderList.IndexOf((ActorItemBinder)sender!);
-        var name = (string)e["Name"]!;
-        TableData.Columns[index + 1].ColumnName = name.Trim('/');
-    }
-
     public void Dispose()
     {
         _positionBinder.MetaDataChanged -= PositionBinderOnMetaDataChanged;
@@ -68,6 +61,13 @@ public partial class TeachingDataViewModel : ObservableObject, IDisposable
             x.DataChanged -= AxisItemBinderOnDataChanged;
             x.Dispose();
         });
+    }
+
+    private void AxisItemBinderOnMetaDataChanged(object? sender, Dictionary<string, object?> e)
+    {
+        var index = _axisItemBinderList.IndexOf((ActorItemBinder)sender!);
+        var name = (string)e["Name"]!;
+        TableData.Columns[index + 1].ColumnName = name.Trim('/');
     }
 
     private void AxisItemBinderOnDataChanged(object? sender, Dictionary<string, object?> e)
@@ -86,31 +86,40 @@ public partial class TeachingDataViewModel : ObservableObject, IDisposable
     {
         var valueChangedArgs = e[nameof(ValueChangedArgs)] as ValueChangedArgs;
         var newValue = valueChangedArgs?.NewValue;
-        if (newValue is Position1D position1D)
+
+        if (valueChangedArgs?.Location.Length > 0)
         {
-            _itemValueRow[1] = position1D.Values[0];
-        }
-        else if (newValue is Position2D position2D)
-        {
-            _itemValueRow[1] = position2D.Values[0];
-            _itemValueRow[2] = position2D.Values[1];
-        }
-        else if (newValue is Position3D position3D)
-        {
-            _itemValueRow[1] = position3D.Values[0];
-            _itemValueRow[2] = position3D.Values[1];
-            _itemValueRow[3] = position3D.Values[2];
-        }
-        else if (newValue is Position4D position4D)
-        {
-            _itemValueRow[1] = position4D.Values[0];
-            _itemValueRow[2] = position4D.Values[1];
-            _itemValueRow[3] = position4D.Values[2];
-            _itemValueRow[4] = position4D.Values[3];
+            var index = (int)valueChangedArgs?.Location[0]!;
+            _itemValueRow[1 + index] = newValue;
         }
         else
         {
-            Logger.Error($"Unknown item type. ({newValue?.GetType()})");
+            if (newValue is Position1D position1D)
+            {
+                _itemValueRow[1] = position1D.Values[0];
+            }
+            else if (newValue is Position2D position2D)
+            {
+                _itemValueRow[1] = position2D.Values[0];
+                _itemValueRow[2] = position2D.Values[1];
+            }
+            else if (newValue is Position3D position3D)
+            {
+                _itemValueRow[1] = position3D.Values[0];
+                _itemValueRow[2] = position3D.Values[1];
+                _itemValueRow[3] = position3D.Values[2];
+            }
+            else if (newValue is Position4D position4D)
+            {
+                _itemValueRow[1] = position4D.Values[0];
+                _itemValueRow[2] = position4D.Values[1];
+                _itemValueRow[3] = position4D.Values[2];
+                _itemValueRow[4] = position4D.Values[3];
+            }
+            else
+            {
+                Logger.Error($"Unknown item type. ({newValue?.GetType()})");
+            }
         }
     }
 }
