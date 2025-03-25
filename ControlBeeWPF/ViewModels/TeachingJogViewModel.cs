@@ -65,7 +65,7 @@ public partial class TeachingJogViewModel : ObservableObject
                 _uiActor,
                 axisItemPath,
                 "_jogStart",
-                new Dict { ["Direction"] = direction, ["JogSpeed"] = (JogSpeed)speedIndex }
+                new Dict { ["Direction"] = direction, ["JogSpeed"] = (JogSpeedLevel)speedIndex }
             )
         );
     }

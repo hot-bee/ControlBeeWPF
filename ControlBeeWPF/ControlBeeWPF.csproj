@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-    <PackageReference Include="ControlBee" Version="0.0.137" />
+    <PackageReference Include="ControlBee" Version="0.0.138" />
   </ItemGroup>
 
 </Project>
