@@ -89,9 +89,6 @@ public partial class TeachingJogView : UserControl, IDisposable
         var stackPanel = new StackPanel { HorizontalAlignment = HorizontalAlignment.Center };
         foreach (var itemPath in _viewModel.AxisItemPaths)
         {
-            if (stackPanel.Children.Count > 0)
-                stackPanel.Children.Add(new Rectangle { Height = 20 });
-
             var negButton = new Button
             {
                 Content = "- Neg",
