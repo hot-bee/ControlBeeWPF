@@ -36,9 +36,11 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Content="Clear" Name="ClearButton" Click="Button_OnClick" />
-            <Button Grid.Column="1" Content="Back" Name="BackButton" Click="Button_OnClick" />
+            <Button Grid.Column="0" Content="±" Name="MinusButton" Click="Button_OnClick" />
+            <Button Grid.Column="1" Content="Clear" Name="ClearButton" Click="Button_OnClick" />
+            <Button Grid.Column="2" Content="Back" Name="BackButton" Click="Button_OnClick" />
         </Grid>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>

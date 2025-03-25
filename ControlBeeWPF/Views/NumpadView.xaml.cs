@@ -68,6 +68,11 @@ public partial class NumpadView : Window
             DialogResult = false;
             Close();
         }
+        else if (Equals(sender, MinusButton))
+        {
+            _valueParts[0] *= -1;
+            UpdateValue();
+        }
         else if (Equals(sender, ClearButton))
         {
             _valueParts[0] = null;
