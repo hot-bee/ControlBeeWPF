@@ -9,12 +9,12 @@ namespace ControlBeeWPF.ViewModels;
 
 public partial class TeachingJogViewModel : ObservableObject
 {
-    private readonly string _positionItemPath;
     private readonly IActor _actor;
+    private readonly string _positionItemPath;
+    private readonly Dictionary<Guid, string> _sentIds = [];
     private readonly IUiActor _uiActor;
     public readonly string[] AxisItemPaths;
     public readonly Dictionary<string, double[]> StepJogSizes = new();
-    private readonly Dictionary<Guid, string> _sentIds = [];
 
     public TeachingJogViewModel(
         string actorName,
@@ -58,14 +58,40 @@ public partial class TeachingJogViewModel : ObservableObject
 
     public event EventHandler? Loaded;
 
-    public void ContinuousMoveStart(string axisItemPath, AxisDirection direction, int speedIndex)
+    public void StepMoveStart(string axisItemPath, AxisDirection direction, JogStep jogStep)
     {
         _actor.Send(
             new ActorItemMessage(
                 _uiActor,
                 axisItemPath,
                 "_jogStart",
-                new Dict { ["Direction"] = direction, ["JogSpeed"] = (JogSpeedLevel)speedIndex }
+                new Dict
+                {
+                    ["Type"] = "Step",
+                    ["Direction"] = direction,
+                    ["JogStep"] = jogStep,
+                }
+            )
+        );
+    }
+
+    public void ContinuousMoveStart(
+        string axisItemPath,
+        AxisDirection direction,
+        JogSpeedLevel jogSpeedLevel
+    )
+    {
+        _actor.Send(
+            new ActorItemMessage(
+                _uiActor,
+                axisItemPath,
+                "_jogStart",
+                new Dict
+                {
+                    ["Type"] = "Continuous",
+                    ["Direction"] = direction,
+                    ["JogSpeed"] = jogSpeedLevel,
+                }
             )
         );
     }

@@ -33,7 +33,7 @@ public partial class TeachingJogView : UserControl, IDisposable
     private void ViewModelOnLoaded(object? sender, EventArgs e)
     {
         ContinuousAxesContent.Content = UpdateAxesButtons(JogMode.Continuous);
-        DiscreteAxesContent.Content = UpdateAxesButtons(JogMode.Discrete);
+        DiscreteAxesContent.Content = UpdateAxesButtons(JogMode.Step);
         SetupDiscreteStepOptions();
     }
 
@@ -41,12 +41,12 @@ public partial class TeachingJogView : UserControl, IDisposable
     {
         foreach (var button in _jogButtons.Keys)
         {
-            button.MouseLeftButtonDown -= NegButtonOnMouseLeftButtonDown;
-            button.MouseLeftButtonDown -= PosButtonOnMouseLeftButtonDown;
-            button.MouseLeftButtonUp -= ButtonOnMouseLeftButtonUp;
-            button.MouseRightButtonDown -= PosButtonOnMouseLeftButtonDown;
-            button.MouseRightButtonDown -= NegButtonOnMouseLeftButtonDown;
-            button.MouseRightButtonUp -= ButtonOnMouseLeftButtonUp;
+            button.MouseLeftButtonDown -= ContNegButtonOnMouseLeftButtonDown;
+            button.MouseLeftButtonDown -= ContPosButtonOnMouseLeftButtonDown;
+            button.MouseLeftButtonUp -= ContButtonOnMouseLeftButtonUp;
+            button.MouseRightButtonDown -= ContPosButtonOnMouseLeftButtonDown;
+            button.MouseRightButtonDown -= ContNegButtonOnMouseLeftButtonDown;
+            button.MouseRightButtonUp -= ContButtonOnMouseLeftButtonUp;
         }
     }
 
@@ -118,14 +118,27 @@ public partial class TeachingJogView : UserControl, IDisposable
                     Children = { negButton, label, posButton },
                 }
             );
-            negButton.PreviewMouseLeftButtonDown += NegButtonOnMouseLeftButtonDown;
-            negButton.PreviewMouseLeftButtonUp += ButtonOnMouseLeftButtonUp;
-            posButton.PreviewMouseLeftButtonDown += PosButtonOnMouseLeftButtonDown;
-            posButton.PreviewMouseLeftButtonUp += ButtonOnMouseLeftButtonUp;
-            negButton.PreviewMouseRightButtonDown += PosButtonOnMouseLeftButtonDown;
-            negButton.PreviewMouseRightButtonUp += ButtonOnMouseLeftButtonUp;
-            posButton.PreviewMouseRightButtonDown += NegButtonOnMouseLeftButtonDown;
-            posButton.PreviewMouseRightButtonUp += ButtonOnMouseLeftButtonUp;
+            switch (jogMode)
+            {
+                case JogMode.Continuous:
+                    posButton.PreviewMouseLeftButtonDown += ContPosButtonOnMouseLeftButtonDown;
+                    posButton.PreviewMouseLeftButtonUp += ContButtonOnMouseLeftButtonUp;
+                    posButton.PreviewMouseRightButtonDown += ContNegButtonOnMouseLeftButtonDown;
+                    posButton.PreviewMouseRightButtonUp += ContButtonOnMouseLeftButtonUp;
+
+                    negButton.PreviewMouseLeftButtonDown += ContNegButtonOnMouseLeftButtonDown;
+                    negButton.PreviewMouseLeftButtonUp += ContButtonOnMouseLeftButtonUp;
+                    negButton.PreviewMouseRightButtonDown += ContPosButtonOnMouseLeftButtonDown;
+                    negButton.PreviewMouseRightButtonUp += ContButtonOnMouseLeftButtonUp;
+                    break;
+                case JogMode.Step:
+                    negButton.PreviewMouseLeftButtonDown += StepNegButtonOnMouseLeftButtonDown;
+                    negButton.PreviewMouseRightButtonDown += StepPosButtonOnMouseLeftButtonDown;
+
+                    posButton.PreviewMouseLeftButtonDown += StepPosButtonOnMouseLeftButtonDown;
+                    posButton.PreviewMouseRightButtonDown += StepNegButtonOnMouseLeftButtonDown;
+                    break;
+            }
             _jogButtons[negButton] = itemPath;
             _jogButtons[posButton] = itemPath;
         }
@@ -133,44 +146,74 @@ public partial class TeachingJogView : UserControl, IDisposable
         return stackPanel;
     }
 
-    private void NegButtonOnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    private void StepNegButtonOnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
-        Logger.Debug("Left Button Down.");
+        Logger.Debug("Left button down on negative button.");
         var itemPath = _jogButtons[(Button)sender];
-        _viewModel.ContinuousMoveStart(itemPath, AxisDirection.Negative, GetSpeedIndex());
+        _viewModel.StepMoveStart(itemPath, AxisDirection.Negative, GetStepMoveLevel());
     }
 
-    private void PosButtonOnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    private void StepPosButtonOnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
-        Logger.Debug("Left Button Down.");
+        Logger.Debug("Left button down on positive button.");
         var itemPath = _jogButtons[(Button)sender];
-        _viewModel.ContinuousMoveStart(itemPath, AxisDirection.Positive, GetSpeedIndex());
+        _viewModel.StepMoveStart(itemPath, AxisDirection.Positive, GetStepMoveLevel());
     }
 
-    private void ButtonOnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    private void ContNegButtonOnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        Logger.Debug("Left button down on negative button.");
+        var itemPath = _jogButtons[(Button)sender];
+        _viewModel.ContinuousMoveStart(
+            itemPath,
+            AxisDirection.Negative,
+            GetContinuousMoveSpeedLevel()
+        );
+    }
+
+    private void ContPosButtonOnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        Logger.Debug("Left button down on positive button.");
+        var itemPath = _jogButtons[(Button)sender];
+        _viewModel.ContinuousMoveStart(
+            itemPath,
+            AxisDirection.Positive,
+            GetContinuousMoveSpeedLevel()
+        );
+    }
+
+    private void ContButtonOnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
     {
         Logger.Debug("Left Button Up.");
         var itemPath = _jogButtons[(Button)sender];
         _viewModel.ContinuousMoveStop(itemPath);
     }
 
-    private int GetSpeedIndex()
+    private JogSpeedLevel GetContinuousMoveSpeedLevel()
     {
-        int speedIndex;
         if (SpeedLowRadio.IsChecked is true)
-            speedIndex = 0;
-        else if (SpeedMidRadio.IsChecked is true)
-            speedIndex = 1;
-        else if (SpeedHighRadio.IsChecked is true)
-            speedIndex = 2;
-        else
-            throw new ValueError();
-        return speedIndex;
+            return JogSpeedLevel.Slow;
+        if (SpeedMidRadio.IsChecked is true)
+            return JogSpeedLevel.Medium;
+        if (SpeedHighRadio.IsChecked is true)
+            return JogSpeedLevel.Fast;
+        throw new ValueError();
+    }
+
+    private JogStep GetStepMoveLevel()
+    {
+        if (_stepRadios[0].IsChecked is true)
+            return JogStep.Small;
+        if (_stepRadios[1].IsChecked is true)
+            return JogStep.Medium;
+        if (_stepRadios[2].IsChecked is true)
+            return JogStep.Large;
+        throw new ValueError();
     }
 
     private enum JogMode
     {
         Continuous,
-        Discrete,
+        Step,
     }
 }
