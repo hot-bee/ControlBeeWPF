@@ -41,6 +41,38 @@
                 </StackPanel>
             </GroupBox>
         </StackPanel>
+        <StackPanel Grid.Column="2" Margin="0 50 0 0">
+            <GroupBox Header="Trigger">
+                <StackPanel>
+                    <Label>Channel</Label>
+                    <ComboBox Name="ChannelCombo" SelectedIndex="{Binding Channel}">
+                        <ComboBoxItem>0</ComboBoxItem>
+                        <ComboBoxItem>1</ComboBoxItem>
+                        <ComboBoxItem>2</ComboBoxItem>
+                        <ComboBoxItem>3</ComboBoxItem>
+                        <ComboBoxItem>4</ComboBoxItem>
+                        <ComboBoxItem>5</ComboBoxItem>
+                        <ComboBoxItem>6</ComboBoxItem>
+                        <ComboBoxItem>7</ComboBoxItem>
+                    </ComboBox>
+                    <Label>Insp Index</Label>
+                    <ComboBox Text="InspCombo" SelectedIndex="{Binding InspIndex}">
+                        <ComboBoxItem>0</ComboBoxItem>
+                        <ComboBoxItem>1</ComboBoxItem>
+                        <ComboBoxItem>2</ComboBoxItem>
+                        <ComboBoxItem>3</ComboBoxItem>
+                        <ComboBoxItem>4</ComboBoxItem>
+                        <ComboBoxItem>5</ComboBoxItem>
+                        <ComboBoxItem>6</ComboBoxItem>
+                        <ComboBoxItem>7</ComboBoxItem>
+                    </ComboBox>
+                    <Separator Margin="0 10 0 10"></Separator>
+                    <Button Name="TriggerButton" Content="Trigger" 
+                            IsEnabled="{Binding CanTrigger}"
+                            Command="{Binding TriggerCommand}"/>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
 
     </Grid>
 </UserControl>

@@ -38,10 +38,12 @@ public partial class VisionStatusViewModel : ObservableObject
         {
             SetProperty(ref _isConnected, value);
             OnPropertyChanged(nameof(CanConnect));
+            OnPropertyChanged(nameof(CanTrigger));
         }
     }
 
     public bool CanConnect => !IsConnected;
+    public bool CanTrigger => IsConnected;
 
     private void DeviceOnVisionDisconnected(object? sender, EventArgs e)
     {
@@ -70,4 +72,22 @@ public partial class VisionStatusViewModel : ObservableObject
 
         _device.Connect();
     }
+
+    [RelayCommand]
+    private void Trigger()
+    {
+        if (null == _device)
+        {
+            Logger.Error($"Cannot find a vision device from {_visionDeviceName}.");
+            return;
+        }
+
+        _device.Trigger(Channel, InspIndex);
+    }
+
+    [ObservableProperty]
+    private int _channel;
+
+    [ObservableProperty]
+    private int _inspIndex;
 }
