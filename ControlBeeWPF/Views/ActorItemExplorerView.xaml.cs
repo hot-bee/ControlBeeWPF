@@ -94,6 +94,50 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
                 };
                 MyContentControl.Content = panel;
             }
+            else if (type.IsAssignableTo(typeof(IIndex1D)))
+            {
+                // TODO
+            }
+            else if (type.IsAssignableTo(typeof(Variable<SpeedProfile>)))
+            {
+                var panel = new StackPanel
+                {
+                    Children =
+                    {
+                        new VariableStatusBarView(
+                            _actorRegistry,
+                            _actorName,
+                            nodeModel.ItemPath,
+                            [nameof(SpeedProfile.Velocity)]
+                        ),
+                        new VariableStatusBarView(
+                            _actorRegistry,
+                            _actorName,
+                            nodeModel.ItemPath,
+                            [nameof(SpeedProfile.Accel)]
+                        ),
+                        new VariableStatusBarView(
+                            _actorRegistry,
+                            _actorName,
+                            nodeModel.ItemPath,
+                            [nameof(SpeedProfile.Decel)]
+                        ),
+                        new VariableStatusBarView(
+                            _actorRegistry,
+                            _actorName,
+                            nodeModel.ItemPath,
+                            [nameof(SpeedProfile.AccelJerkRatio)]
+                        ),
+                        new VariableStatusBarView(
+                            _actorRegistry,
+                            _actorName,
+                            nodeModel.ItemPath,
+                            [nameof(SpeedProfile.DecelJerkRatio)]
+                        ),
+                    },
+                };
+                MyContentControl.Content = panel;
+            }
             else
             {
                 MyContentControl.Content = new VariableStatusBarView(
