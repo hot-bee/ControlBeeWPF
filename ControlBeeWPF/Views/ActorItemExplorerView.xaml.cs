@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using ControlBee.Interfaces;
-using ControlBeeWPF.Components;
+using ControlBee.Variables;
 using ControlBeeWPF.ViewModels;
 
 namespace ControlBeeWPF.Views;
@@ -62,11 +62,46 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
         {
             MyContentControl.VerticalAlignment = VerticalAlignment.Top;
             MyContentControl.Margin = new Thickness(0, 10, 0, 0);
-            MyContentControl.Content = new VariableStatusBarView(
-                _actorRegistry,
-                _actorName,
-                nodeModel.ItemPath
-            );
+
+            if (type.IsAssignableTo(typeof(Variable<Position1D>)))
+            {
+                MyContentControl.Content = new VariableStatusBarView(
+                    _actorRegistry,
+                    _actorName,
+                    nodeModel.ItemPath,
+                    [0]
+                );
+            }
+            else if (type.IsAssignableTo(typeof(Variable<Position2D>)))
+            {
+                var panel = new StackPanel
+                {
+                    Children =
+                    {
+                        new VariableStatusBarView(
+                            _actorRegistry,
+                            _actorName,
+                            nodeModel.ItemPath,
+                            [0]
+                        ),
+                        new VariableStatusBarView(
+                            _actorRegistry,
+                            _actorName,
+                            nodeModel.ItemPath,
+                            [1]
+                        ),
+                    },
+                };
+                MyContentControl.Content = panel;
+            }
+            else
+            {
+                MyContentControl.Content = new VariableStatusBarView(
+                    _actorRegistry,
+                    _actorName,
+                    nodeModel.ItemPath
+                );
+            }
         }
     }
 
