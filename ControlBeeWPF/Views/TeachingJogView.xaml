@@ -11,6 +11,8 @@
         <Grid.Resources>
             <Style TargetType="Button">
                 <Setter Property="Background" Value="WhiteSmoke"></Setter>
+                <Setter Property="Width" Value="120"></Setter>
+                <Setter Property="Height" Value="40"></Setter>
             </Style>
         </Grid.Resources>
         <Grid.RowDefinitions>
@@ -21,11 +23,9 @@
         <GroupBox Grid.Row="0" Header="Move to Position">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Content="Move to Home" Command="{Binding MoveToHomePosCommand}"
-                        Width="120" Height="60"
                         Margin="10" />
                 <Rectangle Width="60" />
                 <Button Content="Move to Saved &#x0a;Position" Command="{Binding MoveToSavedPosCommand}"
-                        Width="120" Height="60"
                         Margin="10" />
             </StackPanel>
         </GroupBox>
@@ -52,10 +52,13 @@
                                              VerticalContentAlignment="Center" />
                             </StackPanel>
                         </GroupBox>
-                        <GroupBox Grid.Row="1" Header="Axes" Margin="5 0 5 5">
-                            <ContentControl Name="ContinuousAxesContent">
-                            </ContentControl>
-                        </GroupBox>
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                            <GroupBox Header="Axes" Margin="5 0 5 5">
+                                <ContentControl Name="ContinuousAxesContent">
+                                </ContentControl>
+                            </GroupBox>
+
+                        </ScrollViewer>
                     </Grid>
                 </TabItem>
                 <TabItem Header="Step" Padding="10">
@@ -91,11 +94,10 @@
                   Margin="0 5 0 0">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Content="Save" Command="{Binding SavePosCommand}"
-                        Width="120" Height="60"
                         Margin="10" />
                 <Rectangle Width="80" />
                 <Button Content="Restore" IsEnabled="False"
-                        Width="120" Height="60" Margin="10" />
+                        Margin="10" />
             </StackPanel>
         </GroupBox>
     </Grid>

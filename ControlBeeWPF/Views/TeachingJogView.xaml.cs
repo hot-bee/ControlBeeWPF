@@ -92,15 +92,11 @@ public partial class TeachingJogView : UserControl, IDisposable
             var negButton = new Button
             {
                 Content = "- Neg",
-                Width = 120,
-                Height = 60,
                 Margin = new Thickness(10),
             };
             var posButton = new Button
             {
                 Content = "Pos +",
-                Width = 120,
-                Height = 60,
                 Margin = new Thickness(10),
             };
             var label = new Label
