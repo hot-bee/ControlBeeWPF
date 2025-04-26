@@ -189,6 +189,7 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         if (inputBox.ShowDialog() is not true)
             return;
         var newValue = inputBox.Value;
+        newValue = newValue.Replace(",", "");
         try
         {
             switch (_value)
