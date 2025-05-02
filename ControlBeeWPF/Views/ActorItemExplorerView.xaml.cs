@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using ControlBee.Interfaces;
 using ControlBee.Variables;
+using ControlBeeWPF.Services;
 using ControlBeeWPF.ViewModels;
 
 namespace ControlBeeWPF.Views;
@@ -14,12 +15,14 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
 {
     private readonly string _actorName;
     private readonly IActorRegistry _actorRegistry;
+    private readonly NumpadFactory _numpadFactory;
     private readonly ActorItemExplorerViewModel _viewModel;
 
     public ActorItemExplorerView(
         string actorName,
         ActorItemExplorerViewModel viewModel,
-        IActorRegistry actorRegistry
+        IActorRegistry actorRegistry,
+        NumpadFactory numpadFactory
     )
     {
         InitializeComponent();
@@ -27,6 +30,7 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
         _actorName = actorName;
         _viewModel = viewModel;
         _actorRegistry = actorRegistry;
+        _numpadFactory = numpadFactory;
         _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
     }
 
@@ -66,6 +70,7 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
             if (type.IsAssignableTo(typeof(Variable<Position1D>)))
             {
                 MyContentControl.Content = new VariableStatusBarView(
+                    _numpadFactory,
                     _actorRegistry,
                     _actorName,
                     nodeModel.ItemPath,
@@ -79,12 +84,14 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
                     Children =
                     {
                         new VariableStatusBarView(
+                            _numpadFactory,
                             _actorRegistry,
                             _actorName,
                             nodeModel.ItemPath,
                             [0]
                         ),
                         new VariableStatusBarView(
+                            _numpadFactory,
                             _actorRegistry,
                             _actorName,
                             nodeModel.ItemPath,
@@ -105,30 +112,35 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
                     Children =
                     {
                         new VariableStatusBarView(
+                            _numpadFactory,
                             _actorRegistry,
                             _actorName,
                             nodeModel.ItemPath,
                             [nameof(SpeedProfile.Velocity)]
                         ),
                         new VariableStatusBarView(
+                            _numpadFactory,
                             _actorRegistry,
                             _actorName,
                             nodeModel.ItemPath,
                             [nameof(SpeedProfile.Accel)]
                         ),
                         new VariableStatusBarView(
+                            _numpadFactory,
                             _actorRegistry,
                             _actorName,
                             nodeModel.ItemPath,
                             [nameof(SpeedProfile.Decel)]
                         ),
                         new VariableStatusBarView(
+                            _numpadFactory,
                             _actorRegistry,
                             _actorName,
                             nodeModel.ItemPath,
                             [nameof(SpeedProfile.AccelJerkRatio)]
                         ),
                         new VariableStatusBarView(
+                            _numpadFactory,
                             _actorRegistry,
                             _actorName,
                             nodeModel.ItemPath,
@@ -141,6 +153,7 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
             else
             {
                 MyContentControl.Content = new VariableStatusBarView(
+                    _numpadFactory,
                     _actorRegistry,
                     _actorName,
                     nodeModel.ItemPath

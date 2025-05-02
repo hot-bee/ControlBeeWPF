@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows;
+using System.Windows.Input;
+using ControlBeeWPF.ViewModels;
 
 namespace ControlBeeWPF.Views;
 
@@ -8,29 +10,17 @@ namespace ControlBeeWPF.Views;
 /// </summary>
 public partial class NumpadView : Window
 {
-    private readonly string _initialValue;
-    private readonly long?[] _valueParts = new long?[2];
     private bool _closeByButton;
-    private bool _edited;
-    private long _focusOnParts;
-    private readonly bool _useFractional;
+    private NumpadViewModel _viewModel;
 
-    public NumpadView(object initialValue)
+    public NumpadView(NumpadViewModel viewModel)
     {
+        _viewModel = viewModel;
+        DataContext = viewModel;
         InitializeComponent();
-        _initialValue = initialValue.ToString() ?? "0";
-        if (initialValue is double)
-            _useFractional = true;
-        ValueText.Text = Value;
-        PointButton.IsEnabled = _useFractional;
     }
 
-    private string AssembledValue =>
-        _useFractional
-            ? $"{_valueParts[0] ?? 0:N0}.{_valueParts[1] ?? 0}"
-            : $"{_valueParts[0] ?? 0:N0}";
-
-    public string Value => _edited ? AssembledValue : _initialValue;
+    public string Value => _viewModel.Input;
 
     protected override void OnClosing(CancelEventArgs e)
     {
@@ -39,105 +29,86 @@ public partial class NumpadView : Window
         base.OnClosing(e);
     }
 
-    private void UpdateValue()
+    private void Enter()
     {
-        _edited = true;
-        ValueText.Text = Value;
+        _closeByButton = true;
+        DialogResult = true;
+        Close();
     }
 
-    private void ClickNumber(int digit)
+    private void Cancel()
     {
-        if ((_valueParts[_focusOnParts] ?? 0) > long.MaxValue / 20)
-            return;
-        _valueParts[_focusOnParts] = (_valueParts[_focusOnParts] ?? 0) * 10;
-        _valueParts[_focusOnParts] += digit;
-        UpdateValue();
+        _closeByButton = true;
+        DialogResult = false;
+        Close();
     }
 
     private void Button_OnClick(object sender, RoutedEventArgs e)
     {
         if (Equals(sender, EnterButton))
         {
-            _closeByButton = true;
-            DialogResult = true;
-            Close();
+            Enter();
         }
         else if (Equals(sender, CancelButton))
         {
-            _closeByButton = true;
-            DialogResult = false;
-            Close();
+            Cancel();
         }
-        else if (Equals(sender, MinusButton))
+    }
+
+    private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if (DataContext is not NumpadViewModel vm)
+            return;
+
+        // Digits
+        if (e.Key >= Key.D0 && e.Key <= Key.D9)
         {
-            _valueParts[0] *= -1;
-            UpdateValue();
+            string digit = (e.Key - Key.D0).ToString();
+            vm.InputDigitCommand.Execute(digit);
+            e.Handled = true;
         }
-        else if (Equals(sender, ClearButton))
+        else if (e.Key >= Key.NumPad0 && e.Key <= Key.NumPad9)
         {
-            _valueParts[0] = null;
-            _valueParts[1] = null;
-            _focusOnParts = 0;
-            UpdateValue();
+            string digit = (e.Key - Key.NumPad0).ToString();
+            vm.InputDigitCommand.Execute(digit);
+            e.Handled = true;
         }
-        else if (Equals(sender, BackButton))
+        // Dot
+        else if (e.Key == Key.Decimal || e.Key == Key.OemPeriod)
         {
-            if (_focusOnParts == 1 && _valueParts[_focusOnParts] == 0)
-                _focusOnParts = 0;
-            _valueParts[_focusOnParts] = (_valueParts[_focusOnParts] ?? 0) / 10;
-            UpdateValue();
+            if (vm.InputDotCommand.CanExecute(null))
+                vm.InputDotCommand.Execute(null);
+            e.Handled = true;
         }
-        else if (Equals(sender, PointButton))
+        // Backspace
+        else if (e.Key == Key.Back)
         {
-            if (_focusOnParts == 0)
-                _focusOnParts = 1;
+            if (vm.BackspaceCommand.CanExecute(null))
+                vm.BackspaceCommand.Execute(null);
+            e.Handled = true;
         }
-        else if (Equals(sender, ThousandButton))
+        // Clear: Escape or C
+        else if (e.Key == Key.C || e.Key == Key.Escape)
         {
-            if ((_valueParts[_focusOnParts] ?? 0) > long.MaxValue / 1000)
-                return;
-            _valueParts[_focusOnParts] = (_valueParts[_focusOnParts] ?? 0) * 1000;
-            UpdateValue();
+            vm.ClearCommand.Execute(null);
+            e.Handled = true;
         }
-        else if (Equals(sender, ZeroButton))
+        // Invert Sign: Plus or Minus
+        else if (
+            e.Key == Key.OemMinus
+            || e.Key == Key.Subtract
+            || e.Key == Key.OemPlus
+            || e.Key == Key.Add
+        )
         {
-            ClickNumber(0);
+            if (vm.InvertSignCommand.CanExecute(null))
+                vm.InvertSignCommand.Execute(null);
+            e.Handled = true;
         }
-        else if (Equals(sender, OneButton))
+        else if (e.Key == Key.Enter || e.Key == Key.Return)
         {
-            ClickNumber(1);
-        }
-        else if (Equals(sender, TwoButton))
-        {
-            ClickNumber(2);
-        }
-        else if (Equals(sender, ThreeButton))
-        {
-            ClickNumber(3);
-        }
-        else if (Equals(sender, FourButton))
-        {
-            ClickNumber(4);
-        }
-        else if (Equals(sender, FiveButton))
-        {
-            ClickNumber(5);
-        }
-        else if (Equals(sender, SixButton))
-        {
-            ClickNumber(6);
-        }
-        else if (Equals(sender, SevenButton))
-        {
-            ClickNumber(7);
-        }
-        else if (Equals(sender, EightButton))
-        {
-            ClickNumber(8);
-        }
-        else if (Equals(sender, NineButton))
-        {
-            ClickNumber(9);
+            Enter();
+            e.Handled = true;
         }
     }
 }

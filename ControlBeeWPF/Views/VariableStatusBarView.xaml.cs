@@ -6,6 +6,8 @@ using ControlBee.Interfaces;
 using ControlBee.Models;
 using ControlBee.Variables;
 using ControlBeeAbstract.Exceptions;
+using ControlBeeWPF.Services;
+using ControlBeeWPF.ViewModels;
 using log4net;
 using Dict = System.Collections.Generic.Dictionary<string, object?>;
 
@@ -27,6 +29,7 @@ public partial class VariableStatusBarView : UserControl, IDisposable
     private object? _value;
 
     public VariableStatusBarView(
+        NumpadFactory numpadFactory,
         IActorRegistry actorRegistry,
         string actorName,
         string itemPath,
@@ -44,8 +47,13 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         _binder.DataChanged += Binder_DataChanged;
     }
 
-    public VariableStatusBarView(IActorRegistry actorRegistry, string actorName, string itemPath)
-        : this(actorRegistry, actorName, itemPath, null) { }
+    public VariableStatusBarView(
+        NumpadFactory numpadFactory,
+        IActorRegistry actorRegistry,
+        string actorName,
+        string itemPath
+    )
+        : this(numpadFactory, actorRegistry, actorName, itemPath, null) { }
 
     public double NameWidth
     {
@@ -185,7 +193,9 @@ public partial class VariableStatusBarView : UserControl, IDisposable
             return;
         }
 
-        var inputBox = new NumpadView(_value);
+        var inputBox = new NumpadView(
+            new NumpadViewModel(_value.ToString() ?? "0", _value is double)
+        );
         if (inputBox.ShowDialog() is not true)
             return;
         var newValue = inputBox.Value;

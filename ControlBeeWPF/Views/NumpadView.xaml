@@ -3,10 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:ControlBeeWPF.ViewModels"
         mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=viewModels:NumpadViewModel}}"
         Title="Numpad" Height="350" Width="250"
-        WindowStartupLocation="CenterScreen">
-    <Grid Margin="10">
+        WindowStartupLocation="CenterScreen"
+        PreviewKeyDown="Window_PreviewKeyDown"
+        FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}">
+    <Grid Margin="10" Focusable="True">
         <Grid.Resources>
             <Style TargetType="Control" x:Key="ControlStyle">
                 <Setter Property="FontSize" Value="14" />
@@ -31,16 +35,16 @@
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <TextBox Grid.Row="0" Name="ValueText" Text="0.0" Margin="1"/>
+        <TextBox Grid.Row="0" Name="ValueText" Text="{Binding Input, Mode=OneWay}" Margin="1"/>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Content="±" Name="MinusButton" Click="Button_OnClick" />
-            <Button Grid.Column="1" Content="Clear" Name="ClearButton" Click="Button_OnClick" />
-            <Button Grid.Column="2" Content="Back" Name="BackButton" Click="Button_OnClick" />
+            <Button Grid.Column="0" Content="±" Name="MinusButton" Command="{Binding InvertSignCommand}"/>
+            <Button Grid.Column="1" Content="Clear" Name="ClearButton" Command="{Binding ClearCommand}"/>
+            <Button Grid.Column="2" Content="Back" Name="BackButton" Command="{Binding BackspaceCommand}"/>
         </Grid>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
@@ -48,9 +52,9 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Content="7" Name="SevenButton" Click="Button_OnClick" />
-            <Button Grid.Column="1" Content="8" Name="EightButton" Click="Button_OnClick" />
-            <Button Grid.Column="2" Content="9" Name="NineButton" Click="Button_OnClick" />
+            <Button Grid.Column="0" Content="7" Name="SevenButton" Command="{Binding InputDigitCommand}" CommandParameter="7"/>
+            <Button Grid.Column="1" Content="8" Name="EightButton" Command="{Binding InputDigitCommand}" CommandParameter="8"/>
+            <Button Grid.Column="2" Content="9" Name="NineButton" Command="{Binding InputDigitCommand}" CommandParameter="9"/>
         </Grid>
         <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
@@ -58,9 +62,9 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Content="4" Name="FourButton" Click="Button_OnClick" />
-            <Button Grid.Column="1" Content="5" Name="FiveButton" Click="Button_OnClick" />
-            <Button Grid.Column="2" Content="6" Name="SixButton" Click="Button_OnClick" />
+            <Button Grid.Column="0" Content="4" Name="FourButton" Command="{Binding InputDigitCommand}" CommandParameter="4" />
+            <Button Grid.Column="1" Content="5" Name="FiveButton" Command="{Binding InputDigitCommand}" CommandParameter="5" />
+            <Button Grid.Column="2" Content="6" Name="SixButton" Command="{Binding InputDigitCommand}" CommandParameter="6" />
         </Grid>
         <Grid Grid.Row="4">
             <Grid.ColumnDefinitions>
@@ -68,9 +72,9 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Content="1" Name="OneButton" Click="Button_OnClick" />
-            <Button Grid.Column="1" Content="2" Name="TwoButton" Click="Button_OnClick" />
-            <Button Grid.Column="2" Content="3" Name="ThreeButton" Click="Button_OnClick" />
+            <Button Grid.Column="0" Content="1" Name="OneButton" Command="{Binding InputDigitCommand}" CommandParameter="1" />
+            <Button Grid.Column="1" Content="2" Name="TwoButton" Command="{Binding InputDigitCommand}" CommandParameter="2" />
+            <Button Grid.Column="2" Content="3" Name="ThreeButton" Command="{Binding InputDigitCommand}" CommandParameter="3" />
         </Grid>
         <Grid Grid.Row="5">
             <Grid.ColumnDefinitions>
@@ -78,17 +82,17 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Content="0" Name="ZeroButton" Click="Button_OnClick" />
-            <Button Grid.Column="1" Content="000" Name="ThousandButton" Click="Button_OnClick" />
-            <Button Grid.Column="2" Content="." Name="PointButton" Click="Button_OnClick" />
+            <Button Grid.Column="0" Content="0" Name="ZeroButton" Command="{Binding InputDigitCommand}" CommandParameter="0" />
+            <Button Grid.Column="1" Content="000" Name="ThousandButton" Command="{Binding InputDigitCommand}" CommandParameter="000" />
+            <Button Grid.Column="2" Content="." Name="PointButton" Command="{Binding InputDotCommand}" />
         </Grid>
         <Grid Grid.Row="6">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Content="Cancel" Name="CancelButton" Click="Button_OnClick" />
-            <Button Grid.Column="1" Content="Enter" Name="EnterButton" Click="Button_OnClick" FontWeight="Bold" />
+            <Button Grid.Column="0" Content="Cancel" Name="CancelButton" Click="Button_OnClick"/>
+            <Button Grid.Column="1" Content="Enter" Name="EnterButton" FontWeight="Bold" Click="Button_OnClick"/>
         </Grid>
     </Grid>
 </Window>
