@@ -81,10 +81,12 @@
                                              VerticalContentAlignment="Center" />
                             </StackPanel>
                         </GroupBox>
-                        <GroupBox Grid.Row="1" Header="Axes" Margin="5 0 5 5">
-                            <ContentControl Name="DiscreteAxesContent">
-                            </ContentControl>
-                        </GroupBox>
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                            <GroupBox Header="Axes" Margin="5 0 5 5">
+                                <ContentControl Name="DiscreteAxesContent">
+                                </ContentControl>
+                            </GroupBox>
+                        </ScrollViewer>
                     </Grid>
 
                 </TabItem>
