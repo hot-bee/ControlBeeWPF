@@ -6,10 +6,12 @@ using ControlBee.Interfaces;
 using ControlBee.Models;
 using ControlBee.Variables;
 using ControlBeeAbstract.Exceptions;
+using ControlBeeWPF.Components;
 using ControlBeeWPF.Services;
 using ControlBeeWPF.ViewModels;
 using log4net;
 using Dict = System.Collections.Generic.Dictionary<string, object?>;
+using String = ControlBee.Variables.String;
 
 namespace ControlBeeWPF.Views;
 
@@ -53,7 +55,9 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         string actorName,
         string itemPath
     )
-        : this(numpadFactory, actorRegistry, actorName, itemPath, null) { }
+        : this(numpadFactory, actorRegistry, actorName, itemPath, null)
+    {
+    }
 
     public double NameWidth
     {
@@ -193,17 +197,40 @@ public partial class VariableStatusBarView : UserControl, IDisposable
             return;
         }
 
-        var inputBox = new NumpadView(
-            new NumpadViewModel(_value.ToString() ?? "0", _value is double)
-        );
-        if (inputBox.ShowDialog() is not true)
-            return;
-        var newValue = inputBox.Value;
-        newValue = newValue.Replace(",", "");
+        var newValue = "";
+        if (_value is String stringValue)
+        {
+            var inputBox = new InputBox();
+            if (inputBox.ShowDialog() is not true)
+                return;
+            newValue = inputBox.ResponseText;
+        }
+        else
+        {
+            var inputBox = new NumpadView(
+                new NumpadViewModel(_value.ToString() ?? "0", _value is double)
+            );
+            if (inputBox.ShowDialog() is not true)
+                return;
+            newValue = inputBox.Value;
+            newValue = newValue.Replace(",", "");
+        }
+
+
         try
         {
             switch (_value)
             {
+                case String value:
+                    _actor.Send(
+                        new ActorItemMessage(
+                            _uiActor,
+                            _itemPath,
+                            "_itemDataWrite",
+                            new ItemDataWriteArgs(_subItemPath.Concat(["Value"]).ToArray(), newValue)
+                        )
+                    );
+                    break;
                 case int value:
                     _actor.Send(
                         new ActorItemMessage(
