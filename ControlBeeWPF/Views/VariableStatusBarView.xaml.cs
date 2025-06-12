@@ -198,7 +198,7 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         }
 
         var newValue = "";
-        if (_value is String stringValue)
+        if (_value is string stringValue)
         {
             var inputBox = new InputBox();
             if (inputBox.ShowDialog() is not true)
@@ -221,13 +221,13 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         {
             switch (_value)
             {
-                case String value:
+                case string value:
                     _actor.Send(
                         new ActorItemMessage(
                             _uiActor,
                             _itemPath,
                             "_itemDataWrite",
-                            new ItemDataWriteArgs(_subItemPath.Concat(["Value"]).ToArray(), newValue)
+                            new ItemDataWriteArgs(_subItemPath, newValue)
                         )
                     );
                     break;
