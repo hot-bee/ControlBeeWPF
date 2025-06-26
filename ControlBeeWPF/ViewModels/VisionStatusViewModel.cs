@@ -14,6 +14,10 @@ public partial class VisionStatusViewModel : ObservableObject
     private readonly IVisionDevice? _device;
     private readonly string _visionDeviceName;
 
+    [ObservableProperty] private int _channel;
+
+    [ObservableProperty] private int _inspIndex;
+
     private bool _isConnected;
 
     public VisionStatusViewModel(string visionDeviceName, IDeviceManager deviceManager)
@@ -85,9 +89,15 @@ public partial class VisionStatusViewModel : ObservableObject
         _device.Trigger(Channel, InspIndex);
     }
 
-    [ObservableProperty]
-    private int _channel;
+    [RelayCommand]
+    private void EmbedVision(IntPtr parentHandle)
+    {
+        if (null == _device)
+        {
+            Logger.Error($"Cannot find a vision device from {_visionDeviceName}.");
+            return;
+        }
 
-    [ObservableProperty]
-    private int _inspIndex;
+        _device.EmbedVisionView(parentHandle);
+    }
 }
