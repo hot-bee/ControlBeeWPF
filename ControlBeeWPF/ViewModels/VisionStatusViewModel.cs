@@ -97,7 +97,27 @@ public partial class VisionStatusViewModel : ObservableObject
             Logger.Error($"Cannot find a vision device from {_visionDeviceName}.");
             return;
         }
-
         _device.EmbedVisionView(parentHandle);
+    }
+
+    [RelayCommand]
+    private void StartContinuous(int channel)
+    {
+        if (null == _device)
+        {
+            Logger.Error($"Cannot find a vision device from {_visionDeviceName}.");
+            return;
+        }
+        _device.StartContinuous(channel);
+    }
+    [RelayCommand]
+    private void StopContinuous(int channel)
+    {
+        if (null == _device)
+        {
+            Logger.Error($"Cannot find a vision device from {_visionDeviceName}.");
+            return;
+        }
+        _device.StopContinuous(channel);
     }
 }
