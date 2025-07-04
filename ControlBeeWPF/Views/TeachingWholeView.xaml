@@ -6,6 +6,9 @@
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        <Grid.Resources>
+            <Style TargetType="Button" BasedOn="{StaticResource ExtrudedButtonStyle}" />
+        </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150" />
             <ColumnDefinition />
