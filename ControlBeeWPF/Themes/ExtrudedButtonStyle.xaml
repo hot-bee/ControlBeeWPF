@@ -39,6 +39,23 @@
                             </Setter>
                             <Setter TargetName="PART_Border" Property="Margin" Value="0" />
                         </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <!-- Dim background -->
+                            <Setter TargetName="PART_Border" Property="Background">
+                                <Setter.Value>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="#EEEEEE" Offset="0.0" />
+                                        <GradientStop Color="#BBBBBB" Offset="1.0" />
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+
+                            <!-- Lighter border -->
+                            <Setter TargetName="PART_Border" Property="BorderBrush" Value="#AAA" />
+
+                            <!-- Gray text -->
+                            <Setter Property="Foreground" Value="#888888" />
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
