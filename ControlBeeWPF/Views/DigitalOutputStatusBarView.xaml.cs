@@ -1,60 +1,38 @@
-﻿using System.Windows.Controls;
+﻿using System.ComponentModel;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using ControlBee.Interfaces;
-using ControlBee.Models;
+using ControlBeeWPF.ViewModels;
 
 namespace ControlBeeWPF.Views;
 
 // ReSharper disable once InconsistentNaming
 public partial class DigitalOutputStatusBarView : UserControl, IDisposable
 {
-    private readonly IActor _actor;
-    private readonly ActorItemBinder _binder;
-    private readonly string _itemPath;
-    private readonly IActor _uiActor;
-    private bool? _value;
+    private readonly DigitalOutputViewModel _viewModel;
 
     public DigitalOutputStatusBarView(IActorRegistry actorRegistry, string actorName, string itemPath)
     {
         InitializeComponent();
-        _itemPath = itemPath;
-        _actor = actorRegistry.Get(actorName)!;
-        _uiActor = actorRegistry.Get("Ui")!;
-        _binder = new ActorItemBinder(actorRegistry, actorName, itemPath);
-        _binder.MetaDataChanged += BinderOnMetaDataChanged;
-        _binder.DataChanged += Binder_DataChanged;
+        _viewModel = new DigitalOutputViewModel(actorRegistry, actorName, itemPath);
+        _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
     }
 
     public void Dispose()
     {
-        _binder.MetaDataChanged -= BinderOnMetaDataChanged;
-        _binder.DataChanged -= Binder_DataChanged;
-        _binder.Dispose();
+        _viewModel.Dispose();
     }
 
-    private void BinderOnMetaDataChanged(object? sender, Dictionary<string, object?> e)
+    private void ViewModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        NameLabel.Content = e["Name"];
-        ToolTip = e["Desc"];
-    }
-
-    private void Binder_DataChanged(object? sender, Dictionary<string, object?> e)
-    {
-        _value = (bool)e["On"]!;
-        ValueRect.Fill = _value is true ? Brushes.LawnGreen : Brushes.WhiteSmoke;
+        NameLabel.Content = _viewModel.Name;
+        ToolTip = _viewModel.ToolTip;
+        ValueRect.Fill = _viewModel.Value is true ? Brushes.LawnGreen : Brushes.WhiteSmoke;
     }
 
     private void ValueRect_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
-        var newValue = _value is null or false;
-        _actor.Send(
-            new ActorItemMessage(
-                _uiActor,
-                _itemPath,
-                "_itemDataWrite",
-                new Dictionary<string, object?> { ["On"] = newValue }
-            )
-        );
+        _viewModel.ToggleValue();
     }
 }
