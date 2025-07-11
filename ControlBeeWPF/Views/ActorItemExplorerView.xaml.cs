@@ -102,36 +102,64 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
                 };
                 MyContentControl.Content = panel;
             }
-            else if (value is ArrayBase and IIndex1D index1D)
+            else if (value is ArrayBase and IIndex1D { Size: > 0 } index1D)
             {
                 var stackPanel = new StackPanel();
-                for (var i = 0; i < index1D.Size; i++)
+                var firstItem = index1D.GetValue(0);
+                if(firstItem is Position2D)
                 {
-                    var groupBox = new GroupBox()
+                    for (var i = 0; i < index1D.Size; i++)
                     {
-                        Header = $"Index: {i}",
-                        Content = new StackPanel
+                        var groupBox = new GroupBox()
                         {
-                            Children =
+                            Header = $"Index: {i}",
+                            Content = new StackPanel
                             {
-                                new VariableStatusBarView(
-                                    _numpadFactory,
-                                    _actorRegistry,
-                                    _actorName,
-                                    nodeModel.ItemPath,
-                                    [i, 0]
-                                ),
-                                new VariableStatusBarView(
-                                    _numpadFactory,
-                                    _actorRegistry,
-                                    _actorName,
-                                    nodeModel.ItemPath,
-                                    [i, 1]
-                                ),
-                            },
-                        }
-                    };
-                    stackPanel.Children.Add(groupBox);
+                                Children =
+                                {
+                                    new VariableStatusBarView(
+                                        _numpadFactory,
+                                        _actorRegistry,
+                                        _actorName,
+                                        nodeModel.ItemPath,
+                                        [i, 0]
+                                    ),
+                                    new VariableStatusBarView(
+                                        _numpadFactory,
+                                        _actorRegistry,
+                                        _actorName,
+                                        nodeModel.ItemPath,
+                                        [i, 1]
+                                    ),
+                                },
+                            }
+                        };
+                        stackPanel.Children.Add(groupBox);
+                    }
+                }
+                else // double, int, ...
+                {
+                    for (var i = 0; i < index1D.Size; i++)
+                    {
+                        var groupBox = new GroupBox()
+                        {
+                            Header = $"Index: {i}",
+                            Content = new StackPanel
+                            {
+                                Children =
+                                {
+                                    new VariableStatusBarView(
+                                        _numpadFactory,
+                                        _actorRegistry,
+                                        _actorName,
+                                        nodeModel.ItemPath,
+                                        [i]
+                                    ),
+                                },
+                            }
+                        };
+                        stackPanel.Children.Add(groupBox);
+                    }
                 }
                 MyContentControl.Content = stackPanel;
             }
