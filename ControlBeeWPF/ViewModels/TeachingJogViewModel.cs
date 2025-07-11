@@ -11,6 +11,7 @@ public partial class TeachingJogViewModel : ObservableObject
 {
     private readonly IActor _actor;
     private readonly string _positionItemPath;
+    private readonly object[] _location;
     private readonly Dictionary<Guid, string> _sentIds = [];
     private readonly IUiActor _uiActor;
     public readonly string[] AxisItemPaths;
@@ -19,10 +20,12 @@ public partial class TeachingJogViewModel : ObservableObject
     public TeachingJogViewModel(
         string actorName,
         string positionItemPath,
+        object[] location,
         IActorRegistry actorRegistry
     )
     {
         _positionItemPath = positionItemPath;
+        _location = location;
         _actor = actorRegistry.Get(actorName)!;
         _uiActor = (IUiActor)actorRegistry.Get("Ui")!;
         _uiActor.MessageArrived += UiActorOnMessageArrived;
@@ -109,19 +112,19 @@ public partial class TeachingJogViewModel : ObservableObject
     [RelayCommand]
     private void MoveToHomePos()
     {
-        _actor.Send(new ActorItemMessage(_uiActor, _positionItemPath, "MoveToHomePos"));
+        _actor.Send(new VariableActorItemMessage(_uiActor, _positionItemPath, _location, "MoveToHomePos"));
     }
 
     [RelayCommand]
     private void MoveToSavedPos()
     {
-        _actor.Send(new ActorItemMessage(_uiActor, _positionItemPath, "MoveToSavedPos"));
+        _actor.Send(new VariableActorItemMessage(_uiActor, _positionItemPath, _location, "MoveToSavedPos"));
     }
 
     [RelayCommand]
     private void SavePos()
     {
-        _actor.Send(new ActorItemMessage(_uiActor, _positionItemPath, "SavePos"));
+        _actor.Send(new VariableActorItemMessage(_uiActor, _positionItemPath, _location, "SavePos"));
     }
 
     [RelayCommand]

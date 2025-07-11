@@ -59,6 +59,7 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
             return;
         var nodeModel = _viewModel.SelectedItem.Data;
         var type = nodeModel.Type;
+        var value = nodeModel.Value;
         MyContentLabel.Content = type?.Name;
 
         DetachContent();
@@ -101,9 +102,38 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
                 };
                 MyContentControl.Content = panel;
             }
-            else if (type.IsAssignableTo(typeof(IIndex1D)))
+            else if (value is ArrayBase and IIndex1D index1D)
             {
-                // TODO
+                var stackPanel = new StackPanel();
+                for (var i = 0; i < index1D.Size; i++)
+                {
+                    var groupBox = new GroupBox()
+                    {
+                        Header = $"Index: {i}",
+                        Content = new StackPanel
+                        {
+                            Children =
+                            {
+                                new VariableStatusBarView(
+                                    _numpadFactory,
+                                    _actorRegistry,
+                                    _actorName,
+                                    nodeModel.ItemPath,
+                                    [i, 0]
+                                ),
+                                new VariableStatusBarView(
+                                    _numpadFactory,
+                                    _actorRegistry,
+                                    _actorName,
+                                    nodeModel.ItemPath,
+                                    [i, 1]
+                                ),
+                            },
+                        }
+                    };
+                    stackPanel.Children.Add(groupBox);
+                }
+                MyContentControl.Content = stackPanel;
             }
             else if (type.IsAssignableTo(typeof(Variable<SpeedProfile>)))
             {

@@ -18,8 +18,8 @@ public partial class TeachingView : UserControl, IDisposable
     private readonly string _actorName;
 
     private readonly Dictionary<string, TeachingDataView> _dataViews = [];
-    private readonly TeachingViewFactory _teachingViewFactory;
     private readonly TeachingJogViewFactory _teachingJogViewFactory;
+    private readonly TeachingViewFactory _teachingViewFactory;
     private readonly TeachingViewModel _viewModel;
 
     public TeachingView(
@@ -51,9 +51,10 @@ public partial class TeachingView : UserControl, IDisposable
 
     private void ViewModelOnLoaded(object? sender, EventArgs e)
     {
-        foreach (var itemPath in _viewModel.PositionItemPaths)
+        foreach (var (itemPath, location) in _viewModel.PositionItemPaths)
         {
             var name = _viewModel.ItemNames[itemPath];
+            if (location.Length > 0) name = $"{name}({location[0]})";
             PositionItemList.Items.Add(name);
         }
     }
@@ -62,15 +63,16 @@ public partial class TeachingView : UserControl, IDisposable
     {
         try
         {
-            var itemPath = _viewModel.PositionItemPaths[PositionItemList.SelectedIndex];
+            var itemPath = _viewModel.PositionItemPaths[PositionItemList.SelectedIndex].itemPath;
+            var location = _viewModel.PositionItemPaths[PositionItemList.SelectedIndex].location;
             if (!_dataViews.TryGetValue(itemPath, out var view))
             {
-                view = _teachingViewFactory.CreateData(_actorName, itemPath);
+                view = _teachingViewFactory.CreateData(_actorName, itemPath, location);
                 _dataViews[itemPath] = view;
             }
 
             DataContent.Content = view;
-            JogContent.Content = _teachingJogViewFactory.Create(_actorName, itemPath); // TODO: memory leak
+            JogContent.Content = _teachingJogViewFactory.Create(_actorName, itemPath, location); // TODO: memory leak
         }
         catch (ArgumentOutOfRangeException exception)
         {

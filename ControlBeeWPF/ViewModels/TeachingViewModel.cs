@@ -32,7 +32,7 @@ public class TeachingViewModel : ObservableObject, IDisposable
             }
     }
 
-    public List<string> PositionItemPaths { get; } = [];
+    public List<(string itemPath, object[] location)> PositionItemPaths { get; } = [];
 
     public void Dispose()
     {
@@ -62,10 +62,19 @@ public class TeachingViewModel : ObservableObject, IDisposable
                     var actorItemMessage = (ActorItemMessage)e;
                     var valueChangedArgs = (ValueChangedArgs)
                         e.DictPayload![nameof(ValueChangedArgs)]!;
-                    var type = valueChangedArgs.NewValue!.GetType();
+                    var newValue = valueChangedArgs.NewValue!;
+                    var type = newValue.GetType();
                     ItemTypes[actorItemMessage.ItemPath] = type;
                     if (type.IsAssignableTo(typeof(Position)))
-                        PositionItemPaths.Add(actorItemMessage.ItemPath);
+                        PositionItemPaths.Add((actorItemMessage.ItemPath, []));
+                    if (newValue is ArrayBase and IIndex1D { Size: > 0 } index1D)
+                    {
+                        var firstElement = index1D.GetValue(0);
+                        if (firstElement is Position)
+                            for (var i = 0; i < index1D.Size; i++)
+                                PositionItemPaths.Add((actorItemMessage.ItemPath, [i]));
+                    }
+
                     if (ItemTypes.Count == _dataIds.Count && ItemNames.Count == _dataIds.Count)
                         OnLoaded();
                 }

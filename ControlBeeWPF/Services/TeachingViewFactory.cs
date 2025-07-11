@@ -23,9 +23,9 @@ public class TeachingViewFactory(
         return view;
     }
 
-    public TeachingDataView CreateData(string actorName, string itemPath)
+    public TeachingDataView CreateData(string actorName, string itemPath, object[] location)
     {
-        var viewModel = new TeachingDataViewModel(actorName, itemPath, actorRegistry);
+        var viewModel = new TeachingDataViewModel(actorName, itemPath, location, actorRegistry);
         var view = new TeachingDataView(viewModel);
         return view;
     }

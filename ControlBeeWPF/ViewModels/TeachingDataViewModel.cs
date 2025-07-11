@@ -10,6 +10,8 @@ namespace ControlBeeWPF.ViewModels;
 
 public partial class TeachingDataViewModel : ObservableObject, IDisposable
 {
+    private readonly object[] _location;
+
     private static readonly ILog Logger = LogManager.GetLogger(
         MethodBase.GetCurrentMethod()!.DeclaringType!
     );
@@ -24,8 +26,9 @@ public partial class TeachingDataViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     private DataTable _tableData;
 
-    public TeachingDataViewModel(string actorName, string itemPath, IActorRegistry actorRegistry)
+    public TeachingDataViewModel(string actorName, string itemPath, object[] location, IActorRegistry actorRegistry)
     {
+        _location = location;
         _positionBinder = new ActorItemBinder(actorRegistry, actorName, itemPath);
         _positionBinder.MetaDataChanged += PositionBinderOnMetaDataChanged;
         _positionBinder.DataChanged += PositionBinderOnDataChanged;
@@ -86,10 +89,27 @@ public partial class TeachingDataViewModel : ObservableObject, IDisposable
     {
         var valueChangedArgs = e[nameof(ValueChangedArgs)] as ValueChangedArgs;
         var newValue = valueChangedArgs?.NewValue;
+        var location = valueChangedArgs?.Location;
 
-        if (valueChangedArgs?.Location.Length > 0)
+        foreach (var key in _location)
         {
-            var index = (int)valueChangedArgs?.Location[0]!;
+            if (location?.Length > 0)
+            {
+                if (!location[0].Equals(key)) return;
+                location = location[1..];
+                continue;
+            }
+            if (newValue is IIndex1D index1D)
+            {
+                newValue = index1D.GetValue((int)key);
+            }
+            else throw new ArgumentException();
+        }
+
+
+        if (location?.Length > 0)
+        {
+            var index = (int)location[0]!;
             _itemValueRow[1 + index] = newValue;
         }
         else

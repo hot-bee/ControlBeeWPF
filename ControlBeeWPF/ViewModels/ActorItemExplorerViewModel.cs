@@ -1,20 +1,22 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ControlBee.Interfaces;
 using ControlBee.Models;
+using ControlBee.Variables;
 
 namespace ControlBeeWPF.ViewModels;
 
 public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
 {
     private readonly IActor _actor;
-    private readonly Dictionary<string, string> _names = new();
+    private readonly Dictionary<Guid, string> _dataIds = new();
 
-    private readonly Dictionary<Guid, string> _sentIds = new();
+    private readonly Dictionary<Guid, string> _metaIds = new();
+    private readonly Dictionary<string, string> _names = new();
+    private readonly Dictionary<string, object> _values = new();
     private readonly IUiActor _uiActor;
     private ActorItemTreeViewModel _actorItemTreeViewModel;
 
-    [ObservableProperty]
-    private ActorItemTreeNode? _selectedItem;
+    [ObservableProperty] private ActorItemTreeNode? _selectedItem;
 
     public ActorItemExplorerViewModel(string actorName, IActorRegistry actorRegistry)
     {
@@ -26,8 +28,13 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
 
         foreach (var (itemPath, type) in _actor.GetItems())
         {
-            var id = _actor.Send(new ActorItemMessage(_uiActor, itemPath, "_itemMetaDataRead"));
-            _sentIds[id] = itemPath;
+            var metaId = _actor.Send(new ActorItemMessage(_uiActor, itemPath, "_itemMetaDataRead"));
+            _metaIds[metaId] = itemPath;
+
+            if (type.IsAssignableTo(typeof(IVariable))) {
+                var dataId = _actor.Send(new ActorItemMessage(_uiActor, itemPath, "_itemDataRead"));
+                _dataIds[dataId] = itemPath;
+            }
         }
     }
 
@@ -44,15 +51,38 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
 
     private void UiActorOnMessageArrived(object? sender, Message e)
     {
-        if (e.Name != "_itemMetaData" || !_sentIds.TryGetValue(e.RequestId, out var itemPath))
-            return;
-        var name = e.DictPayload!["Name"] as string ?? string.Empty;
-        if (name.StartsWith('/'))
-            name = name.Split('/')[^1];
-        _names[itemPath] = name;
+        switch (e.Name)
+        {
+            case "_itemMetaData":
+            {
+                if (_metaIds.Remove(e.RequestId, out var itemPath))
+                {
+                    var name = e.DictPayload!["Name"] as string ?? string.Empty;
+                    if (name.StartsWith('/'))
+                        name = name.Split('/')[^1];
+                    _names[itemPath] = name;
 
-        if (_names.Count == _sentIds.Count)
-            BuildTree();
+                    if (_metaIds.Count == 0 && _dataIds.Count == 0)
+                        BuildTree();
+                }
+
+                break;
+            }
+            case "_itemDataChanged":
+            {
+                if (_dataIds.Remove(e.RequestId, out var itemPath))
+                {
+                    var valueChangedArgs = (ValueChangedArgs)
+                        e.DictPayload![nameof(ValueChangedArgs)]!;
+                    var newValue = valueChangedArgs.NewValue!;
+                    _values[itemPath] = newValue;
+
+                    if (_metaIds.Count == 0 && _dataIds.Count == 0)
+                        BuildTree();
+                }
+                break;
+            }
+        }
     }
 
     private void BuildTree()
@@ -81,6 +111,8 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
 
             node.Data.Type = type;
             node.Data.Title = _names[itemPath];
+            _values.TryGetValue(itemPath, out var value);
+            node.Data.Value = value;
         }
     }
 }
