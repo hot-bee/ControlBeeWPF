@@ -32,6 +32,16 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             return view;
         }
 
+        if (viewType == typeof(AnalogInputStatusBarView))
+        {
+            var actorName = (string)args![0]!;
+            var itemPath = (string)args![1]!;
+            var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
+            var viewModel = new AnalogInputViewModel(actorRegistry, actorName, itemPath);
+            var view = new AnalogInputStatusBarView(viewModel);
+            return view;
+        }
+
         throw new ValueError();
     }
 
