@@ -1,8 +1,8 @@
-﻿using ControlBeeWPF.Views;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using ControlBee.Interfaces;
 using ControlBeeAbstract.Exceptions;
 using ControlBeeWPF.ViewModels;
+using ControlBeeWPF.Views;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ControlBeeWPF.Services;
@@ -17,6 +17,16 @@ public class ViewFactory(IServiceProvider serviceProvider)
             var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
             var viewModel = new JogViewModel(actorName, actorRegistry);
             var view = new JogView(viewModel);
+            return view;
+        }
+
+        if (viewType == typeof(DigitalInputStatusBarView))
+        {
+            var actorName = (string)args![0]!;
+            var itemPath = (string)args![1]!;
+            var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
+            var viewModel = new DigitalInputViewModel(actorRegistry, actorName, itemPath);
+            var view = new DigitalInputStatusBarView(viewModel);
             return view;
         }
 

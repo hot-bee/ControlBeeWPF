@@ -1,7 +1,7 @@
-﻿using System.Windows.Controls;
+﻿using System.ComponentModel;
+using System.Windows.Controls;
 using System.Windows.Media;
-using ControlBee.Interfaces;
-using ControlBee.Models;
+using ControlBeeWPF.ViewModels;
 
 namespace ControlBeeWPF.Views;
 
@@ -11,33 +11,23 @@ namespace ControlBeeWPF.Views;
 // ReSharper disable once InconsistentNaming
 public partial class DigitalInputStatusBarView : UserControl, IDisposable
 {
-    private readonly ActorItemBinder _binder;
-    private bool? _value;
+    private readonly DigitalInputViewModel _viewModel;
 
-    public DigitalInputStatusBarView(IActorRegistry actorRegistry, string actorName, string itemPath)
+    public DigitalInputStatusBarView(DigitalInputViewModel viewModel)
     {
+        _viewModel = viewModel;
         InitializeComponent();
-        _binder = new ActorItemBinder(actorRegistry, actorName, itemPath);
-        _binder.MetaDataChanged += BinderOnMetaDataChanged;
-        _binder.DataChanged += Binder_DataChanged;
+        viewModel.PropertyChanged += DigitalInputViewModelOnPropertyChanged;
     }
 
     public void Dispose()
     {
-        _binder.MetaDataChanged -= BinderOnMetaDataChanged;
-        _binder.DataChanged -= Binder_DataChanged;
-        _binder.Dispose();
+        _viewModel.Dispose();
     }
 
-    private void BinderOnMetaDataChanged(object? sender, Dictionary<string, object?> e)
+    private void DigitalInputViewModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        NameLabel.Content = e["Name"];
-        ToolTip = e["Desc"];
-    }
-
-    private void Binder_DataChanged(object? sender, Dictionary<string, object?> e)
-    {
-        _value = (bool)e["IsOn"]!;
-        ValueRect.Fill = _value is true ? Brushes.OrangeRed : Brushes.WhiteSmoke;
+        NameLabel.Content = _viewModel.Name;
+        ValueRect.Fill = _viewModel.Value is true ? Brushes.OrangeRed : Brushes.WhiteSmoke;
     }
 }
