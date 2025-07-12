@@ -7,6 +7,7 @@ using ControlBee.Models;
 using ControlBee.Variables;
 using ControlBeeAbstract.Exceptions;
 using ControlBeeWPF.Components;
+using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.Services;
 using ControlBeeWPF.ViewModels;
 using log4net;
@@ -23,6 +24,7 @@ public partial class VariableStatusBarView : UserControl, IDisposable
     private static readonly ILog Logger = LogManager.GetLogger(nameof(VariableStatusBarView));
 
     private readonly IActor _actor;
+    private readonly IViewFactory _viewFactory;
     private readonly string _actorName;
     private readonly ActorItemBinder _binder;
     private readonly string _itemPath;
@@ -31,13 +33,14 @@ public partial class VariableStatusBarView : UserControl, IDisposable
     private object? _value;
 
     public VariableStatusBarView(
-        NumpadFactory numpadFactory,
+        IViewFactory viewFactory,
         IActorRegistry actorRegistry,
         string actorName,
         string itemPath,
         object[]? subItemPath
     )
     {
+        _viewFactory = viewFactory;
         _actorName = actorName;
         _itemPath = itemPath;
         _subItemPath = subItemPath ?? [];
@@ -50,12 +53,12 @@ public partial class VariableStatusBarView : UserControl, IDisposable
     }
 
     public VariableStatusBarView(
-        NumpadFactory numpadFactory,
+        IViewFactory viewFactory,
         IActorRegistry actorRegistry,
         string actorName,
         string itemPath
     )
-        : this(numpadFactory, actorRegistry, actorName, itemPath, null)
+        : this(viewFactory, actorRegistry, actorName, itemPath, null)
     {
     }
 
@@ -207,9 +210,9 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         }
         else
         {
-            var inputBox = new NumpadView(
-                new NumpadViewModel(_value.ToString() ?? "0", _value is double)
-            );
+            var initialValue = _value.ToString() ?? "0";
+            var allowDecimal = _value is double;
+            var inputBox = (NumpadView)_viewFactory.CreateWindow(typeof(NumpadView), initialValue, allowDecimal);
             if (inputBox.ShowDialog() is not true)
                 return;
             newValue = inputBox.Value;
