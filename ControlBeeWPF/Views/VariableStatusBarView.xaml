@@ -7,23 +7,25 @@
              d:DesignHeight="40" d:DesignWidth="300">
     <Grid Margin="1">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Name="NameColumn" Width="Auto"/>
+            <ColumnDefinition Name="NameColumn" 
+                              Width="{Binding NameColumnWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
             <ColumnDefinition Name="ValueColumn" Width="*"/>
             <ColumnDefinition Name="BinaryValueColumn" Width="*"/>
-            <ColumnDefinition Name="UnitColumn" Width="Auto"/>
+            <ColumnDefinition Name="UnitColumn" 
+                              Width="{Binding UnitColumnWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
         </Grid.ColumnDefinitions>
         <Label Grid.Column="0" Name="NameLabel" Content="name" 
                VerticalContentAlignment="Center" HorizontalContentAlignment="Left"
-               Margin="1 0 1 0"
+               Margin="1 0"
                Background="WhiteSmoke" BorderThickness="1" BorderBrush="Silver"/>
         <Label Grid.Column="1" Name="ValueLabel" Content="value" 
                VerticalContentAlignment="Center"  HorizontalContentAlignment="Right" 
-               Margin="1 0 1 0"
+               Margin="1 0"
                MouseLeftButtonDown="ValueLabel_OnMouseLeftButtonDown"
                BorderThickness="1" BorderBrush="Silver"/>
         <Label Grid.Column="2" Name="BoolValueLabel" MouseLeftButtonDown="BoolValueLabel_OnMouseLeftButtonDown"
                VerticalContentAlignment="Center"  HorizontalContentAlignment="Center" 
-               Margin="1 0 1 0"
+               Margin="1 0"
                BorderThickness="1" BorderBrush="Silver">
             <Rectangle Name="BoolValueRect"
                        Width="14" Height="14" Stroke="DimGray" />
@@ -31,7 +33,7 @@
         
         <Label Grid.Column="3" Name="UnitLabel" Content="unit" 
                VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-               Margin="1 0 1 0"
+               Margin="1 0"
                Background="WhiteSmoke" BorderThickness="1" BorderBrush="Silver"/>
     </Grid>
 </UserControl>

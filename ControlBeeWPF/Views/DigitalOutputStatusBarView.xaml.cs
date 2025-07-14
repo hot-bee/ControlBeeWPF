@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using ControlBee.Interfaces;
 using ControlBeeWPF.ViewModels;
 
 namespace ControlBeeWPF.Views;
@@ -10,6 +10,13 @@ namespace ControlBeeWPF.Views;
 // ReSharper disable once InconsistentNaming
 public partial class DigitalOutputStatusBarView : UserControl, IDisposable
 {
+    public static readonly DependencyProperty NameColumnWidthProperty =
+        DependencyProperty.Register(
+            nameof(NameColumnWidth),
+            typeof(GridLength),
+            typeof(DigitalOutputStatusBarView),
+            new PropertyMetadata(new GridLength(1, GridUnitType.Auto)));
+
     private readonly DigitalOutputViewModel _viewModel;
 
     public DigitalOutputStatusBarView(DigitalOutputViewModel viewModel)
@@ -17,6 +24,13 @@ public partial class DigitalOutputStatusBarView : UserControl, IDisposable
         InitializeComponent();
         _viewModel = viewModel;
         _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
+    }
+
+
+    public GridLength NameColumnWidth
+    {
+        get => (GridLength)GetValue(NameColumnWidthProperty);
+        set => SetValue(NameColumnWidthProperty, value);
     }
 
     public void Dispose()
@@ -31,7 +45,7 @@ public partial class DigitalOutputStatusBarView : UserControl, IDisposable
         ValueRect.Fill = _viewModel.Value is true ? Brushes.LawnGreen : Brushes.WhiteSmoke;
     }
 
-    private void ValueRect_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    private void ValueLabel_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
         _viewModel.ToggleValue();
     }

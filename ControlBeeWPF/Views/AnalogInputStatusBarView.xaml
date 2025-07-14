@@ -7,13 +7,17 @@
              d:DesignHeight="40" d:DesignWidth="300">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition
+                Width="{Binding NameColumnWidth, RelativeSource={RelativeSource AncestorType=UserControl}}" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Label Grid.Column="0" Name="NameLabel" Content="name" VerticalAlignment="Center" Margin="5 0 5 0" />
+        <Label Grid.Column="0" Name="NameLabel" Content="name"
+               VerticalContentAlignment="Center" HorizontalContentAlignment="Left"
+               Margin="1 0"
+               Background="WhiteSmoke" BorderThickness="1" BorderBrush="Silver" />
         <Label Grid.Column="1" Name="ValueLabel" Content="value"
                VerticalContentAlignment="Center" HorizontalContentAlignment="Right"
-               Margin="1 0 1 0"
+               Margin="1 0"
                BorderThickness="1" BorderBrush="Silver" />
     </Grid>
 </UserControl>

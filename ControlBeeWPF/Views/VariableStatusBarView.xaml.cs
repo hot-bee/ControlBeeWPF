@@ -8,11 +8,8 @@ using ControlBee.Variables;
 using ControlBeeAbstract.Exceptions;
 using ControlBeeWPF.Components;
 using ControlBeeWPF.Interfaces;
-using ControlBeeWPF.Services;
-using ControlBeeWPF.ViewModels;
 using log4net;
 using Dict = System.Collections.Generic.Dictionary<string, object?>;
-using String = ControlBee.Variables.String;
 
 namespace ControlBeeWPF.Views;
 
@@ -23,13 +20,27 @@ public partial class VariableStatusBarView : UserControl, IDisposable
 {
     private static readonly ILog Logger = LogManager.GetLogger(nameof(VariableStatusBarView));
 
+    public static readonly DependencyProperty NameColumnWidthProperty =
+        DependencyProperty.Register(
+            nameof(NameColumnWidth),
+            typeof(GridLength),
+            typeof(VariableStatusBarView),
+            new PropertyMetadata(new GridLength(1, GridUnitType.Auto)));
+
+    public static readonly DependencyProperty UnitColumnWidthProperty =
+        DependencyProperty.Register(
+            nameof(UnitColumnWidth),
+            typeof(GridLength),
+            typeof(VariableStatusBarView),
+            new PropertyMetadata(new GridLength(1, GridUnitType.Auto)));
+
     private readonly IActor _actor;
-    private readonly IViewFactory _viewFactory;
     private readonly string _actorName;
     private readonly ActorItemBinder _binder;
     private readonly string _itemPath;
     private readonly object[] _subItemPath;
     private readonly IActor _uiActor;
+    private readonly IViewFactory _viewFactory;
     private object? _value;
 
     public VariableStatusBarView(
@@ -62,15 +73,18 @@ public partial class VariableStatusBarView : UserControl, IDisposable
     {
     }
 
-    public double NameWidth
+    public GridLength NameColumnWidth
     {
-        set => NameColumn.Width = new GridLength(value);
+        get => (GridLength)GetValue(NameColumnWidthProperty);
+        set => SetValue(NameColumnWidthProperty, value);
     }
 
-    public double UnitWidth
+    public GridLength UnitColumnWidth
     {
-        set => UnitColumn.Width = new GridLength(value);
+        get => (GridLength)GetValue(UnitColumnWidthProperty);
+        set => SetValue(UnitColumnWidthProperty, value);
     }
+
 
     public Brush NameLabelBackGround
     {
