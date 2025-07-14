@@ -22,7 +22,7 @@
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="#444"
                                 BorderThickness="1"
-                                Padding="8">
+                                Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                     </Grid>
