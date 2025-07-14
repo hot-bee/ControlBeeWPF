@@ -9,10 +9,9 @@
              d:DesignHeight="650" d:DesignWidth="800">
     <Grid>
         <Grid.Resources>
-            <Style TargetType="Button">
-                <Setter Property="Background" Value="WhiteSmoke"></Setter>
+            <Style TargetType="Button" BasedOn="{StaticResource ExtrudedButtonWordWrapStyle}">
                 <Setter Property="Width" Value="120"></Setter>
-                <Setter Property="Height" Value="40"></Setter>
+                <Setter Property="Height" Value="50"></Setter>
             </Style>
         </Grid.Resources>
         <Grid.RowDefinitions>
