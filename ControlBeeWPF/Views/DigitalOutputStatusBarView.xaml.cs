@@ -12,10 +12,10 @@ public partial class DigitalOutputStatusBarView : UserControl, IDisposable
 {
     private readonly DigitalOutputViewModel _viewModel;
 
-    public DigitalOutputStatusBarView(IActorRegistry actorRegistry, string actorName, string itemPath)
+    public DigitalOutputStatusBarView(DigitalOutputViewModel viewModel)
     {
         InitializeComponent();
-        _viewModel = new DigitalOutputViewModel(actorRegistry, actorName, itemPath);
+        _viewModel = viewModel;
         _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
     }
 
