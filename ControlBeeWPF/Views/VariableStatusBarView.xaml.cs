@@ -41,6 +41,8 @@ public partial class VariableStatusBarView : UserControl, IDisposable
     private readonly object[] _subItemPath;
     private readonly IActor _uiActor;
     private readonly IViewFactory _viewFactory;
+
+    private Action<VariableStatusBarView>? _clickAction;
     private object? _value;
 
     public VariableStatusBarView(
@@ -85,7 +87,6 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         set => SetValue(UnitColumnWidthProperty, value);
     }
 
-
     public Brush NameLabelBackGround
     {
         set => NameLabel.Background = value;
@@ -106,6 +107,11 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         _binder.MetaDataChanged -= BinderOnMetaDataChanged;
         _binder.DataChanged -= Binder_DataChanged;
         _binder.Dispose();
+    }
+
+    public void SetClickAction(Action<VariableStatusBarView> clickAction)
+    {
+        _clickAction = clickAction;
     }
 
     private void BinderOnMetaDataChanged(object? sender, Dict e)
@@ -208,6 +214,13 @@ public partial class VariableStatusBarView : UserControl, IDisposable
     {
         if (_value == null)
             return;
+
+        if (_clickAction != null)
+        {
+            _clickAction(this);
+            return;
+        }
+
         if (_value is bool boolValue)
         {
             ToggleBoolValue(boolValue);
@@ -232,8 +245,11 @@ public partial class VariableStatusBarView : UserControl, IDisposable
             newValue = inputBox.Value;
             newValue = newValue.Replace(",", "");
         }
+        ChangeValue(newValue);
+    }
 
-
+    public void ChangeValue(string newValue)
+    {
         try
         {
             switch (_value)
