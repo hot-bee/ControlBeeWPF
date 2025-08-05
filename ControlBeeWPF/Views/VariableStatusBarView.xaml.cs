@@ -63,6 +63,14 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         _binder = new ActorItemBinder(actorRegistry, actorName, itemPath);
         _binder.MetaDataChanged += BinderOnMetaDataChanged;
         _binder.DataChanged += Binder_DataChanged;
+
+        var name = OverrideName;
+        if (!string.IsNullOrEmpty(name))
+        {
+            if (!string.IsNullOrEmpty(NameSuffix)) name += NameSuffix;
+            name += NameSuffix;
+            NameLabel.Content = name;
+        }
     }
 
     public VariableStatusBarView(
@@ -102,6 +110,9 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         set => UnitLabel.Background = value;
     }
 
+    public string? OverrideName { get; set; }
+    public string? NameSuffix { get; set; }
+
     public void Dispose()
     {
         _binder.MetaDataChanged -= BinderOnMetaDataChanged;
@@ -116,7 +127,9 @@ public partial class VariableStatusBarView : UserControl, IDisposable
 
     private void BinderOnMetaDataChanged(object? sender, Dict e)
     {
-        NameLabel.Content = e["Name"];
+        var name = OverrideName ?? e["Name"] as string;
+        if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(NameSuffix)) name += NameSuffix;
+        NameLabel.Content = name;
         var unit = e["Unit"]?.ToString();
         var desc = e["Desc"]?.ToString();
 
@@ -245,6 +258,7 @@ public partial class VariableStatusBarView : UserControl, IDisposable
             newValue = inputBox.Value;
             newValue = newValue.Replace(",", "");
         }
+
         ChangeValue(newValue);
     }
 
