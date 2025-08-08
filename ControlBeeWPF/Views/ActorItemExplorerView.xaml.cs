@@ -176,35 +176,50 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
                             _actorName,
                             nodeModel.ItemPath,
                             [nameof(SpeedProfile.Velocity)]
-                        ),
+                        )
+                        {
+                            OverrideName = "Velocity"
+                        },
                         new VariableStatusBarView(
                             _viewFactory,
                             _actorRegistry,
                             _actorName,
                             nodeModel.ItemPath,
                             [nameof(SpeedProfile.Accel)]
-                        ),
+                        )
+                        {
+                            OverrideName = "Acceleration"
+                        },
                         new VariableStatusBarView(
                             _viewFactory,
                             _actorRegistry,
                             _actorName,
                             nodeModel.ItemPath,
                             [nameof(SpeedProfile.Decel)]
-                        ),
+                        )
+                        {
+                            OverrideName = "Deceleration"
+                        },
                         new VariableStatusBarView(
                             _viewFactory,
                             _actorRegistry,
                             _actorName,
                             nodeModel.ItemPath,
                             [nameof(SpeedProfile.AccelJerkRatio)]
-                        ),
+                        )
+                        {
+                            OverrideName = "AccelJerkRatio"
+                        },
                         new VariableStatusBarView(
                             _viewFactory,
                             _actorRegistry,
                             _actorName,
                             nodeModel.ItemPath,
                             [nameof(SpeedProfile.DecelJerkRatio)]
-                        ),
+                        )
+                        {
+                            OverrideName = "DecelJerkRatio"
+                        },
                     },
                 };
                 MyContentControl.Content = panel;
