@@ -90,14 +90,14 @@ public partial class VisionStatusViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void EmbedVision(IntPtr parentHandle)
+    private void EmbedVision((IntPtr parentHandle, int channel) param)
     {
         if (null == _device)
         {
             Logger.Error($"Cannot find a vision device from {_visionDeviceName}.");
             return;
         }
-        _device.EmbedVisionView(parentHandle);
+        _device.EmbedVisionView(param.parentHandle, param.channel);
     }
 
     [RelayCommand]
