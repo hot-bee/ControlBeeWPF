@@ -52,6 +52,18 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             return view;
         }
 
+        if (viewType == typeof(VariableStatusBarView))
+        {
+            var actorName = (string)args![0]!;
+            var itemPath = (string)args![1]!;
+            var subItemPath = (args.Length > 2) ? (object[]?)args[2]:null;
+            var viewFactory = serviceProvider.GetRequiredService<IViewFactory>();
+            var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
+            var viewModel = new VariableViewModel(actorRegistry, actorName, itemPath, subItemPath);
+            var view = new VariableStatusBarView(viewFactory, viewModel);
+            return view;
+        }
+
         throw new ValueError();
     }
 

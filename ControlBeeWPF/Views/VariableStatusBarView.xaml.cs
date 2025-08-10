@@ -1,15 +1,12 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using ControlBee.Interfaces;
-using ControlBee.Models;
-using ControlBee.Variables;
-using ControlBeeAbstract.Exceptions;
 using ControlBeeWPF.Components;
 using ControlBeeWPF.Interfaces;
+using ControlBeeWPF.ViewModels;
 using log4net;
-using Dict = System.Collections.Generic.Dictionary<string, object?>;
 
 namespace ControlBeeWPF.Views;
 
@@ -34,53 +31,18 @@ public partial class VariableStatusBarView : UserControl, IDisposable
             typeof(VariableStatusBarView),
             new PropertyMetadata(new GridLength(1, GridUnitType.Auto)));
 
-    private readonly IActor _actor;
-    private readonly string _actorName;
-    private readonly ActorItemBinder _binder;
-    private readonly string _itemPath;
-    private readonly object[] _subItemPath;
-    private readonly IActor _uiActor;
     private readonly IViewFactory _viewFactory;
-
+    private readonly VariableViewModel _viewModel;
     private Action<VariableStatusBarView>? _clickAction;
-    private object? _value;
+    private string? _nameSuffix;
+    private string? _overrideName;
 
-    public VariableStatusBarView(
-        IViewFactory viewFactory,
-        IActorRegistry actorRegistry,
-        string actorName,
-        string itemPath,
-        object[]? subItemPath
-    )
+    public VariableStatusBarView(IViewFactory viewFactory, VariableViewModel viewModel)
     {
         _viewFactory = viewFactory;
-        _actorName = actorName;
-        _itemPath = itemPath;
-        _subItemPath = subItemPath ?? [];
+        _viewModel = viewModel;
         InitializeComponent();
-        _actor = actorRegistry.Get(actorName)!;
-        _uiActor = actorRegistry.Get("Ui")!;
-        _binder = new ActorItemBinder(actorRegistry, actorName, itemPath);
-        _binder.MetaDataChanged += BinderOnMetaDataChanged;
-        _binder.DataChanged += Binder_DataChanged;
-
-        var name = OverrideName;
-        if (!string.IsNullOrEmpty(name))
-        {
-            if (!string.IsNullOrEmpty(NameSuffix)) name += NameSuffix;
-            name += NameSuffix;
-            NameLabel.Content = name;
-        }
-    }
-
-    public VariableStatusBarView(
-        IViewFactory viewFactory,
-        IActorRegistry actorRegistry,
-        string actorName,
-        string itemPath
-    )
-        : this(viewFactory, actorRegistry, actorName, itemPath, null)
-    {
+        _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
     }
 
     public GridLength NameColumnWidth
@@ -110,14 +72,68 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         set => UnitLabel.Background = value;
     }
 
-    public string? OverrideName { get; set; }
-    public string? NameSuffix { get; set; }
+    public string? OverrideName
+    {
+        get => _overrideName;
+        set
+        {
+            _overrideName = value;
+            UpdateName();
+        }
+    }
+
+    public string? NameSuffix
+    {
+        get => _nameSuffix;
+        set
+        {
+            _nameSuffix = value;
+            UpdateName();
+        }
+    }
 
     public void Dispose()
     {
-        _binder.MetaDataChanged -= BinderOnMetaDataChanged;
-        _binder.DataChanged -= Binder_DataChanged;
-        _binder.Dispose();
+        _viewModel.Dispose();
+    }
+
+    private void UpdateName()
+    {
+        var name = OverrideName ?? _viewModel.Name;
+        name += NameSuffix ?? "";
+        NameLabel.Content = name;
+    }
+
+    private void ViewModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        switch (e.PropertyName)
+        {
+            case nameof(_viewModel.Name):
+                UpdateName();
+                break;
+            case nameof(_viewModel.Unit):
+                if (string.IsNullOrEmpty(_viewModel.Unit))
+                {
+                    UnitColumn.Width = new GridLength(0);
+                    break;
+                }
+
+                UnitLabel.Content = _viewModel.Unit;
+                break;
+            case nameof(_viewModel.Value):
+                if (_viewModel.Value is bool)
+                {
+                    ValueColumn.Width = new GridLength(0);
+                    BoolValueRect.Fill = _viewModel.Value is true ? Brushes.LawnGreen : Brushes.WhiteSmoke;
+                }
+                else
+                {
+                    BinaryValueColumn.Width = new GridLength(0);
+                    ValueLabel.Content = _viewModel.Value?.ToString();
+                }
+
+                break;
+        }
     }
 
     public void SetClickAction(Action<VariableStatusBarView> clickAction)
@@ -125,83 +141,6 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         _clickAction = clickAction;
     }
 
-    private void BinderOnMetaDataChanged(object? sender, Dict e)
-    {
-        var name = OverrideName ?? e["Name"] as string;
-        if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(NameSuffix)) name += NameSuffix;
-        NameLabel.Content = name;
-        var unit = e["Unit"]?.ToString();
-        var desc = e["Desc"]?.ToString();
-
-        if (string.IsNullOrEmpty(unit))
-            UnitColumn.Width = new GridLength(0);
-        else
-            UnitLabel.Content = unit;
-        if (!string.IsNullOrEmpty(desc))
-            ToolTip = desc;
-    }
-
-    private void Binder_DataChanged(object? sender, Dict e)
-    {
-        var valueChangedArgs = e[nameof(ValueChangedArgs)] as ValueChangedArgs;
-        var location = valueChangedArgs?.Location!;
-        var newValue = valueChangedArgs?.NewValue!;
-        var value = GetValue(location, newValue);
-        if (value == null)
-            return;
-        _value = value;
-        if (value is bool)
-        {
-            ValueColumn.Width = new GridLength(0);
-            BoolValueRect.Fill = _value is true ? Brushes.LawnGreen : Brushes.WhiteSmoke;
-        }
-        else
-        {
-            BinaryValueColumn.Width = new GridLength(0);
-            ValueLabel.Content = _value.ToString();
-        }
-    }
-
-    private object? GetValue(object[] location, object newValue)
-    {
-        var paths = _subItemPath.ToArray();
-        foreach (var o in location)
-            if (paths[0].Equals(o))
-                paths = paths[1..];
-            else
-                return null;
-
-        var curValue = newValue;
-        foreach (var pathPart in paths)
-            if (curValue is IIndex1D index1D)
-            {
-                if (pathPart is int index)
-                    curValue = index1D.GetValue(index);
-                else
-                    return null;
-            }
-            else
-            {
-                if (pathPart is string propertyName)
-                {
-                    var propertyInfo = curValue?.GetType().GetProperty(propertyName);
-                    if (propertyInfo == null)
-                    {
-                        Logger.Warn($"PropertyInfo is null. ({_actorName}, {_itemPath})");
-                        curValue = null;
-                        break;
-                    }
-
-                    curValue = propertyInfo.GetValue(curValue);
-                }
-                else
-                {
-                    return null;
-                }
-            }
-
-        return curValue;
-    }
 
     private void ToggleBoolValue(bool booleanValue)
     {
@@ -213,19 +152,12 @@ public partial class VariableStatusBarView : UserControl, IDisposable
                 MessageBoxImage.Question
             ) == MessageBoxResult.Yes
         )
-            _actor.Send(
-                new ActorItemMessage(
-                    _uiActor,
-                    _itemPath,
-                    "_itemDataWrite",
-                    new ItemDataWriteArgs(_subItemPath, !booleanValue)
-                )
-            );
+            _viewModel.ToggleBoolValue(booleanValue);
     }
 
     private void ValueLabel_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
-        if (_value == null)
+        if (_viewModel.Value == null)
             return;
 
         if (_clickAction != null)
@@ -234,14 +166,14 @@ public partial class VariableStatusBarView : UserControl, IDisposable
             return;
         }
 
-        if (_value is bool boolValue)
+        if (_viewModel.Value is bool boolValue)
         {
             ToggleBoolValue(boolValue);
             return;
         }
 
         var newValue = "";
-        if (_value is string stringValue)
+        if (_viewModel.Value is string stringValue)
         {
             var inputBox = new InputBox();
             if (inputBox.ShowDialog() is not true)
@@ -250,8 +182,8 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         }
         else
         {
-            var initialValue = _value.ToString() ?? "0";
-            var allowDecimal = _value is double;
+            var initialValue = _viewModel.Value.ToString() ?? "0";
+            var allowDecimal = _viewModel.Value is double;
             var inputBox = (NumpadView)_viewFactory.CreateWindow(typeof(NumpadView), initialValue, allowDecimal);
             if (inputBox.ShowDialog() is not true)
                 return;
@@ -259,59 +191,24 @@ public partial class VariableStatusBarView : UserControl, IDisposable
             newValue = newValue.Replace(",", "");
         }
 
-        ChangeValue(newValue);
-    }
-
-    public void ChangeValue(string newValue)
-    {
-        try
-        {
-            switch (_value)
-            {
-                case string value:
-                    _actor.Send(
-                        new ActorItemMessage(
-                            _uiActor,
-                            _itemPath,
-                            "_itemDataWrite",
-                            new ItemDataWriteArgs(_subItemPath, newValue)
-                        )
-                    );
-                    break;
-                case int value:
-                    _actor.Send(
-                        new ActorItemMessage(
-                            _uiActor,
-                            _itemPath,
-                            "_itemDataWrite",
-                            new ItemDataWriteArgs(_subItemPath, int.Parse(newValue))
-                        )
-                    );
-                    break;
-                case double value:
-                    _actor.Send(
-                        new ActorItemMessage(
-                            _uiActor,
-                            _itemPath,
-                            "_itemDataWrite",
-                            new ItemDataWriteArgs(_subItemPath, double.Parse(newValue))
-                        )
-                    );
-                    break;
-                default:
-                    throw new ValueError();
-            }
-        }
-        catch (FormatException error)
-        {
-            Logger.Error(error);
-        }
+        _viewModel.ChangeValue(newValue);
     }
 
     private void BoolValueLabel_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
-        if (_value is not bool boolValue)
+        if (_viewModel.Value is not bool boolValue)
             return;
+        if (_clickAction != null)
+        {
+            _clickAction(this);
+            return;
+        }
+
         ToggleBoolValue(boolValue);
+    }
+
+    public void ChangeValue(string newValue)
+    {
+        _viewModel.ChangeValue(newValue);
     }
 }

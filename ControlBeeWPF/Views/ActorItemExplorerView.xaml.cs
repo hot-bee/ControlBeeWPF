@@ -71,13 +71,8 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
 
             if (type.IsAssignableTo(typeof(Variable<Position1D>)))
             {
-                MyContentControl.Content = new VariableStatusBarView(
-                    _viewFactory,
-                    _actorRegistry,
-                    _actorName,
-                    nodeModel.ItemPath,
-                    [0]
-                );
+                MyContentControl.Content = _viewFactory.Create(typeof(VariableStatusBarView), _actorName,
+                    nodeModel.ItemPath, (object[]) [0]);
             }
             else if (type.IsAssignableTo(typeof(Variable<Position2D>)))
             {
@@ -85,19 +80,11 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
                 {
                     Children =
                     {
-                        new VariableStatusBarView(
-                            _viewFactory,
-                            _actorRegistry,
+                        _viewFactory.Create(typeof(VariableStatusBarView),
                             _actorName,
                             nodeModel.ItemPath,
-                            [0]
-                        ),
-                        new VariableStatusBarView(
-                            _viewFactory,
-                            _actorRegistry,
-                            _actorName,
-                            nodeModel.ItemPath,
-                            [1]
+                            (object[])[0]),
+                        _viewFactory.Create(typeof(VariableStatusBarView), _actorName, nodeModel.ItemPath, (object[])[1]
                         ),
                     },
                 };
@@ -118,19 +105,15 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
                             {
                                 Children =
                                 {
-                                    new VariableStatusBarView(
-                                        _viewFactory,
-                                        _actorRegistry,
+                                    _viewFactory.Create(typeof(VariableStatusBarView),
                                         _actorName,
                                         nodeModel.ItemPath,
-                                        [i, 0]
+                                        (object[])[i, 0]
                                     ),
-                                    new VariableStatusBarView(
-                                        _viewFactory,
-                                        _actorRegistry,
+                                    _viewFactory.Create(typeof(VariableStatusBarView),
                                         _actorName,
                                         nodeModel.ItemPath,
-                                        [i, 1]
+                                        (object[])[i, 1]
                                     ),
                                 },
                             }
@@ -149,12 +132,10 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
                             {
                                 Children =
                                 {
-                                    new VariableStatusBarView(
-                                        _viewFactory,
-                                        _actorRegistry,
+                                    _viewFactory.Create(typeof(VariableStatusBarView),
                                         _actorName,
                                         nodeModel.ItemPath,
-                                        [i]
+                                        (object[])[i]
                                     ),
                                 },
                             }
@@ -166,69 +147,45 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
             }
             else if (type.IsAssignableTo(typeof(Variable<SpeedProfile>)))
             {
+                var velocityView = (VariableStatusBarView)_viewFactory.Create(typeof(VariableStatusBarView),
+                    _actorName,
+                    nodeModel.ItemPath,
+                    (object[]) [nameof(SpeedProfile.Velocity)]
+                );
+                velocityView.OverrideName = "Velocity";
+                var accelView = (VariableStatusBarView)_viewFactory.Create(typeof(VariableStatusBarView),
+                    _actorName,
+                    nodeModel.ItemPath,
+                    (object[])[nameof(SpeedProfile.Accel)]
+                );
+                accelView.OverrideName = "Acceleration";
+                var decelView = (VariableStatusBarView)_viewFactory.Create(typeof(VariableStatusBarView),
+                    _actorName,
+                    nodeModel.ItemPath,
+                    (object[])[nameof(SpeedProfile.Decel)]
+                );
+                decelView.OverrideName = "Deceleration";
+                var accelJerkRatioView = (VariableStatusBarView)_viewFactory.Create(typeof(VariableStatusBarView),
+                    _actorName,
+                    nodeModel.ItemPath,
+                    (object[])[nameof(SpeedProfile.AccelJerkRatio)]
+                );
+                accelJerkRatioView.OverrideName = "AccelJerkRatio";
+                var decelJerkRatioView = (VariableStatusBarView)_viewFactory.Create(typeof(VariableStatusBarView),
+                    _actorName,
+                    nodeModel.ItemPath,
+                    (object[])[nameof(SpeedProfile.DecelJerkRatio)]
+                );
+                decelJerkRatioView.OverrideName = "DecelJerkRatio";
                 var panel = new StackPanel
                 {
-                    Children =
-                    {
-                        new VariableStatusBarView(
-                            _viewFactory,
-                            _actorRegistry,
-                            _actorName,
-                            nodeModel.ItemPath,
-                            [nameof(SpeedProfile.Velocity)]
-                        )
-                        {
-                            OverrideName = "Velocity"
-                        },
-                        new VariableStatusBarView(
-                            _viewFactory,
-                            _actorRegistry,
-                            _actorName,
-                            nodeModel.ItemPath,
-                            [nameof(SpeedProfile.Accel)]
-                        )
-                        {
-                            OverrideName = "Acceleration"
-                        },
-                        new VariableStatusBarView(
-                            _viewFactory,
-                            _actorRegistry,
-                            _actorName,
-                            nodeModel.ItemPath,
-                            [nameof(SpeedProfile.Decel)]
-                        )
-                        {
-                            OverrideName = "Deceleration"
-                        },
-                        new VariableStatusBarView(
-                            _viewFactory,
-                            _actorRegistry,
-                            _actorName,
-                            nodeModel.ItemPath,
-                            [nameof(SpeedProfile.AccelJerkRatio)]
-                        )
-                        {
-                            OverrideName = "AccelJerkRatio"
-                        },
-                        new VariableStatusBarView(
-                            _viewFactory,
-                            _actorRegistry,
-                            _actorName,
-                            nodeModel.ItemPath,
-                            [nameof(SpeedProfile.DecelJerkRatio)]
-                        )
-                        {
-                            OverrideName = "DecelJerkRatio"
-                        },
-                    },
+                    Children = {velocityView, accelView, decelView, accelJerkRatioView, decelJerkRatioView }
                 };
                 MyContentControl.Content = panel;
             }
             else
             {
-                MyContentControl.Content = new VariableStatusBarView(
-                    _viewFactory,
-                    _actorRegistry,
+                MyContentControl.Content = _viewFactory.Create(typeof(VariableStatusBarView),
                     _actorName,
                     nodeModel.ItemPath
                 );
