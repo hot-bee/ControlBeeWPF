@@ -4,8 +4,8 @@ using System.Windows.Controls;
 using ControlBee.Interfaces;
 using ControlBee.Variables;
 using ControlBeeWPF.Interfaces;
-using ControlBeeWPF.Services;
 using ControlBeeWPF.ViewModels;
+using String = ControlBee.Variables.String;
 
 namespace ControlBeeWPF.Views;
 
@@ -83,10 +83,10 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
                         _viewFactory.Create(typeof(VariableStatusBarView),
                             _actorName,
                             nodeModel.ItemPath,
-                            (object[])[0]),
-                        _viewFactory.Create(typeof(VariableStatusBarView), _actorName, nodeModel.ItemPath, (object[])[1]
-                        ),
-                    },
+                            (object[]) [0]),
+                        _viewFactory.Create(typeof(VariableStatusBarView), _actorName, nodeModel.ItemPath, (object[]) [1]
+                        )
+                    }
                 };
                 MyContentControl.Content = panel;
             }
@@ -94,11 +94,10 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
             {
                 var stackPanel = new StackPanel();
                 var firstItem = index1D.GetValue(0);
-                if(firstItem is Position2D)
-                {
+                if (firstItem is Position2D)
                     for (var i = 0; i < index1D.Size; i++)
                     {
-                        var groupBox = new GroupBox()
+                        var groupBox = new GroupBox
                         {
                             Header = $"Index: {i}",
                             Content = new StackPanel
@@ -108,24 +107,22 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
                                     _viewFactory.Create(typeof(VariableStatusBarView),
                                         _actorName,
                                         nodeModel.ItemPath,
-                                        (object[])[i, 0]
+                                        (object[]) [i, 0]
                                     ),
                                     _viewFactory.Create(typeof(VariableStatusBarView),
                                         _actorName,
                                         nodeModel.ItemPath,
-                                        (object[])[i, 1]
-                                    ),
-                                },
+                                        (object[]) [i, 1]
+                                    )
+                                }
                             }
                         };
                         stackPanel.Children.Add(groupBox);
                     }
-                }
                 else // double, int, ...
-                {
                     for (var i = 0; i < index1D.Size; i++)
                     {
-                        var groupBox = new GroupBox()
+                        var groupBox = new GroupBox
                         {
                             Header = $"Index: {i}",
                             Content = new StackPanel
@@ -135,14 +132,14 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
                                     _viewFactory.Create(typeof(VariableStatusBarView),
                                         _actorName,
                                         nodeModel.ItemPath,
-                                        (object[])[i]
-                                    ),
-                                },
+                                        (object[]) [i]
+                                    )
+                                }
                             }
                         };
                         stackPanel.Children.Add(groupBox);
                     }
-                }
+
                 MyContentControl.Content = stackPanel;
             }
             else if (type.IsAssignableTo(typeof(Variable<SpeedProfile>)))
@@ -156,32 +153,40 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
                 var accelView = (VariableStatusBarView)_viewFactory.Create(typeof(VariableStatusBarView),
                     _actorName,
                     nodeModel.ItemPath,
-                    (object[])[nameof(SpeedProfile.Accel)]
+                    (object[]) [nameof(SpeedProfile.Accel)]
                 );
                 accelView.OverrideName = "Acceleration";
                 var decelView = (VariableStatusBarView)_viewFactory.Create(typeof(VariableStatusBarView),
                     _actorName,
                     nodeModel.ItemPath,
-                    (object[])[nameof(SpeedProfile.Decel)]
+                    (object[]) [nameof(SpeedProfile.Decel)]
                 );
                 decelView.OverrideName = "Deceleration";
                 var accelJerkRatioView = (VariableStatusBarView)_viewFactory.Create(typeof(VariableStatusBarView),
                     _actorName,
                     nodeModel.ItemPath,
-                    (object[])[nameof(SpeedProfile.AccelJerkRatio)]
+                    (object[]) [nameof(SpeedProfile.AccelJerkRatio)]
                 );
                 accelJerkRatioView.OverrideName = "AccelJerkRatio";
                 var decelJerkRatioView = (VariableStatusBarView)_viewFactory.Create(typeof(VariableStatusBarView),
                     _actorName,
                     nodeModel.ItemPath,
-                    (object[])[nameof(SpeedProfile.DecelJerkRatio)]
+                    (object[]) [nameof(SpeedProfile.DecelJerkRatio)]
                 );
                 decelJerkRatioView.OverrideName = "DecelJerkRatio";
                 var panel = new StackPanel
                 {
-                    Children = {velocityView, accelView, decelView, accelJerkRatioView, decelJerkRatioView }
+                    Children = { velocityView, accelView, decelView, accelJerkRatioView, decelJerkRatioView }
                 };
                 MyContentControl.Content = panel;
+            }
+            else if (type.IsAssignableTo(typeof(Variable<String>)))
+            {
+                MyContentControl.Content = _viewFactory.Create(typeof(VariableStatusBarView),
+                    _actorName,
+                    nodeModel.ItemPath,
+                    (object[]) ["Value"]
+                );
             }
             else
             {
