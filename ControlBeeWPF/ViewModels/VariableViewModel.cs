@@ -22,8 +22,8 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
     private readonly object[] _subItemPath;
     private readonly IActor _uiActor;
     private string _name = "";
-    private string? _toolTip = "";
-    private string? _unit = "";
+    private string? _toolTip;
+    private string? _unit;
     private object? _value;
 
     public VariableViewModel(
