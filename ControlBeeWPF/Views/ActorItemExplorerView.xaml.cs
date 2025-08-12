@@ -94,7 +94,27 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
             {
                 var stackPanel = new StackPanel();
                 var firstItem = index1D.GetValue(0);
-                if (firstItem is Position2D)
+                if (firstItem is Position1D)
+                    for (var i = 0; i < index1D.Size; i++)
+                    {
+                        var groupBox = new GroupBox
+                        {
+                            Header = $"Index: {i}",
+                            Content = new StackPanel
+                            {
+                                Children =
+                                {
+                                    _viewFactory.Create(typeof(VariableStatusBarView),
+                                        _actorName,
+                                        nodeModel.ItemPath,
+                                        (object[]) [i, 0]
+                                    )
+                                }
+                            }
+                        };
+                        stackPanel.Children.Add(groupBox);
+                    }
+                else if (firstItem is Position2D)
                     for (var i = 0; i < index1D.Size; i++)
                     {
                         var groupBox = new GroupBox
