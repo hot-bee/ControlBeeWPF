@@ -128,8 +128,11 @@ public partial class VariableStatusBarView : UserControl, IDisposable
                 }
                 else
                 {
+                    string valueContent;
+                    if (_viewModel.Value is double doubleValue) valueContent = Math.Round(doubleValue, 3).ToString();
+                    else valueContent = _viewModel.Value?.ToString() ?? "";
                     BinaryValueColumn.Width = new GridLength(0);
-                    ValueLabel.Content = _viewModel.Value?.ToString();
+                    ValueLabel.Content = valueContent;
                 }
 
                 break;
