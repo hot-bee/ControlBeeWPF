@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using ControlBee.Interfaces;
+using ControlBee.Services;
 using ControlBeeAbstract.Exceptions;
 using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.ViewModels;
@@ -61,6 +63,26 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
             var viewModel = new VariableViewModel(actorRegistry, actorName, itemPath, subItemPath);
             var view = new VariableStatusBarView(viewFactory, viewModel);
+            return view;
+        }
+
+        if (viewType == typeof(AxisStatusView))
+        {
+            var actorName = (string)args![0]!;
+            var itemPath = (string)args![1]!;
+            var index = (int)args![2]!;
+            var shortMode = (args.Length > 3) && (bool)args[3]!;
+            var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
+            var viewModel = new AxisStatusViewModel(actorRegistry, actorName, itemPath, index);
+            var view = new AxisStatusView(viewModel, shortMode);
+            return view;
+        }
+
+        if (viewType == typeof(TeachingAxisStatusView))
+        {
+            var actorName = (string)args![0]!;
+            var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
+            var view = new TeachingAxisStatusView(actorName, actorRegistry, this);
             return view;
         }
 

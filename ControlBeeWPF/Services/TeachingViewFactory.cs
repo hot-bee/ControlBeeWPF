@@ -1,4 +1,5 @@
 ﻿using ControlBee.Interfaces;
+using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.ViewModels;
 using ControlBeeWPF.Views;
 
@@ -6,8 +7,8 @@ namespace ControlBeeWPF.Services;
 
 public class TeachingViewFactory(
     IActorRegistry actorRegistry,
-    TeachingAxisStatusViewFactory teachingAxisStatusViewFactory,
-    TeachingJogViewFactory teachingJogViewFactory
+    TeachingJogViewFactory teachingJogViewFactory,
+    IViewFactory viewFactory
 )
 {
     public TeachingView Create(string actorName)
@@ -17,8 +18,8 @@ public class TeachingViewFactory(
             actorName,
             viewModel,
             this,
-            teachingAxisStatusViewFactory,
-            teachingJogViewFactory
+            teachingJogViewFactory,
+            viewFactory
         );
         return view;
     }

@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls;
 using ControlBee.Interfaces;
+using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.Services;
 
 namespace ControlBeeWPF.Views;
@@ -12,7 +13,7 @@ public partial class TeachingAxisStatusView : UserControl
     public TeachingAxisStatusView(
         string actorName,
         IActorRegistry actorRegistry,
-        AxisStatusViewFactory axisStatusViewFactory
+        IViewFactory viewFactory
     )
     {
         InitializeComponent();
@@ -23,7 +24,7 @@ public partial class TeachingAxisStatusView : UserControl
         {
             if (type.IsAssignableTo(typeof(IAxis)))
             {
-                var view = axisStatusViewFactory.Create(actorName, itemPath, index, true);
+                var view = viewFactory.Create(typeof(AxisStatusView), actorName, itemPath, index, true);
                 AxesPanel.Children.Add(view);
                 index++;
             }

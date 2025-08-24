@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Windows.Controls;
+using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.Services;
 using ControlBeeWPF.ViewModels;
 using log4net;
@@ -26,8 +27,8 @@ public partial class TeachingView : UserControl, IDisposable
         string actorName,
         TeachingViewModel viewModel,
         TeachingViewFactory teachingViewFactory,
-        TeachingAxisStatusViewFactory teachingAxisStatusViewFactory,
-        TeachingJogViewFactory teachingJogViewFactory
+        TeachingJogViewFactory teachingJogViewFactory,
+        IViewFactory viewFactory
     )
     {
         _actorName = actorName;
@@ -37,7 +38,7 @@ public partial class TeachingView : UserControl, IDisposable
         DataContext = viewModel;
         _viewModel = viewModel;
         _viewModel.Loaded += ViewModelOnLoaded;
-        AxisStatusContent.Content = teachingAxisStatusViewFactory.Create(_actorName);
+        AxisStatusContent.Content = viewFactory.Create(typeof(TeachingAxisStatusView), _actorName);
     }
 
     public void Dispose()

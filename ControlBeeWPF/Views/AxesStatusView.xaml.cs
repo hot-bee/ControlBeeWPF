@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using ControlBee.Interfaces;
+using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.Services;
 using ControlBeeWPF.ViewModels;
 
@@ -9,17 +10,16 @@ namespace ControlBeeWPF.Views;
 
 public partial class AxesStatusView : UserControl
 {
-    private readonly AxisStatusViewFactory _axisStatusViewFactory;
-
+    private readonly IViewFactory _viewFactory;
     private readonly List<AxisStatusView> _axisStatusViews = [];
     private readonly AxesStatusViewModel _viewModel;
 
     public AxesStatusView(
         AxesStatusViewModel viewModel,
-        AxisStatusViewFactory axisStatusViewFactory
+        IViewFactory viewFactory
     )
     {
-        _axisStatusViewFactory = axisStatusViewFactory;
+        _viewFactory = viewFactory;
         DataContext = _viewModel = viewModel;
         InitializeComponent();
 
@@ -82,7 +82,8 @@ public partial class AxesStatusView : UserControl
                 {
                     if (panel.Children.Count > 0)
                         panel.Children.Add(new Separator());
-                    var statusView = _axisStatusViewFactory.Create(actor.Name, itemPath, index++);
+                    var statusView = (AxisStatusView)_viewFactory.Create(
+                        typeof(AxisStatusView), actor.Name, itemPath, index++);
                     _axisStatusViews.Add(statusView);
                     panel.Children.Add(statusView);
                 }
