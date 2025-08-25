@@ -61,7 +61,8 @@ public partial class ActorItemExplorerView : UserControl, IDisposable
         var nodeModel = _viewModel.SelectedItem.Data;
         var type = nodeModel.Type;
         var value = nodeModel.Value;
-        MyContentLabel.Content = type?.Name;
+        var scope = nodeModel.Scope != null ? $"({nodeModel.Scope})" : "";
+        MyContentLabel.Content = $"{type?.Name}{scope}";
 
         DetachContent();
         if (type != null && type.IsAssignableTo(typeof(IVariable)))

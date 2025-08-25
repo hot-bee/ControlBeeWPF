@@ -1,4 +1,6 @@
-﻿namespace ControlBeeWPF.ViewModels;
+﻿using ControlBee.Variables;
+
+namespace ControlBeeWPF.ViewModels;
 
 public class ActorItemViewModel
 {
@@ -7,4 +9,5 @@ public class ActorItemViewModel
     public string Title { get; set; } = string.Empty;
     public Type? Type { get; set; }
     public object? Value { get; set; }
+    public VariableScope? Scope { get; set; }
 }

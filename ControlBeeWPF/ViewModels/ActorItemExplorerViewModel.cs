@@ -12,8 +12,8 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
 
     private readonly Dictionary<Guid, string> _metaIds = new();
     private readonly Dictionary<string, string> _names = new();
-    private readonly Dictionary<string, object> _values = new();
     private readonly IUiActor _uiActor;
+    private readonly Dictionary<string, object> _values = new();
     private ActorItemTreeViewModel _actorItemTreeViewModel;
 
     [ObservableProperty] private ActorItemTreeNode? _selectedItem;
@@ -31,7 +31,8 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
             var metaId = _actor.Send(new ActorItemMessage(_uiActor, itemPath, "_itemMetaDataRead"));
             _metaIds[metaId] = itemPath;
 
-            if (type.IsAssignableTo(typeof(IVariable))) {
+            if (type.IsAssignableTo(typeof(IVariable)))
+            {
                 var dataId = _actor.Send(new ActorItemMessage(_uiActor, itemPath, "_itemDataRead"));
                 _dataIds[dataId] = itemPath;
             }
@@ -80,6 +81,7 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
                     if (_metaIds.Count == 0 && _dataIds.Count == 0)
                         BuildTree();
                 }
+
                 break;
             }
         }
@@ -92,6 +94,7 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
             var names = itemPath.Trim('/').Split("/");
             var node = _actorItemTreeViewModel.ActorItemTreeCollection.Root;
             var curItemPath = string.Empty;
+            var variableItem = _actor.GetItem(itemPath) as IVariable;
             foreach (var name in names)
             {
                 curItemPath += $"/{name}";
@@ -113,6 +116,7 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
             node.Data.Title = _names[itemPath];
             _values.TryGetValue(itemPath, out var value);
             node.Data.Value = value;
+            node.Data.Scope = variableItem?.Scope;
         }
     }
 }
