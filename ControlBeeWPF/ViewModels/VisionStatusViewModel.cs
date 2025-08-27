@@ -88,11 +88,10 @@ public partial class VisionStatusViewModel : ObservableObject
 
         try
         {
-            _device.Trigger(Channel, InspIndex, "qq");
+            _device.Trigger(Channel, InspIndex);
             _device.Wait(Channel, InspIndex, 5000);
-
             var result = _device.GetResult(Channel, InspIndex);
-            var resultString = result.ToJsonString();
+            var resultString = result.ToString();
             Logger.Info(resultString);
         }
         catch(Exception error)
