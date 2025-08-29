@@ -27,14 +27,16 @@
             </TreeView>
         </GroupBox>
         <GroupBox Grid.Column="1" Header="Details" Margin="5">
-            <Grid Margin="5">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <Label Grid.Row="0" Name="MyContentLabel"></Label>
-                <ContentControl Grid.Row="1" Name="MyContentControl"></ContentControl>
-            </Grid>
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Name="MyContentLabel"></Label>
+                    <ContentControl Grid.Row="1" Name="MyContentControl"></ContentControl>
+                </Grid>
+            </ScrollViewer>
         </GroupBox>
     </Grid>
 </UserControl>
