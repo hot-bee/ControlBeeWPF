@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using ControlBee.Constants;
 using ControlBee.Interfaces;
 using ControlBee.Models;
+using ControlBeeWPF.Interfaces;
 using Dict = System.Collections.Generic.Dictionary<string, object?>;
 
 namespace ControlBeeWPF.ViewModels;
@@ -10,6 +11,7 @@ namespace ControlBeeWPF.ViewModels;
 public partial class TeachingJogViewModel : ObservableObject
 {
     private readonly IActor _actor;
+    private readonly IDialogService _dialogService;
     private readonly string _positionItemPath;
     private readonly object[] _location;
     private readonly Dictionary<Guid, string> _sentIds = [];
@@ -21,11 +23,13 @@ public partial class TeachingJogViewModel : ObservableObject
         string actorName,
         string positionItemPath,
         object[] location,
-        IActorRegistry actorRegistry
+        IActorRegistry actorRegistry,
+        IDialogService dialogService
     )
     {
         _positionItemPath = positionItemPath;
         _location = location;
+        _dialogService = dialogService;
         _actor = actorRegistry.Get(actorName)!;
         _uiActor = (IUiActor)actorRegistry.Get("Ui")!;
         _uiActor.MessageArrived += UiActorOnMessageArrived;
@@ -124,7 +128,8 @@ public partial class TeachingJogViewModel : ObservableObject
     [RelayCommand]
     private void SavePos()
     {
-        _actor.Send(new VariableActorItemMessage(_uiActor, _positionItemPath, _location, "SavePos"));
+        if (_dialogService.Confirm($"Do you want to save {_positionItemPath}", "Save confirm"))
+            _actor.Send(new VariableActorItemMessage(_uiActor, _positionItemPath, _location, "SavePos"));
     }
 
     [RelayCommand]
