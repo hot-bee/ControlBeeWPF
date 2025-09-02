@@ -13,8 +13,9 @@ public partial class ActorMonitorViewModel : ObservableObject, IDisposable
     private readonly Dictionary<IActor, DataRow> _rows = new();
     private readonly IUiActor _uiActor;
 
-    [ObservableProperty]
-    private DataTable _data = new();
+    [ObservableProperty] private Dictionary<string, string> _actorStatus = [];
+
+    [ObservableProperty] private DataTable _data = new();
 
     public ActorMonitorViewModel(IActorRegistry actorRegistry)
     {
@@ -32,6 +33,7 @@ public partial class ActorMonitorViewModel : ObservableObject, IDisposable
             row[0] = actor.Name;
             _data.Rows.Add(row);
             _rows[actor] = row;
+            ActorStatus[actor.Name] = "";
         }
     }
 
@@ -48,6 +50,8 @@ public partial class ActorMonitorViewModel : ObservableObject, IDisposable
             {
                 var stateName = (string)e.Payload!;
                 _rows[e.Sender][1] = stateName;
+                ActorStatus[e.Sender.Name] = stateName;
+                OnPropertyChanged(nameof(ActorStatus));
                 break;
             }
             case "_status":
