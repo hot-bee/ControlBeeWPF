@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using ControlBee.Interfaces;
@@ -94,6 +95,15 @@ public partial class ActorStatusBarView : UserControl, IDisposable
 
     private void OnDataChanged()
     {
-        ValueRect.Fill = Value is true ? Brushes.Gold : Brushes.WhiteSmoke;
+        if (Value is bool value)
+        {
+            ValueLabel.Visibility = Visibility.Collapsed;
+            BoolValueRect.Fill = value ? Brushes.Gold : Brushes.WhiteSmoke;
+        }
+        else
+        {
+            BoolValueLabel.Visibility = Visibility.Collapsed;
+            ValueLabel.Content = Value?.ToString();
+        }
     }
 }

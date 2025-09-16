@@ -10,8 +10,19 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Label Grid.Column="0" Name="NameLabel" Content="name" VerticalAlignment="Center" Margin="5 0 5 0"/>
-        <Rectangle Grid.Column="2" Name="ValueRect" Width="14" Height="14" Stroke="DimGray" Margin="5 0 5 0"></Rectangle>
+        <Label Grid.Column="2" Name="ValueLabel" Content="value" 
+               VerticalContentAlignment="Center"  HorizontalContentAlignment="Right" 
+               Margin="1 0"
+               BorderThickness="1" BorderBrush="Silver"/>
+        <Label Grid.Column="3" Name="BoolValueLabel"
+               VerticalContentAlignment="Center"  HorizontalContentAlignment="Center" 
+               Margin="1 0"
+               BorderThickness="1" BorderBrush="Silver">
+            <Rectangle Name="BoolValueRect"
+                       Width="14" Height="14" Stroke="DimGray" />
+        </Label>
     </Grid>
 </UserControl>
