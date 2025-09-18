@@ -7,7 +7,6 @@ namespace ControlBeeWPF.Services;
 
 public class TeachingViewFactory(
     IActorRegistry actorRegistry,
-    TeachingJogViewFactory teachingJogViewFactory,
     IViewFactory viewFactory
 )
 {
@@ -18,7 +17,6 @@ public class TeachingViewFactory(
             actorName,
             viewModel,
             this,
-            teachingJogViewFactory,
             viewFactory
         );
         return view;

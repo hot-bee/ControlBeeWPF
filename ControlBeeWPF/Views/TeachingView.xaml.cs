@@ -19,21 +19,20 @@ public partial class TeachingView : UserControl, IDisposable
     private readonly string _actorName;
 
     private readonly Dictionary<string, TeachingDataView> _dataViews = [];
-    private readonly TeachingJogViewFactory _teachingJogViewFactory;
     private readonly TeachingViewFactory _teachingViewFactory;
+    private readonly IViewFactory _viewFactory;
     private readonly TeachingViewModel _viewModel;
 
     public TeachingView(
         string actorName,
         TeachingViewModel viewModel,
         TeachingViewFactory teachingViewFactory,
-        TeachingJogViewFactory teachingJogViewFactory,
         IViewFactory viewFactory
     )
     {
         _actorName = actorName;
         _teachingViewFactory = teachingViewFactory;
-        _teachingJogViewFactory = teachingJogViewFactory;
+        _viewFactory = viewFactory;
         InitializeComponent();
         DataContext = viewModel;
         _viewModel = viewModel;
@@ -73,7 +72,8 @@ public partial class TeachingView : UserControl, IDisposable
             }
 
             DataContent.Content = view;
-            JogContent.Content = _teachingJogViewFactory.Create(_actorName, itemPath, location); // TODO: memory leak
+
+            _viewFactory.Create(typeof(TeachingJogView), _actorName, itemPath, location);  // TODO: risk of memory leak
         }
         catch (ArgumentOutOfRangeException exception)
         {

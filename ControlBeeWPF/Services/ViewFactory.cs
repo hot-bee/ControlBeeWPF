@@ -1,8 +1,6 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using ControlBee.Interfaces;
-using ControlBee.Services;
 using ControlBeeAbstract.Exceptions;
 using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.ViewModels;
@@ -58,7 +56,7 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
         {
             var actorName = (string)args![0]!;
             var itemPath = (string)args![1]!;
-            var subItemPath = (args.Length > 2) ? (object[]?)args[2]:null;
+            var subItemPath = args.Length > 2 ? (object[]?)args[2] : null;
             var viewFactory = serviceProvider.GetRequiredService<IViewFactory>();
             var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
             var viewModel = new VariableViewModel(actorRegistry, actorName, itemPath, subItemPath);
@@ -71,7 +69,7 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             var actorName = (string)args![0]!;
             var itemPath = (string)args![1]!;
             var index = (int)args![2]!;
-            var shortMode = (args.Length > 3) && (bool)args[3]!;
+            var shortMode = args.Length > 3 && (bool)args[3]!;
             var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
             var viewModel = new AxisStatusViewModel(actorRegistry, actorName, itemPath, index);
             var view = new AxisStatusView(viewModel, shortMode);
@@ -83,6 +81,26 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             var actorName = (string)args![0]!;
             var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
             var view = new TeachingAxisStatusView(actorName, actorRegistry, this);
+            return view;
+        }
+
+        if (viewType == typeof(TeachingJogView))
+        {
+            var actorName = (string)args![0]!;
+            var positionItemPath = (string)args[1]!;
+            var location = (object[])args[2]!;
+            var jogView = args.Length > 3 ? (UserControl)args[3]! : null;
+            var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
+            var dialogService = serviceProvider.GetRequiredService<IDialogService>();
+            var viewModel =
+                new TeachingJogViewModel(actorName, positionItemPath, location, actorRegistry, dialogService);
+            if (jogView == null)
+            {
+                var jogViewModel = new JogViewModel(actorName, actorRegistry);
+                jogView = new JogView(jogViewModel);
+            }
+
+            var view = new TeachingJogView(viewModel, jogView);
             return view;
         }
 

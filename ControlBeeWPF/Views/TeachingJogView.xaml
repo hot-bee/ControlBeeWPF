@@ -30,66 +30,7 @@
         </GroupBox>
         <GroupBox Grid.Row="1" Header="Jog Control"
                   Margin="0 5 0 0">
-
-            <TabControl Margin="5">
-                <TabItem Header="Continuous" Padding="10">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <GroupBox Grid.Row="0" Header="Speed" Margin="5">
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
-                                        Margin="10">
-                                <RadioButton Name="SpeedLowRadio" Content="Low"
-                                             VerticalContentAlignment="Center" />
-                                <Rectangle Width="60" />
-                                <RadioButton Name="SpeedMidRadio" Content="Mid" IsChecked="True"
-                                             VerticalContentAlignment="Center" />
-                                <Rectangle Width="60" />
-                                <RadioButton Name="SpeedHighRadio" Content="High"
-                                             VerticalContentAlignment="Center" />
-                            </StackPanel>
-                        </GroupBox>
-                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                            <GroupBox Header="Axes" Margin="5 0 5 5">
-                                <ContentControl Name="ContinuousAxesContent">
-                                </ContentControl>
-                            </GroupBox>
-
-                        </ScrollViewer>
-                    </Grid>
-                </TabItem>
-                <TabItem Header="Step" Padding="10">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <GroupBox Grid.Row="0" Header="Step Distance" Margin="5">
-                            <StackPanel Name="DiscreteStepOptions"
-                                Orientation="Horizontal" HorizontalAlignment="Center"
-                                        Margin="10">
-                                <RadioButton Content="0.1mm"
-                                             VerticalContentAlignment="Center" />
-                                <Rectangle Width="60" />
-                                <RadioButton Content="1mm"
-                                             VerticalContentAlignment="Center" />
-                                <Rectangle Width="60" />
-                                <RadioButton Content="10mm"
-                                             VerticalContentAlignment="Center" />
-                            </StackPanel>
-                        </GroupBox>
-                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                            <GroupBox Header="Axes" Margin="5 0 5 5">
-                                <ContentControl Name="DiscreteAxesContent">
-                                </ContentControl>
-                            </GroupBox>
-                        </ScrollViewer>
-                    </Grid>
-
-                </TabItem>
-            </TabControl>
+            <ContentControl Name="JogControlArea" />
         </GroupBox>
         <GroupBox Grid.Row="2" Header="Position Saving"
                   Margin="0 5 0 0">
