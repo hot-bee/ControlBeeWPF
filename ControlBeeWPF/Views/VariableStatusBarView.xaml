@@ -9,7 +9,8 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Name="NameColumn" 
                               Width="{Binding NameColumnWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-            <ColumnDefinition Name="ValueColumn" Width="*"/>
+            <ColumnDefinition Name="ValueColumn" 
+                              Width="{Binding ValueColumnWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
             <ColumnDefinition Name="BinaryValueColumn" Width="*"/>
             <ColumnDefinition Name="UnitColumn" 
                               Width="{Binding UnitColumnWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"/>

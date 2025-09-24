@@ -24,6 +24,13 @@ public partial class VariableStatusBarView : UserControl, IDisposable
             typeof(VariableStatusBarView),
             new PropertyMetadata(new GridLength(1, GridUnitType.Auto)));
 
+    public static readonly DependencyProperty ValueColumnWidthProperty =
+        DependencyProperty.Register(
+            nameof(ValueColumnWidth),
+            typeof(GridLength),
+            typeof(VariableStatusBarView),
+            new PropertyMetadata(new GridLength(1, GridUnitType.Star)));
+
     public static readonly DependencyProperty UnitColumnWidthProperty =
         DependencyProperty.Register(
             nameof(UnitColumnWidth),
@@ -50,7 +57,11 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         get => (GridLength)GetValue(NameColumnWidthProperty);
         set => SetValue(NameColumnWidthProperty, value);
     }
-
+    public GridLength ValueColumnWidth
+    {
+        get => (GridLength)GetValue(ValueColumnWidthProperty);
+        set => SetValue(ValueColumnWidthProperty, value);
+    }
     public GridLength UnitColumnWidth
     {
         get => (GridLength)GetValue(UnitColumnWidthProperty);
