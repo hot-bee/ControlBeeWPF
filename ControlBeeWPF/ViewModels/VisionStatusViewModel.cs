@@ -51,6 +51,7 @@ public partial class VisionStatusViewModel : ObservableObject
 
     private void DeviceOnVisionDisconnected(object? sender, EventArgs e)
     {
+        // TODO: Null pointer exceptions sometimes happen.
         Application.Current.Dispatcher.BeginInvoke(
             DispatcherPriority.Background,
             new Action(() => IsConnected = false)
