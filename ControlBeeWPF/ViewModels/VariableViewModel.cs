@@ -13,7 +13,7 @@ namespace ControlBeeWPF.ViewModels;
 
 public class VariableViewModel : INotifyPropertyChanged, IDisposable
 {
-    private static readonly ILog Logger = LogManager.GetLogger(nameof(VariableStatusBarView));
+    private static readonly ILog Logger = LogManager.GetLogger(nameof(VariableViewModel));
 
     private readonly IActor _actor;
     private readonly string _actorName;
@@ -93,12 +93,7 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
         var location = valueChangedArgs?.Location!;
         var newValue = valueChangedArgs?.NewValue!;
         var value = GetValue(location, newValue);
-        if (value == null)
-        {
-            Logger.Error("Couldn't find the value.");
-            return;
-        }
-
+        if (value == null) return;
         Value = value;
     }
 
