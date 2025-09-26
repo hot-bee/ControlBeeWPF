@@ -19,10 +19,11 @@ namespace ControlBeeWPF.Views
     /// </summary>
     public partial class LoadingMainWindowView : Window
     {
-        public LoadingMainWindowView(string message)
+        public LoadingMainWindowView(string? message)
         {
             InitializeComponent();
-            LoadingMessageText.Text = message;
+            if (message != null)
+                LoadingMessageText.Text = message;
         }
     }
 }
