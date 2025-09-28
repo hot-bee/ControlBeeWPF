@@ -7,6 +7,10 @@ using ControlBeeWPF.Components;
 using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.ViewModels;
 using log4net;
+using Brush = System.Windows.Media.Brush;
+using Brushes = System.Windows.Media.Brushes;
+using MessageBox = System.Windows.MessageBox;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace ControlBeeWPF.Views;
 

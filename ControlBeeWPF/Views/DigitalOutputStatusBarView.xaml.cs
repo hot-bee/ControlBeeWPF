@@ -4,6 +4,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using ControlBeeWPF.ViewModels;
+using Brushes = System.Windows.Media.Brushes;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace ControlBeeWPF.Views;
 

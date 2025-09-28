@@ -5,7 +5,9 @@ using ControlBee.Interfaces;
 using ControlBee.Variables;
 using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.ViewModels;
+using GroupBox = System.Windows.Controls.GroupBox;
 using String = ControlBee.Variables.String;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace ControlBeeWPF.Views;
 

@@ -2,6 +2,7 @@
 using ControlBee.Interfaces;
 using ControlBee.Models;
 using ControlBee.Variables;
+using Message = ControlBee.Models.Message;
 
 namespace ControlBeeWPF.ViewModels;
 

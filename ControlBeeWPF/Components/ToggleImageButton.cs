@@ -3,6 +3,9 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using Button = System.Windows.Controls.Button;
+using Image = System.Windows.Controls.Image;
+using Orientation = System.Windows.Controls.Orientation;
 
 namespace ControlBeeWPF.Components;
 

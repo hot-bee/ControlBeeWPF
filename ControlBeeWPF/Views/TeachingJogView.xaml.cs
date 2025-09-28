@@ -1,6 +1,7 @@
 ﻿using System.Windows.Controls;
 using ControlBeeWPF.ViewModels;
 using log4net;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace ControlBeeWPF.Views;
 

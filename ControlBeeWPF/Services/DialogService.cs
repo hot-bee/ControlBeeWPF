@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using ControlBeeWPF.Interfaces;
+using MessageBox = System.Windows.MessageBox;
 
 namespace ControlBeeWPF.Services;
 

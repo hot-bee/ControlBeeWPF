@@ -5,6 +5,9 @@ using ControlBee.Interfaces;
 using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.Services;
 using ControlBeeWPF.ViewModels;
+using Button = System.Windows.Controls.Button;
+using GroupBox = System.Windows.Controls.GroupBox;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace ControlBeeWPF.Views;
 

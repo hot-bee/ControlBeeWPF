@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using ControlBee.Interfaces;
 using ControlBee.Models;
 using Dict = System.Collections.Generic.Dictionary<string, object?>;
+using Message = ControlBee.Models.Message;
 
 namespace ControlBeeWPF.ViewModels;
 

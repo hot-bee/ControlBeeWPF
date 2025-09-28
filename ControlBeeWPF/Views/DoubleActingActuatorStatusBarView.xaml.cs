@@ -3,6 +3,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using ControlBee.Interfaces;
 using ControlBee.Models;
+using Brushes = System.Windows.Media.Brushes;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace ControlBeeWPF.Views;
 

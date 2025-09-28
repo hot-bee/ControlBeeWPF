@@ -1,6 +1,7 @@
 ﻿using System.Windows.Threading;
 using ControlBee.Interfaces;
 using ControlBee.Models;
+using Message = ControlBee.Models.Message;
 
 namespace ControlBeeWPF.Models;
 

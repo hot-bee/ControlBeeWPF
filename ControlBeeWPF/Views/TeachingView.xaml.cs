@@ -4,6 +4,7 @@ using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.Services;
 using ControlBeeWPF.ViewModels;
 using log4net;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace ControlBeeWPF.Views;
 

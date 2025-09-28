@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Input;
 using ControlBeeWPF.ViewModels;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 
 namespace ControlBeeWPF.Views;
 

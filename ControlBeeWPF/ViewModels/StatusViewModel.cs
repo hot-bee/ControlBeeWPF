@@ -5,6 +5,7 @@ using ControlBee.Models;
 using ControlBee.Utils;
 using log4net;
 using Dict = System.Collections.Generic.Dictionary<string, object?>;
+using Message = ControlBee.Models.Message;
 
 namespace ControlBeeWPF.ViewModels;
 

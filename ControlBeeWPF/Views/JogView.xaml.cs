@@ -7,6 +7,13 @@ using ControlBee.Constants;
 using ControlBeeAbstract.Exceptions;
 using ControlBeeWPF.ViewModels;
 using log4net;
+using Button = System.Windows.Controls.Button;
+using HorizontalAlignment = System.Windows.HorizontalAlignment;
+using Label = System.Windows.Controls.Label;
+using Orientation = System.Windows.Controls.Orientation;
+using RadioButton = System.Windows.Controls.RadioButton;
+using Rectangle = System.Windows.Shapes.Rectangle;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace ControlBeeWPF.Views;
 

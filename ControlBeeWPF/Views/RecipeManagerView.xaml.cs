@@ -3,6 +3,8 @@ using System.Windows.Controls;
 using ControlBee.Interfaces;
 using ControlBeeWPF.Components;
 using ControlBeeWPF.ViewModels;
+using MessageBox = System.Windows.MessageBox;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace ControlBeeWPF.Views;
 

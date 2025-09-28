@@ -6,6 +6,9 @@ using ControlBee.Interfaces;
 using ControlBee.Models;
 using ControlBee.Utils;
 using log4net;
+using Brushes = System.Windows.Media.Brushes;
+using Message = ControlBee.Models.Message;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace ControlBeeWPF.Views;
 

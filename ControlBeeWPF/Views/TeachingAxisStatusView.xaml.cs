@@ -2,6 +2,7 @@
 using ControlBee.Interfaces;
 using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.Services;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace ControlBeeWPF.Views;
 

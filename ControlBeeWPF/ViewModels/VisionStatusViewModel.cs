@@ -5,6 +5,8 @@ using CommunityToolkit.Mvvm.Input;
 using ControlBee.Interfaces;
 using ControlBeeAbstract.Devices;
 using log4net;
+using Application = System.Windows.Application;
+using Dict = System.Collections.Generic.Dictionary<string, object?>;
 
 namespace ControlBeeWPF.ViewModels;
 
@@ -102,14 +104,14 @@ public partial class VisionStatusViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void EmbedVision((IntPtr parentHandle, int channel) param)
+    private void EmbedVision((IntPtr parentHandle, Dict options) param)
     {
         if (null == _device)
         {
             Logger.Error($"Cannot find a vision device from {_visionDeviceName}.");
             return;
         }
-        _device.EmbedVisionView(param.parentHandle, param.channel);
+        _device.EmbedVisionView(param.parentHandle, param.options);
     }
 
     [RelayCommand]

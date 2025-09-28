@@ -3,6 +3,9 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using ControlBee.Interfaces;
 using ControlBeeWPF.Services;
+using Brushes = System.Windows.Media.Brushes;
+using Button = System.Windows.Controls.Button;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace ControlBeeWPF.Views;
 

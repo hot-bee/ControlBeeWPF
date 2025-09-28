@@ -4,6 +4,7 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <UseWindowsForms>True</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <PackageId>ControlBeeWPF</PackageId>
     <Version>$(PackageVersion)</Version>

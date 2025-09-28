@@ -1,11 +1,12 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 using ControlBee.Interfaces;
 using ControlBeeAbstract.Exceptions;
 using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.ViewModels;
 using ControlBeeWPF.Views;
 using Microsoft.Extensions.DependencyInjection;
+using UserControl = System.Windows.Controls.UserControl;
+using Dict = System.Collections.Generic.Dictionary<string, object?>;
 
 namespace ControlBeeWPF.Services;
 
@@ -101,6 +102,17 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             }
 
             var view = new TeachingJogView(viewModel, jogView);
+            return view;
+        }
+
+        if (viewType == typeof(InspectionContainerView))
+        {
+            var visionDeviceName = (string)args![0]!;
+            var options = (Dict)args[1]!;
+            var deviceManager = serviceProvider.GetRequiredService<IDeviceManager>();
+            var systemConfigurations = serviceProvider.GetRequiredService<ISystemConfigurations>();
+            var viewModel = new VisionStatusViewModel(visionDeviceName, deviceManager);
+            var view = new InspectionContainerView(viewModel, systemConfigurations, options);
             return view;
         }
 
