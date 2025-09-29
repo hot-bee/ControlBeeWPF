@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using ControlBee.Constants;
 using ControlBee.Interfaces;
 using ControlBeeAbstract.Exceptions;
 using ControlBeeWPF.Interfaces;
@@ -113,6 +114,15 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             var systemConfigurations = serviceProvider.GetRequiredService<ISystemConfigurations>();
             var viewModel = new VisionStatusViewModel(visionDeviceName, deviceManager);
             var view = new InspectionContainerView(viewModel, systemConfigurations, options);
+            return view;
+        }
+
+        if (viewType == typeof(EventView))
+        {
+            var severities = (DialogSeverity[])args![0]!;
+            var eventManager = serviceProvider.GetRequiredService<IEventManager>();
+            var viewModel = new EventViewModel(eventManager, severities);
+            var view = new EventView(viewModel);
             return view;
         }
 
