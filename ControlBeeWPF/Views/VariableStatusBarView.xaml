@@ -19,11 +19,17 @@
                VerticalContentAlignment="Center" HorizontalContentAlignment="Left"
                Margin="1 0"
                Background="WhiteSmoke" BorderThickness="1" BorderBrush="Silver"/>
-        <Label Grid.Column="1" Name="ValueLabel" Content="value" 
-               VerticalContentAlignment="Center"  HorizontalContentAlignment="Right" 
-               Margin="1 0"
-               MouseLeftButtonDown="ValueLabel_OnMouseLeftButtonDown"
-               BorderThickness="1" BorderBrush="Silver"/>
+        <Grid Grid.Column="1">
+            <Rectangle x:Name="GaugeRect"
+                       Fill="LightGreen"
+                       HorizontalAlignment="Left"
+                       Width="10"/>
+            <Label Name="ValueLabel" Content="value"
+                   VerticalContentAlignment="Center" HorizontalContentAlignment="Right"
+                   Margin="1 0"
+                   MouseLeftButtonDown="ValueLabel_OnMouseLeftButtonDown"
+                   BorderThickness="1" BorderBrush="Silver" />
+        </Grid>
         <Label Grid.Column="2" Name="BoolValueLabel" MouseLeftButtonDown="BoolValueLabel_OnMouseLeftButtonDown"
                VerticalContentAlignment="Center"  HorizontalContentAlignment="Center" 
                Margin="1 0"

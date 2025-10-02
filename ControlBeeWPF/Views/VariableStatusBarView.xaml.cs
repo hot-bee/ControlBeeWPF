@@ -1,8 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using ControlBeeWPF.Components;
 using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.ViewModels;
@@ -54,18 +52,25 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         _viewModel = viewModel;
         InitializeComponent();
         _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
+        GaugeRect.Width = 0;
+        SizeChanged += OnSizeChanged;
     }
+
+    public object? GaugeMin { get; set; }
+    public object? GaugeMax { get; set; }
 
     public GridLength NameColumnWidth
     {
         get => (GridLength)GetValue(NameColumnWidthProperty);
         set => SetValue(NameColumnWidthProperty, value);
     }
+
     public GridLength ValueColumnWidth
     {
         get => (GridLength)GetValue(ValueColumnWidthProperty);
         set => SetValue(ValueColumnWidthProperty, value);
     }
+
     public GridLength UnitColumnWidth
     {
         get => (GridLength)GetValue(UnitColumnWidthProperty);
@@ -112,6 +117,11 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         _viewModel.Dispose();
     }
 
+    private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        UpdateGauge();
+    }
+
     private void UpdateName()
     {
         var name = OverrideName ?? _viewModel.Name;
@@ -148,9 +158,22 @@ public partial class VariableStatusBarView : UserControl, IDisposable
                     else valueContent = _viewModel.Value?.ToString() ?? "";
                     BinaryValueColumn.Width = new GridLength(0);
                     ValueLabel.Content = valueContent;
+                    UpdateGauge();
                 }
 
                 break;
+        }
+    }
+
+    private void UpdateGauge()
+    {
+        if (GaugeMin == null || GaugeMax == null) return;
+        if (_viewModel.Value is double value)
+        {
+            var ratio = (value - (double)GaugeMin) / ((double)GaugeMax - (double)GaugeMin);
+            ratio = Math.Min(ratio, 1.0);
+            ratio = Math.Max(ratio, 0.0);
+            GaugeRect.Width = ValueLabel.ActualWidth * ratio;
         }
     }
 
