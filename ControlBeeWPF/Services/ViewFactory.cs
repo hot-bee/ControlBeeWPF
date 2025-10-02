@@ -59,10 +59,17 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             var actorName = (string)args![0]!;
             var itemPath = (string)args![1]!;
             var subItemPath = args.Length > 2 ? (object[]?)args[2] : null;
+            var properties = args.Length > 3 ? (Dict?)args[3] : null;
             var viewFactory = serviceProvider.GetRequiredService<IViewFactory>();
             var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
             var viewModel = new VariableViewModel(actorRegistry, actorName, itemPath, subItemPath);
             var view = new VariableStatusBarView(viewFactory, viewModel);
+            foreach (var (propertyName, value) in properties ?? [])
+            {
+                var property = view.GetType().GetProperty(propertyName);
+                property?.SetValue(view, value);
+            }
+
             return view;
         }
 
