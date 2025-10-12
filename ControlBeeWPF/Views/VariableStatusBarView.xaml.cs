@@ -112,6 +112,8 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         }
     }
 
+    public bool ReadOnly { get; set; }
+
     public void Dispose()
     {
         _viewModel.Dispose();
@@ -200,6 +202,8 @@ public partial class VariableStatusBarView : UserControl, IDisposable
     {
         if (_viewModel.Value == null)
             return;
+
+        if (ReadOnly) return;
 
         if (_clickAction != null)
         {
