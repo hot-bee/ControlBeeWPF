@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using ControlBee.Interfaces;
+using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.Services;
 using Brushes = System.Windows.Media.Brushes;
 using Button = System.Windows.Controls.Button;
@@ -12,15 +13,17 @@ namespace ControlBeeWPF.Views;
 public partial class TeachingWholeView : UserControl, IDisposable
 {
     private readonly IActorRegistry _actorRegistry;
+    private readonly IViewFactory _viewFactory;
 
     private readonly Dictionary<string, Button> _buttons = new();
     private readonly TeachingViewFactory _teachingViewFactory;
 
-    private readonly Dictionary<string, TeachingView> _views = new();
+    private readonly Dictionary<string, UserControl> _views = new();
 
-    public TeachingWholeView(IActorRegistry actorRegistry, TeachingViewFactory teachingViewFactory)
+    public TeachingWholeView(IActorRegistry actorRegistry, IViewFactory viewFactory, TeachingViewFactory teachingViewFactory)
     {
         _actorRegistry = actorRegistry;
+        _viewFactory = viewFactory;
         _teachingViewFactory = teachingViewFactory;
         InitializeComponent();
 
@@ -77,8 +80,12 @@ public partial class TeachingWholeView : UserControl, IDisposable
 
     private void UpdateContent(string actorName)
     {
+
         if (!_views.ContainsKey(actorName))
-            _views[actorName] = _teachingViewFactory.Create(actorName);
+        {
+            var view = _viewFactory.Create(typeof(EditableFrameView), _teachingViewFactory.Create(actorName));
+            _views[actorName] = view;
+        }
         MyContentControl.Content = _views[actorName];
     }
 }

@@ -127,10 +127,10 @@ public partial class TeachingJogViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void SavePos()
+    private void SetPos()
     {
-        if (_dialogService.Confirm($"Do you want to save {_positionItemPath}", "Save confirm"))
-            _actor.Send(new VariableActorItemMessage(_uiActor, _positionItemPath, _location, "SavePos"));
+        if (_dialogService.Confirm($"Do you want to set {_positionItemPath}", "Confirm setting position"))
+            _actor.Send(new VariableActorItemMessage(_uiActor, _positionItemPath, _location, "SetPos"));
     }
 
     [RelayCommand]

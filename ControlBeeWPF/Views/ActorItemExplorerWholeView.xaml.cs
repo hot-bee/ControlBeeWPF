@@ -1,7 +1,6 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
 using ControlBee.Interfaces;
+using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.Services;
 using Brushes = System.Windows.Media.Brushes;
 using Button = System.Windows.Controls.Button;
@@ -15,14 +14,17 @@ public partial class ActorItemExplorerWholeView : UserControl, IDisposable
     private readonly IActorRegistry _actorRegistry;
 
     private readonly Dictionary<string, Button> _buttons = new();
+    private readonly IViewFactory _viewFactory;
 
-    private readonly Dictionary<string, ActorItemExplorerView> _views = new();
+    private readonly Dictionary<string, UserControl> _views = new();
 
     public ActorItemExplorerWholeView(
+        IViewFactory viewFactory,
         IActorRegistry actorRegistry,
         ActorItemExplorerViewFactory actorItemExplorerViewFactory
     )
     {
+        _viewFactory = viewFactory;
         _actorRegistry = actorRegistry;
         _actorItemExplorerViewFactory = actorItemExplorerViewFactory;
         InitializeComponent();
@@ -35,12 +37,9 @@ public partial class ActorItemExplorerWholeView : UserControl, IDisposable
             {
                 Content = title,
                 Height = 40,
-                Margin = new Thickness(1),
+                Margin = new Thickness(1)
             };
-            button.Click += (sender, args) =>
-            {
-                SelectActor(name);
-            };
+            button.Click += (sender, args) => { SelectActor(name); };
             _buttons[name] = button;
             ActorPanel.Children.Add(button);
         }
@@ -81,7 +80,11 @@ public partial class ActorItemExplorerWholeView : UserControl, IDisposable
     private void UpdateContent(string actorName)
     {
         if (!_views.ContainsKey(actorName))
-            _views[actorName] = _actorItemExplorerViewFactory.Create(actorName);
+        {
+            var view = _viewFactory.Create(typeof(EditableFrameView), _actorItemExplorerViewFactory.Create(actorName));
+            _views[actorName] = view;
+        }
+
         MyContentControl.Content = _views[actorName];
     }
 }

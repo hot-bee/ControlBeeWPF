@@ -133,6 +133,16 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             return view;
         }
 
+        if (viewType == typeof(EditableFrameView))
+        {
+            var content = (UserControl)args![0]!;
+            var systemConfigurations = serviceProvider.GetRequiredService<ISystemConfigurations>();
+            var variableManager = serviceProvider.GetRequiredService<IVariableManager>();
+            var viewModel = new EditableFrameViewModel(variableManager);
+            var view = new EditableFrameView(systemConfigurations, viewModel, content);
+            return view;
+        }
+
         throw new ValueError();
     }
 
