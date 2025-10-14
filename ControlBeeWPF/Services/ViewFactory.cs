@@ -143,6 +143,19 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             return view;
         }
 
+        if (viewType == typeof(DigitalInputVariableBoolRectView))
+        {
+            var actorName = (string)args![0]!;
+            var digitalInputItemPath = (string)args![1]!;
+            var variableItemPath = (string)args![2]!;
+            var variableSubItem = args.Length > 3 ? (object[]?)args[3] : null;
+            var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
+            var digitalInputViewModel = new DigitalInputViewModel(actorRegistry, actorName, digitalInputItemPath);
+            var variableViewModel = new VariableViewModel(actorRegistry, actorName, variableItemPath, variableSubItem);
+            var view = new DigitalInputVariableBoolRectView(digitalInputViewModel, variableViewModel);
+            return view;
+        }
+
         throw new ValueError();
     }
 
