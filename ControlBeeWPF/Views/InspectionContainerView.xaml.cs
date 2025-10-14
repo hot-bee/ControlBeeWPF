@@ -2,7 +2,6 @@
 using System.Runtime.CompilerServices;
 using System.Windows;
 using ControlBee.Interfaces;
-using ControlBee.Models;
 using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.ViewModels;
 using UserControl = System.Windows.Controls.UserControl;
@@ -21,7 +20,8 @@ public partial class InspectionContainerView : UserControl, IRefreshable, INotif
     private readonly Dict _options;
     private readonly VisionStatusViewModel _viewModel;
 
-    public InspectionContainerView(VisionStatusViewModel viewModel, ISystemConfigurations systemConfigurations, Dict options)
+    public InspectionContainerView(VisionStatusViewModel viewModel, ISystemConfigurations systemConfigurations,
+        Dict options)
     {
         _viewModel = viewModel;
         _options = options;
@@ -33,6 +33,17 @@ public partial class InspectionContainerView : UserControl, IRefreshable, INotif
         var channelCount = systemConfigurations.VisionChannelCount;
         if (_mode == "VisionFrame" && 1 < channelCount)
         {
+            var allButton = new Button
+            {
+                Content = "All"
+            };
+            allButton.Click += (sender, args) =>
+            {
+                ActiveChannel = -1;
+                Refresh();
+            };
+            ChannelPanel.Children.Add(allButton);
+
             for (var channel = 0; channel < channelCount; channel++)
             {
                 var button = new Button
