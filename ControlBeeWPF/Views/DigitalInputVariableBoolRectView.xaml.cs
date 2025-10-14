@@ -1,7 +1,10 @@
 ﻿using System.ComponentModel;
+using System.Windows;
+using System.Windows.Input;
 using ControlBeeWPF.ViewModels;
 using Brush = System.Windows.Media.Brush;
 using Brushes = System.Windows.Media.Brushes;
+using MessageBox = System.Windows.MessageBox;
 
 namespace ControlBeeWPF.Views;
 
@@ -10,9 +13,8 @@ public partial class DigitalInputVariableBoolRectView : INotifyPropertyChanged
     private readonly DigitalInputViewModel _digitalInputViewModel;
     private readonly VariableViewModel _variableViewModel;
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    public DigitalInputVariableBoolRectView(DigitalInputViewModel digitalInputViewModel, VariableViewModel variableViewModel)
+    public DigitalInputVariableBoolRectView(DigitalInputViewModel digitalInputViewModel,
+        VariableViewModel variableViewModel)
     {
         InitializeComponent();
 
@@ -23,6 +25,30 @@ public partial class DigitalInputVariableBoolRectView : INotifyPropertyChanged
         _variableViewModel.PropertyChanged += OnVariablePropertyChanged;
 
         DataContext = this;
+    }
+
+    public Brush DigitalInputBrush =>
+        _digitalInputViewModel.Value is true ? Brushes.Red : Brushes.LightGray;
+
+    public Brush VariableBrush =>
+        _variableViewModel.Value is true ? Brushes.LawnGreen : Brushes.White;
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        if (_variableViewModel.Value is not bool boolValue)
+            return;
+
+        if (
+            MessageBox.Show(
+                "Do you want to turn this on/off?",
+                "Change value",
+                MessageBoxButton.YesNoCancel,
+                MessageBoxImage.Question
+            ) == MessageBoxResult.Yes
+        )
+            _variableViewModel.ToggleBoolValue(boolValue);
     }
 
     private void OnVariablePropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -37,12 +63,8 @@ public partial class DigitalInputVariableBoolRectView : INotifyPropertyChanged
             OnPropertyChanged(nameof(DigitalInputBrush));
     }
 
-    public Brush DigitalInputBrush =>
-        _digitalInputViewModel.Value is true ? Brushes.Red : Brushes.LightGray;
-
-    public Brush VariableBrush =>
-        _variableViewModel.Value is true ? Brushes.LawnGreen : Brushes.White;
-
     private void OnPropertyChanged(string propertyName)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 }
