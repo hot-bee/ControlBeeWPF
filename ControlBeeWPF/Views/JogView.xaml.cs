@@ -6,6 +6,7 @@ using System.Windows.Shapes;
 using ControlBee.Constants;
 using ControlBeeAbstract.Exceptions;
 using ControlBeeWPF.ViewModels;
+using ControlBeeAbstract.Constants;
 using log4net;
 using Button = System.Windows.Controls.Button;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
