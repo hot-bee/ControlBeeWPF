@@ -27,6 +27,26 @@ public partial class DigitalInputVariableBoolRectView : INotifyPropertyChanged
         DataContext = this;
     }
 
+    public double VariableRectSize
+    {
+        get => (double)GetValue(VariableRectSizeProperty);
+        set => SetValue(VariableRectSizeProperty, value);
+    }
+
+    public static readonly DependencyProperty VariableRectSizeProperty =
+        DependencyProperty.Register(nameof(VariableRectSize), typeof(double), typeof(DigitalInputVariableBoolRectView),
+            new PropertyMetadata(20.0));
+
+    public double InputRectSize
+    {
+        get => (double)GetValue(InputRectSizeProperty);
+        set => SetValue(InputRectSizeProperty, value);
+    }
+
+    public static readonly DependencyProperty InputRectSizeProperty =
+        DependencyProperty.Register(nameof(InputRectSize), typeof(double), typeof(DigitalInputVariableBoolRectView),
+            new PropertyMetadata(10.0));
+
     public Brush DigitalInputBrush =>
         _digitalInputViewModel.Value is true ? Brushes.Red : Brushes.LightGray;
 
