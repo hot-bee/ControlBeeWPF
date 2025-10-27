@@ -170,6 +170,14 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             return view;
         }
 
+        if (viewType == typeof(LoginView))
+        {
+            var userInfo = serviceProvider.GetRequiredService<IUserInfo>();
+            var viewModel = new LoginViewModel(userInfo);
+            var view = new LoginView(viewModel);
+            return view;
+        }
+
         throw new ValueError();
     }
 }
