@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using ControlBee.Constants;
 using ControlBee.Interfaces;
+using ControlBee.Services;
 using ControlBeeAbstract.Exceptions;
 using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.ViewModels;
@@ -173,8 +174,17 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
         if (viewType == typeof(LoginView))
         {
             var userInfo = serviceProvider.GetRequiredService<IUserInfo>();
-            var viewModel = new LoginViewModel(userInfo);
+            var userManager = serviceProvider.GetRequiredService<IUserManager>();
+            var viewModel = new LoginViewModel(userInfo, userManager);
             var view = new LoginView(viewModel);
+            return view;
+        }
+
+        if (viewType == typeof(UserManagementView))
+        {
+            var userManager = serviceProvider.GetRequiredService<IUserManager>();
+            var viewModel = new UserManagementViewModel(userManager);
+            var view = new UserManagementView(viewModel);
             return view;
         }
 

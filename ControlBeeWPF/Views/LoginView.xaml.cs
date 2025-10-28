@@ -1,9 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using ControlBeeWPF.ViewModels;
-using System.Collections.Generic;
-using System.Text;
+﻿using ControlBeeWPF.ViewModels;
 using System.Windows;
-using static ControlBeeWPF.ViewModels.LoginViewModel;
 
 namespace ControlBeeWPF.Views;
 
@@ -17,9 +13,6 @@ public partial class LoginView : Window
         InitializeComponent();
         DataContext = viewModel;
 
-        WeakReferenceMessenger.Default.Register<LoginSuccessMessage>(this, (_, __) =>
-        {
-            DialogResult = true;
-        });
+        viewModel.LoginSucceeded += (_, _) => DialogResult = true;
     }
 }
