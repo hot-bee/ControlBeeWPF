@@ -10,22 +10,21 @@ namespace ControlBeeWPF.ViewModels;
 
 public partial class LoginViewModel : ObservableObject
 {
-    private readonly IUserInfo _userInfo;
     private readonly IUserManager _userManager;
 
-    public LoginViewModel(IUserInfo userInfo, IUserManager userManager)
+    public LoginViewModel(IUserManager userManager)
     {
-        _userInfo = userInfo;
         _userManager = userManager;
+
+        _userId = string.Empty;
+        _userPassword = string.Empty;
     }
 
     public event EventHandler? LoginSucceeded;
 
-    [ObservableProperty]
-    private string _userId;
+    [ObservableProperty] private string _userId;
 
-    [ObservableProperty]
-    private string _userPassword;
+    [ObservableProperty] private string _userPassword;
 
     [RelayCommand]
     private void Login()
@@ -38,7 +37,9 @@ public partial class LoginViewModel : ObservableObject
 
         if (_userManager.Login(UserId, UserPassword))
         {
-            MessageBox.Show($"Welcome, {_userInfo.Name}!", "Login Successful", MessageBoxButton.OK, MessageBoxImage.Information);
+            var user = _userManager.CurrentUser;
+            var name = user?.Name ?? "User";
+            MessageBox.Show($"Welcome, {name}!", "Login Successful", MessageBoxButton.OK, MessageBoxImage.Information);
             LoginSucceeded?.Invoke(this, EventArgs.Empty);
         }
         else

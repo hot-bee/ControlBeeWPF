@@ -92,11 +92,10 @@
                 <TextBlock Grid.Row="8" Text="Level"/>
                 <ComboBox Grid.Row="9"
                           Name="LevelComboBox"
-                          ItemsSource="{Binding LevelOptions}"
-                          DisplayMemberPath="Name"
-                          SelectedValuePath="Level"
-                          SelectedValue="{Binding UserLevel, Mode=TwoWay}"
-                          VerticalContentAlignment="Center"/>
+                          ItemsSource="{Binding LevelItems}"
+                          DisplayMemberPath="Value"
+                          SelectedValuePath="Key"
+                          SelectedValue="{Binding UserLevel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                 <Button Grid.Row="10" Content="Register" Command="{Binding RegisterCommand}" Background="#FFE5F3FF"/>
             </Grid>

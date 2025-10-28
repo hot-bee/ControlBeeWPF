@@ -7,33 +7,29 @@ using MessageBoxImage = System.Windows.MessageBoxImage;
 
 namespace ControlBeeWPF.ViewModels;
 
-public record LevelOption(int Level, string Name);
-
 public partial class UserManagementViewModel : ObservableObject
 {
     private readonly IUserManager _userManager;
+    private readonly IAuthorityLevels _authorityLevels;
+
     [ObservableProperty] private string _name = string.Empty;
     [ObservableProperty] private string _password = string.Empty;
 
     [ObservableProperty] private string _userId = string.Empty;
     [ObservableProperty] private int _userLevel;
 
-    public UserManagementViewModel(IUserManager userManager)
+    public IReadOnlyList<KeyValuePair<int, string>> LevelItems { get; }
+
+    public UserManagementViewModel(IUserManager userManager, IAuthorityLevels authorityLevels)
     {
         _userManager = userManager;
+        _authorityLevels = authorityLevels;
 
-        UserLevel = LevelOptions[0].Level;
+        LevelItems = _authorityLevels.LevelMap.OrderBy(kv => kv.Key).ToList();
+
+        if (LevelItems.Count > 0)
+            UserLevel = LevelItems[0].Key;
     }
-
-    public LevelOption[] LevelOptions { get; } =
-    {
-        new(0, "Guest"),
-        new(1, "Operator"),
-        new(3, "Maintenance"),
-        new(5, "Manager"),
-        new(7, "Manufacturer Engineer"),
-        new(9, "Software Engineer")
-    };
 
     [RelayCommand]
     private void Register()
@@ -51,5 +47,11 @@ public partial class UserManagementViewModel : ObservableObject
             MessageBox.Show("Registration successful.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         else
             MessageBox.Show("Registration failed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+        Name = string.Empty;
+        Password = string.Empty;
+        UserId = string.Empty;
+        if (LevelItems.Count > 0)
+            UserLevel = LevelItems[0].Key;
     }
 }

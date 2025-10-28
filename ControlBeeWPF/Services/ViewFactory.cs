@@ -173,9 +173,8 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
 
         if (viewType == typeof(LoginView))
         {
-            var userInfo = serviceProvider.GetRequiredService<IUserInfo>();
             var userManager = serviceProvider.GetRequiredService<IUserManager>();
-            var viewModel = new LoginViewModel(userInfo, userManager);
+            var viewModel = new LoginViewModel(userManager);
             var view = new LoginView(viewModel);
             return view;
         }
@@ -183,7 +182,8 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
         if (viewType == typeof(UserManagementView))
         {
             var userManager = serviceProvider.GetRequiredService<IUserManager>();
-            var viewModel = new UserManagementViewModel(userManager);
+            var authorityLevels = serviceProvider.GetRequiredService<IAuthorityLevels>();
+            var viewModel = new UserManagementViewModel(userManager, authorityLevels);
             var view = new UserManagementView(viewModel);
             return view;
         }
