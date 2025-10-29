@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using ControlBee.Constants;
 using ControlBee.Interfaces;
+using ControlBee.Services;
 using ControlBeeAbstract.Exceptions;
 using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.ViewModels;
@@ -167,6 +168,23 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             var allowDecimal = args![1] is true;
             var viewModel = new NumpadViewModel(initialValue, allowDecimal);
             var view = new NumpadView(viewModel);
+            return view;
+        }
+
+        if (viewType == typeof(LoginView))
+        {
+            var userManager = serviceProvider.GetRequiredService<IUserManager>();
+            var viewModel = new LoginViewModel(userManager);
+            var view = new LoginView(viewModel);
+            return view;
+        }
+
+        if (viewType == typeof(UserManagementView))
+        {
+            var userManager = serviceProvider.GetRequiredService<IUserManager>();
+            var authorityLevels = serviceProvider.GetRequiredService<IAuthorityLevels>();
+            var viewModel = new UserManagementViewModel(userManager, authorityLevels);
+            var view = new UserManagementView(viewModel);
             return view;
         }
 
