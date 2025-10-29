@@ -1,5 +1,4 @@
-﻿using System.Windows;
-using ControlBee.Constants;
+﻿using ControlBee.Constants;
 using ControlBee.Interfaces;
 using ControlBee.Services;
 using ControlBeeAbstract.Exceptions;
@@ -14,7 +13,8 @@ namespace ControlBeeWPF.Services;
 
 public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
 {
-    public virtual UserControl Create(Type viewType, params object?[]? args)
+    [Obsolete]
+    public virtual UserControl Create(Type viewType, params object?[]? args)  // TODO: Migrate to Create<T>().
     {
         if (viewType == typeof(JogView))
         {
@@ -160,32 +160,32 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
         throw new ValueError();
     }
 
-    public virtual Window CreateWindow(Type viewType, params object?[]? args)
+    public virtual T Create<T>(params object?[]? args) where T : class
     {
-        if (viewType == typeof(NumpadView))
+        if (typeof(T) == typeof(NumpadView))
         {
             var initialValue = (string)args![0]!;
             var allowDecimal = args![1] is true;
             var viewModel = new NumpadViewModel(initialValue, allowDecimal);
             var view = new NumpadView(viewModel);
-            return view;
+            return (view as T)!;
         }
 
-        if (viewType == typeof(LoginView))
+        if (typeof(T) == typeof(LoginView))
         {
             var userManager = serviceProvider.GetRequiredService<IUserManager>();
             var viewModel = new LoginViewModel(userManager);
             var view = new LoginView(viewModel);
-            return view;
+            return (view as T)!;
         }
 
-        if (viewType == typeof(UserManagementView))
+        if (typeof(T) == typeof(UserManagementView))
         {
             var userManager = serviceProvider.GetRequiredService<IUserManager>();
             var authorityLevels = serviceProvider.GetRequiredService<IAuthorityLevels>();
             var viewModel = new UserManagementViewModel(userManager, authorityLevels);
             var view = new UserManagementView(viewModel);
-            return view;
+            return (view as T)!;
         }
 
         throw new ValueError();
