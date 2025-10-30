@@ -4,6 +4,7 @@ using ControlBee.Interfaces;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
+using Dict = System.Collections.Generic.Dictionary<string, object?>;
 using MessageBox = System.Windows.MessageBox;
 using MessageBoxButton = System.Windows.MessageBoxButton;
 using MessageBoxImage = System.Windows.MessageBoxImage;
@@ -45,7 +46,7 @@ public partial class UserManagementViewModel : ObservableObject
         Users.Clear();
         foreach (var user in _userManager.GetUserBelowCurrentLevel())
         {
-            var row = new UserRow(user.Id, user.UserId, user.Name, null, user.Level, _authorityLevels.GetLevelName(user.Level));
+            var row = new UserRow(user, null);
             row.PropertyChanged += (_, e) =>
             {
                 if (e.PropertyName == nameof(UserRow.Level))
@@ -90,11 +91,13 @@ public partial class UserManagementViewModel : ObservableObject
 
         var changes = Users
             .Where(userRow => userRow.IsDirty)
-            .Select(userRow => new UserUpdate(
-                userRow.Id,
-                userRow.Name,
-                string.IsNullOrWhiteSpace(userRow.PasswordInput) ? null : userRow.PasswordInput,
-                userRow.Level))
+            .Select(userRow => new Dict
+            {
+                ["Id"] = userRow.Id,
+                ["Name"] = userRow.Name,
+                ["RawPassword"] = string.IsNullOrWhiteSpace(userRow.PasswordInput) ? null : userRow.PasswordInput,
+                ["Level"] = userRow.Level
+            })
             .ToList();
 
         if (changes.Count == 0)
@@ -103,9 +106,8 @@ public partial class UserManagementViewModel : ObservableObject
             return;
         }
 
-        var result = _userManager.UpdateUsersDetailed(changes);
-
-        if (result.UpdatedCount > 0)
+        var result = _userManager.UpdateUsers(changes);
+        if (result)
         {
             foreach (var user in Users.Where(userRow => userRow.IsDirty))
             {
@@ -113,29 +115,13 @@ public partial class UserManagementViewModel : ObservableObject
                 user.IsDirty = false;
                 user.LevelName = _authorityLevels.GetLevelName(user.Level);
             }
-
-            MessageBox.Show($"✅ Successfully updated {result.UpdatedCount} user(s).",
-                "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show($"Successfully updated user(s).", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            LoadUsers();
         }
-
-        if (result.Skipped.Count > 0)
+        else
         {
-            var message = string.Join(Environment.NewLine,
-                result.Skipped.Select(s => $"{s.UserId}: {s.Reason}"));
-
-            MessageBox.Show(
-                $"⚠️ Some updates were skipped:\n\n{message}",
-                "Warning",
-                MessageBoxButton.OK,
-                MessageBoxImage.Warning);
+            MessageBox.Show("Failed to update users.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-
-        if (result is { UpdatedCount: 0, Skipped.Count: 0 })
-        {
-            MessageBox.Show("No valid updates were processed.", "Notice", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        LoadUsers();
     }
 
     public partial class UserRow : ObservableObject
@@ -149,14 +135,14 @@ public partial class UserManagementViewModel : ObservableObject
 
         [ObservableProperty] private bool _isDirty;
 
-        public UserRow(int id, string userId, string name, string? passwordInput, int level, string levelName)
+        public UserRow(IUserInfo user, string? passwordInput)
         {
-            _id = id;
-            _userId = userId;
-            _name = name;
+            _id = user.Id;
+            _userId = user.UserId;
+            _name = user.Name;
             _passwordInput = passwordInput;
-            _level = level;
-            _levelName = levelName;
+            _level = user.Level;
+            _levelName = user.LevelName;
         }
 
         partial void OnNameChanged(string value) => IsDirty = true;
