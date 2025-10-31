@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using ControlBee.Interfaces;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Data;
 using Dict = System.Collections.Generic.Dictionary<string, object?>;
 using MessageBox = System.Windows.MessageBox;
@@ -122,6 +123,19 @@ public partial class UserManagementViewModel : ObservableObject
         {
             MessageBox.Show("Failed to update users.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+    }
+
+    [RelayCommand]
+    private void Delete(int id)
+    {
+        if (MessageBox.Show($"Delete user ID {id}?", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            return;
+
+        var deleteSucceeded = _userManager.Delete(id);
+        if (!deleteSucceeded) return;
+
+        var row = Users.FirstOrDefault(userRow => userRow.Id == id);
+        if (row is not null) Users.Remove(row);
     }
 
     public partial class UserRow : ObservableObject
