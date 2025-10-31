@@ -134,8 +134,7 @@ public partial class UserManagementViewModel : ObservableObject
         var deleteSucceeded = _userManager.Delete(id);
         if (!deleteSucceeded) return;
 
-        var row = Users.FirstOrDefault(userRow => userRow.Id == id);
-        if (row is not null) Users.Remove(row);
+        LoadUsers();
     }
 
     public partial class UserRow : ObservableObject
