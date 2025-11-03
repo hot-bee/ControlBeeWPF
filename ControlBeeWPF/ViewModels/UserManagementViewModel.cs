@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using ControlBee.Interfaces;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Data;
 using Dict = System.Collections.Generic.Dictionary<string, object?>;
 using MessageBox = System.Windows.MessageBox;
@@ -39,6 +40,7 @@ public partial class UserManagementViewModel : ObservableObject
             UserLevel = LevelItems[0].Key;
 
         LoadUsers();
+        _userManager.UserListUpdated += (_, _) => LoadUsers(); 
     }
 
     private void LoadUsers()
@@ -78,8 +80,6 @@ public partial class UserManagementViewModel : ObservableObject
         UserId = string.Empty;
         if (LevelItems.Count > 0)
             UserLevel = LevelItems[0].Key;
-
-        LoadUsers();
     }
 
     [RelayCommand]
@@ -116,12 +116,21 @@ public partial class UserManagementViewModel : ObservableObject
                 user.LevelName = _authorityLevels.GetLevelName(user.Level);
             }
             MessageBox.Show($"Successfully updated user(s).", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-            LoadUsers();
         }
         else
         {
             MessageBox.Show("Failed to update users.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+    }
+
+    [RelayCommand]
+    private void Delete(int id)
+    {
+        if (MessageBox.Show($"Delete user ID {id}?", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            return;
+
+        var deleteSucceeded = _userManager.Delete(id);
+        if (!deleteSucceeded) return;
     }
 
     public partial class UserRow : ObservableObject

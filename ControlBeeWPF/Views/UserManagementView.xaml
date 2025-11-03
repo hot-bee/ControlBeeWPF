@@ -82,7 +82,7 @@
 
                         <DataGridTextColumn Header="Name"
                             Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            Width="150">
+                            Width="100">
                             <DataGridTextColumn.ElementStyle>
                                 <StaticResource ResourceKey="EllipsisWithTooltip"/>
                             </DataGridTextColumn.ElementStyle>
@@ -115,11 +115,23 @@
                         <DataGridTextColumn Header="Level Name"
                             Binding="{Binding LevelName}"
                             IsReadOnly="True"
-                            Width="150">
+                            Width="130">
                             <DataGridTextColumn.ElementStyle>
                                 <StaticResource ResourceKey="EllipsisWithTooltip"/>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
+
+                        <DataGridTemplateColumn Header="Delete" Width="50">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            CommandParameter="{Binding Id}"
+                                            Margin="0"
+                                            Height="15"
+                                            Background="Red"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
 
