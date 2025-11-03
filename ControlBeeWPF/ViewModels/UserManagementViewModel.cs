@@ -40,6 +40,7 @@ public partial class UserManagementViewModel : ObservableObject
             UserLevel = LevelItems[0].Key;
 
         LoadUsers();
+        _userManager.UserListUpdated += (_, _) => LoadUsers(); 
     }
 
     private void LoadUsers()
@@ -79,8 +80,6 @@ public partial class UserManagementViewModel : ObservableObject
         UserId = string.Empty;
         if (LevelItems.Count > 0)
             UserLevel = LevelItems[0].Key;
-
-        LoadUsers();
     }
 
     [RelayCommand]
@@ -117,7 +116,6 @@ public partial class UserManagementViewModel : ObservableObject
                 user.LevelName = _authorityLevels.GetLevelName(user.Level);
             }
             MessageBox.Show($"Successfully updated user(s).", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-            LoadUsers();
         }
         else
         {
@@ -133,8 +131,6 @@ public partial class UserManagementViewModel : ObservableObject
 
         var deleteSucceeded = _userManager.Delete(id);
         if (!deleteSucceeded) return;
-
-        LoadUsers();
     }
 
     public partial class UserRow : ObservableObject
