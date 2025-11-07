@@ -115,6 +115,20 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
                 else
                     return null;
             }
+            else if (curValue is IIndex2D index2D)
+            {
+                if (pathPart is (int index1, int index2))
+                    curValue = index2D.GetValue(index1, index2);
+                else
+                    return null;
+            }
+            else if (curValue is IIndex3D index3D)
+            {
+                if (pathPart is (int index1, int index2, int index3))
+                    curValue = index3D.GetValue(index1, index2, index3);
+                else
+                    return null;
+            }
             else
             {
                 if (pathPart is string propertyName)
