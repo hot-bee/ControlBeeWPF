@@ -9,17 +9,10 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid>
             <Grid.Resources>
-                <Style TargetType="{x:Type local:DigitalInputStatusBarView}">
-                    <Setter Property="NameColumnWidth" Value="140" />
-                </Style>
-                <Style TargetType="{x:Type local:DigitalOutputStatusBarView}">
-                    <Setter Property="NameColumnWidth" Value="140" />
-                </Style>
                 <Style TargetType="{x:Type GroupBox}">
                     <Setter Property="Padding" Value="10" />
                 </Style>
             </Grid.Resources>
-
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
