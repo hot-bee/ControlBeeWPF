@@ -157,6 +157,15 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             return view;
         }
 
+        if (viewType == typeof(IoListView))
+        {
+            var actorName = (string)args![0]!;
+            var columns = (int)args![1]!;
+            var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
+            var view = new IoListView(actorName, columns, actorRegistry, this);
+            return view;
+        }
+
         throw new ValueError();
     }
 
