@@ -16,11 +16,12 @@ public partial class AxisStatusView : UserControl, IDisposable
 {
     private readonly AxisStatusViewModel _viewModel;
 
-    public AxisStatusView(AxisStatusViewModel viewModel, bool shortMode)
+    public AxisStatusView(AxisStatusViewModel viewModel, bool shortMode, int index)
     {
         _viewModel = viewModel;
         DataContext = viewModel;
         InitializeComponent();
+        IndexLabel.Content = $"{index}";
         viewModel.PropertyChanged += ViewModelOnPropertyChanged;
 
         if (shortMode)

@@ -81,8 +81,8 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             var index = (int)args![2]!;
             var shortMode = args.Length > 3 && (bool)args[3]!;
             var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
-            var viewModel = new AxisStatusViewModel(actorRegistry, actorName, itemPath, index);
-            var view = new AxisStatusView(viewModel, shortMode);
+            var viewModel = new AxisStatusViewModel(actorRegistry, actorName, itemPath);
+            var view = new AxisStatusView(viewModel, shortMode, index);
             return view;
         }
 

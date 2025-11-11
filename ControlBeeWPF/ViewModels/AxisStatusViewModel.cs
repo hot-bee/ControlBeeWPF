@@ -23,9 +23,6 @@ public partial class AxisStatusViewModel : ObservableObject, IDisposable
     private string _desc = string.Empty;
 
     [ObservableProperty]
-    private int _index;
-
-    [ObservableProperty]
     private bool _isAlarmed;
 
     [ObservableProperty]
@@ -52,11 +49,9 @@ public partial class AxisStatusViewModel : ObservableObject, IDisposable
     public AxisStatusViewModel(
         IActorRegistry actorRegistry,
         string actorName,
-        string itemPath,
-        int index
+        string itemPath
     )
     {
-        Index = index;
         _itemPath = itemPath;
         _binder = new ActorItemBinder(actorRegistry, actorName, itemPath);
         _actor = actorRegistry.Get(actorName)!;
