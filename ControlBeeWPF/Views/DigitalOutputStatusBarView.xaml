@@ -16,7 +16,7 @@
                Margin="1 0"
                Background="WhiteSmoke" BorderThickness="1" BorderBrush="Silver" />
         <Label Grid.Column="1" Name="ValueLabel" MouseLeftButtonDown="ValueLabel_OnMouseLeftButtonDown"
-               VerticalContentAlignment="Center" HorizontalContentAlignment="Right"
+               VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                Margin="1 0"
                BorderThickness="1" BorderBrush="Silver">
             <Rectangle Name="ValueRect" Width="14" Height="14" Stroke="DimGray" />
