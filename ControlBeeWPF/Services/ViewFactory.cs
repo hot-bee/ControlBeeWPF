@@ -1,7 +1,5 @@
 ﻿using ControlBee.Constants;
 using ControlBee.Interfaces;
-using ControlBee.Services;
-using ControlBeeAbstract.Exceptions;
 using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.ViewModels;
 using ControlBeeWPF.Views;
@@ -14,7 +12,7 @@ namespace ControlBeeWPF.Services;
 public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
 {
     [Obsolete]
-    public virtual UserControl Create(Type viewType, params object?[]? args)  // TODO: Migrate to Create<T>().
+    public virtual UserControl? Create(Type viewType, params object?[]? args)  // TODO: Migrate to Create<T>().
     {
         if (viewType == typeof(JogView))
         {
@@ -166,10 +164,10 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             return view;
         }
 
-        throw new ValueError();
+        return null;
     }
 
-    public virtual T Create<T>(params object?[]? args) where T : class
+    public virtual T? Create<T>(params object?[]? args) where T : class
     {
         if (typeof(T) == typeof(NumpadView))
         {
@@ -197,6 +195,6 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             return (view as T)!;
         }
 
-        throw new ValueError();
+        return null;
     }
 }
