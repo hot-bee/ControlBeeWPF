@@ -1,8 +1,8 @@
 ﻿using System.Data;
-using System.Text.Json;
 using CommunityToolkit.Mvvm.ComponentModel;
 using ControlBee.Interfaces;
-using ControlBee.Models;
+using ControlBeeWPF.Utils;
+using Newtonsoft.Json;
 using Dict = System.Collections.Generic.Dictionary<string, object?>;
 using Message = ControlBee.Models.Message;
 
@@ -57,10 +57,13 @@ public partial class ActorMonitorViewModel : ObservableObject, IDisposable
             }
             case "_status":
             {
-                var jsonString = JsonSerializer.Serialize(
-                    e.DictPayload,
-                    new JsonSerializerOptions { WriteIndented = true }
-                );
+                var settings = new JsonSerializerSettings
+                {
+                    ContractResolver = new RespectSystemTextJsonIgnoreResolver(),
+                    Formatting = Formatting.Indented
+                };
+
+                var jsonString = JsonConvert.SerializeObject(e.DictPayload, settings);
                 _rows[e.Sender][2] = jsonString;
                 break;
             }
