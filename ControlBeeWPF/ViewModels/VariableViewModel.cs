@@ -200,6 +200,16 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
                         )
                     );
                     break;
+                case bool value:
+                    _actor.Send(
+                        new ActorItemMessage(
+                            _uiActor,
+                            _itemPath,
+                            "_itemDataWrite",
+                            new ItemDataWriteArgs(_subItemPath, bool.Parse(newValue))
+                        )
+                    );
+                    break;
                 default:
                     throw new ValueError();
             }
