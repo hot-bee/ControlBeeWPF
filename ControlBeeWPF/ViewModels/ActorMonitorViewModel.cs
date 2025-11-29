@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
 using ControlBee.Interfaces;
-using ControlBeeWPF.Utils;
+using ControlBee.Utils;
 using Newtonsoft.Json;
 using Dict = System.Collections.Generic.Dictionary<string, object?>;
 using Message = ControlBee.Models.Message;
@@ -11,6 +11,13 @@ namespace ControlBeeWPF.ViewModels;
 public partial class ActorMonitorViewModel : ObservableObject, IDisposable
 {
     private readonly IActorRegistry _actorRegistry;
+
+    private readonly JsonSerializerSettings _jsonSettings = new()
+    {
+        ContractResolver = new RespectSystemTextJsonIgnoreResolver(),
+        Formatting = Formatting.Indented
+    };
+
     private readonly Dictionary<IActor, DataRow> _rows = new();
     private readonly IUiActor _uiActor;
 
@@ -57,13 +64,7 @@ public partial class ActorMonitorViewModel : ObservableObject, IDisposable
             }
             case "_status":
             {
-                var settings = new JsonSerializerSettings
-                {
-                    ContractResolver = new RespectSystemTextJsonIgnoreResolver(),
-                    Formatting = Formatting.Indented
-                };
-
-                var jsonString = JsonConvert.SerializeObject(e.DictPayload, settings);
+                var jsonString = JsonConvert.SerializeObject(e.DictPayload, _jsonSettings);
                 _rows[e.Sender][2] = jsonString;
                 break;
             }
