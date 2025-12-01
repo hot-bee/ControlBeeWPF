@@ -85,6 +85,44 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
 
                 break;
             }
+            case "_itemMetaDataChanged":
+            {
+                if (_metaIds.Count != 0 || _dataIds.Count != 0)
+                    break;
+                
+                var name = e.DictPayload!["Name"] as string ?? string.Empty;
+                if (name.StartsWith('/'))
+                    name = name.Split('/')[^1];
+
+                var itemPath = e.DictPayload!["ItemPath"] as string ?? string.Empty;
+
+                var visible = e.DictPayload!["Visible"] is true;
+                UpdateVisible(name, itemPath, visible);
+
+                break;
+            }
+        }
+    }
+
+    private void UpdateVisible(string name, string itemPath, bool visible)
+    {
+        var filteredNode = _actorItemTreeViewModel.FilteredTreeCollection.Root;
+        if (!visible)
+        {
+            filteredNode.RemoveChild(name);
+        }
+        else
+        {
+            if (filteredNode.FindNode(name) is not null)
+                return;
+
+            var node = _actorItemTreeViewModel.ActorItemTreeCollection.Root;
+            var pathNames = itemPath.Trim('/').Split("/");
+            foreach (var pathName in pathNames)
+            {
+                var foundNode = node.FindNode(pathName);
+                filteredNode = filteredNode.AddChild(foundNode!.Data);
+            }
         }
     }
 
