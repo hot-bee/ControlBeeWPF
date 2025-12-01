@@ -10,11 +10,12 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
 {
     private readonly IActor _actor;
     private readonly Dictionary<Guid, string> _dataIds = new();
-
     private readonly Dictionary<Guid, string> _metaIds = new();
     private readonly Dictionary<string, string> _names = new();
     private readonly IUiActor _uiActor;
     private readonly Dictionary<string, object> _values = new();
+
+    private bool _buildDone;
     private ActorItemTreeViewModel _actorItemTreeViewModel;
 
     [ObservableProperty] private ActorItemTreeNode? _selectedItem;
@@ -67,6 +68,19 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
                     if (_metaIds.Count == 0 && _dataIds.Count == 0)
                         BuildTree();
                 }
+                else if (_buildDone)
+                {
+                    if (e.DictPayload!.ContainsKey("Visible") || e.DictPayload!.ContainsKey("ItemPath"))
+                    {
+                        var name = e.DictPayload!["Name"] as string ?? string.Empty;
+                        if (name.StartsWith('/'))
+                            name = name.Split('/')[^1];
+
+                        var visible = e.DictPayload!["Visible"] is true;
+                        itemPath = (string?)e.DictPayload!["ItemPath"];
+                        UpdateVisible(name, itemPath, visible);
+                    }
+                }
 
                 break;
             }
@@ -86,6 +100,30 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
                 break;
             }
         }
+    }
+
+    private void UpdateVisible(string name, string? itemPath, bool visible)
+    {
+        if (string.IsNullOrEmpty(itemPath) || !_names.ContainsKey(itemPath))
+            return;
+
+        var sourceNode = _actorItemTreeViewModel.ActorItemTreeCollection.Root;
+        var pathNames = itemPath.Trim('/').Split("/");
+        for (var idx = 0; idx < pathNames.Length; idx++)
+        {
+            var targetName = pathNames[idx];
+            sourceNode = sourceNode?.FindNode(targetName);
+            if (sourceNode == null)
+                return;
+
+            if (sourceNode.FindNode(targetName) == null)
+                break;
+
+            if (idx < pathNames.Length - 1)
+                sourceNode = sourceNode.FindNode(targetName);
+        }
+
+        if (sourceNode != null) sourceNode.Data.Visible = visible;
     }
 
     private void BuildTree()
@@ -119,5 +157,8 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
             node.Data.Value = value;
             node.Data.Scope = variableItem?.Scope;
         }
+
+        _actorItemTreeViewModel.ApplyFilter();
+        _buildDone = true;
     }
 }
