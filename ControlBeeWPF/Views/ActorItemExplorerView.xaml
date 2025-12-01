@@ -13,9 +13,16 @@
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <GroupBox Grid.Column="0" Header="Items" Margin="5">
-            <TreeView 
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBox Grid.Row="0"
+                         Text="{Binding ActorItemTreeViewModel.FilterText, UpdateSourceTrigger=PropertyChanged}" />
+                <TreeView Grid.Row="1" 
                 DataContext="{Binding ActorItemTreeViewModel}"
-                ItemsSource="{Binding ActorItemTreeCollection.Root.Children}"
+                ItemsSource="{Binding FilteredTreeCollection.Root.Children}"
                 SelectedItemChanged="TreeView_OnSelectedItemChanged"
                 Margin="5">
                 <TreeView.Resources>
@@ -25,6 +32,7 @@
                     </HierarchicalDataTemplate>
                 </TreeView.Resources>
             </TreeView>
+            </Grid>
         </GroupBox>
         <GroupBox Grid.Column="1" Header="Details" Margin="5">
             <ScrollViewer VerticalScrollBarVisibility="Auto">

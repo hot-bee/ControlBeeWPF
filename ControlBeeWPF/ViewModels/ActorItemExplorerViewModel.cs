@@ -119,5 +119,7 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
             node.Data.Value = value;
             node.Data.Scope = variableItem?.Scope;
         }
+
+        _actorItemTreeViewModel.UpdateFilter();
     }
 }
