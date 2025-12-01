@@ -26,6 +26,15 @@ public class ActorItemTreeNode(ActorItemViewModel data) : ObservableObject
         return child;
     }
 
+    public void RemoveChild(string name)
+    {
+        var foundNode = FindNode(name);
+        if (foundNode == null)
+            return;
+
+        Children.Remove(foundNode);
+    }
+
     public ActorItemTreeNode? FindNode(string name)
     {
         return Children.FirstOrDefault(child => child.Data.Name == name);
