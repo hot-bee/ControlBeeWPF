@@ -54,7 +54,7 @@ public class DigitalInputViewModel : IDisposable, INotifyPropertyChanged
 
     private void Binder_DataChanged(object? sender, Dictionary<string, object?> e)
     {
-        Value = (bool)e["IsOn"]!;
+        Value = (bool)e["ActualOn"]!;
     }
 
     protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
