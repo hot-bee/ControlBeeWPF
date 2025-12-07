@@ -60,7 +60,7 @@ public class DigitalOutputViewModel : IDisposable, INotifyPropertyChanged
 
     private void Binder_DataChanged(object? sender, Dictionary<string, object?> e)
     {
-        Value = (bool)e["On"]!;
+        Value = (bool)e["CommandOn"]!;
     }
 
     public void ToggleValue()
