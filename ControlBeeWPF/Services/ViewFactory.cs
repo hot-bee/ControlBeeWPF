@@ -1,5 +1,6 @@
 ﻿using ControlBee.Constants;
 using ControlBee.Interfaces;
+using ControlBee.Models;
 using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.ViewModels;
 using ControlBeeWPF.Views;
@@ -62,7 +63,8 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             var viewFactory = serviceProvider.GetRequiredService<IViewFactory>();
             var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
             var viewModel = new VariableViewModel(actorRegistry, actorName, itemPath, subItemPath);
-            var view = new VariableStatusBarView(viewFactory, viewModel);
+            var actorItemBinder = new ActorItemBinder(actorRegistry, actorName, itemPath);
+            var view = new VariableStatusBarView(viewFactory, viewModel, actorItemBinder);
             foreach (var (propertyName, value) in properties ?? [])
             {
                 var property = view.GetType().GetProperty(propertyName);
