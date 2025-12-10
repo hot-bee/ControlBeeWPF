@@ -1,5 +1,4 @@
-﻿using ControlBee.Models;
-using ControlBeeWPF.Components;
+﻿using ControlBeeWPF.Components;
 using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.ViewModels;
 using log4net;
@@ -47,11 +46,7 @@ public partial class VariableStatusBarView : UserControl, IDisposable
     private string? _nameSuffix;
     private string? _overrideName;
 
-    private readonly ActorItemBinder _binder;
-    private string? _minValue;
-    private string? _maxValue;
-
-    public VariableStatusBarView(IViewFactory viewFactory, VariableViewModel viewModel, ActorItemBinder binder)
+    public VariableStatusBarView(IViewFactory viewFactory, VariableViewModel viewModel)
     {
         _viewFactory = viewFactory;
         _viewModel = viewModel;
@@ -59,8 +54,7 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
         GaugeRect.Width = 0;
         SizeChanged += OnSizeChanged;
-        _binder = binder;
-        _binder.MetaDataChanged += BinderOnMetaDataChanged;
+        _viewModel.WriteFailed += ViewModelOnWriteFailed;
     }
 
     public object? GaugeMin { get; set; }
@@ -236,40 +230,14 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         {
             var initialValue = _viewModel.Value.ToString() ?? "0";
             var allowDecimal = _viewModel.Value is double;
-            var inputBox = _viewFactory.Create<NumpadView>(initialValue, allowDecimal);
+            var inputBox = _viewFactory.Create<NumpadView>(initialValue, allowDecimal)!;
             if (inputBox.ShowDialog() is not true)
                 return;
             newValue = inputBox.Value;
             newValue = newValue.Replace(",", "");
-
-            if (_minValue != null && _maxValue != null)
-            {
-                double value = Convert.ToDouble(newValue);
-                double min = Convert.ToDouble(_minValue);
-                double max = Convert.ToDouble(_maxValue);
-
-                if (value < min || value > max)
-                {
-                    MessageBox.Show(
-                        $"The entered value is out of the allowed range.\n\n" +
-                        $"Allowed range : {min} ~ {max}\n" +
-                        $"Entered value : {value}\n\n" +
-                        $"Please enter a value within the valid range.",
-                        "Input Error",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
-                    return;
-                }
-            }
         }
 
         _viewModel.ChangeValue(newValue);
-    }
-
-    private void BinderOnMetaDataChanged(object? sender, Dictionary<string, object?> e)
-    {
-        _minValue = e["MinValue"]?.ToString();
-        _maxValue = e["MaxValue"]?.ToString();
     }
 
     private void BoolValueLabel_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -288,5 +256,15 @@ public partial class VariableStatusBarView : UserControl, IDisposable
     public void ChangeValue(string newValue)
     {
         _viewModel.ChangeValue(newValue);
+    }
+
+    private void ViewModelOnWriteFailed(object? sender, string errorMessage)
+    {
+        MessageBox.Show(
+            errorMessage,
+            "Value Out of Range",
+            MessageBoxButton.OK,
+            MessageBoxImage.Warning
+        );
     }
 }

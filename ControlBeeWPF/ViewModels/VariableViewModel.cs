@@ -4,7 +4,6 @@ using ControlBee.Interfaces;
 using ControlBee.Models;
 using ControlBee.Variables;
 using ControlBeeAbstract.Exceptions;
-using ControlBeeWPF.Views;
 using log4net;
 using Dict = System.Collections.Generic.Dictionary<string, object?>;
 
@@ -25,6 +24,8 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
     private string? _toolTip;
     private string? _unit;
     private object? _value;
+
+    public event EventHandler<string>? WriteFailed;
 
     public VariableViewModel(
         IActorRegistry actorRegistry,
@@ -89,6 +90,13 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
 
     private void Binder_DataChanged(object? sender, Dict e)
     {
+        if (e.TryGetValue("ErrorMessage", out var errorObject) &&
+            errorObject is string errorMessage)
+        {
+            WriteFailed?.Invoke(this, errorMessage);
+            return;
+        }
+
         var valueChangedArgs = e[nameof(ValueChangedArgs)] as ValueChangedArgs;
         var location = valueChangedArgs?.Location!;
         var newValue = valueChangedArgs?.NewValue!;
