@@ -1,10 +1,10 @@
-﻿using System.ComponentModel;
-using System.Windows;
-using System.Windows.Input;
-using ControlBeeWPF.Components;
+﻿using ControlBeeWPF.Components;
 using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.ViewModels;
 using log4net;
+using System.ComponentModel;
+using System.Windows;
+using System.Windows.Input;
 using Brush = System.Windows.Media.Brush;
 using Brushes = System.Windows.Media.Brushes;
 using MessageBox = System.Windows.MessageBox;
@@ -54,6 +54,7 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
         GaugeRect.Width = 0;
         SizeChanged += OnSizeChanged;
+        _viewModel.WriteFailed += ViewModelOnWriteFailed;
     }
 
     public object? GaugeMin { get; set; }
@@ -229,7 +230,7 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         {
             var initialValue = _viewModel.Value.ToString() ?? "0";
             var allowDecimal = _viewModel.Value is double;
-            var inputBox = _viewFactory.Create<NumpadView>(initialValue, allowDecimal);
+            var inputBox = _viewFactory.Create<NumpadView>(initialValue, allowDecimal)!;
             if (inputBox.ShowDialog() is not true)
                 return;
             newValue = inputBox.Value;
@@ -255,5 +256,15 @@ public partial class VariableStatusBarView : UserControl, IDisposable
     public void ChangeValue(string newValue)
     {
         _viewModel.ChangeValue(newValue);
+    }
+
+    private void ViewModelOnWriteFailed(object? sender, string errorMessage)
+    {
+        MessageBox.Show(
+            errorMessage,
+            "Value Out of Range",
+            MessageBoxButton.OK,
+            MessageBoxImage.Warning
+        );
     }
 }
