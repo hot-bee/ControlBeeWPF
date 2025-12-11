@@ -43,6 +43,7 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
         _binder = new ActorItemBinder(actorRegistry, actorName, itemPath);
         _binder.MetaDataChanged += BinderOnMetaDataChanged;
         _binder.DataChanged += Binder_DataChanged;
+        _binder.ErrorOccurred += BinderOnErrorOccurred;
     }
 
     public string Name
@@ -90,19 +91,19 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
 
     private void Binder_DataChanged(object? sender, Dict e)
     {
-        if (e.TryGetValue("ErrorMessage", out var errorObject) &&
-            errorObject is string errorMessage)
-        {
-            WriteFailed?.Invoke(this, errorMessage);
-            return;
-        }
-
         var valueChangedArgs = e[nameof(ValueChangedArgs)] as ValueChangedArgs;
         var location = valueChangedArgs?.Location!;
         var newValue = valueChangedArgs?.NewValue!;
         var value = GetValue(location, newValue);
         if (value == null) return;
         Value = value;
+    }
+
+    private void BinderOnErrorOccurred(object? sender, Dict e)
+    {
+        if (e.TryGetValue("ErrorMessage", out var errorObject) &&
+            errorObject is string errorMessage)
+            WriteFailed?.Invoke(this, errorMessage);
     }
 
     private object? GetValue(object[] location, object newValue)
