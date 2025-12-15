@@ -95,7 +95,6 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
                     name = name.Split('/')[^1];
 
                 var itemPath = e.DictPayload!["ItemPath"] as string ?? string.Empty;
-
                 var visible = e.DictPayload!["Visible"] is true;
                 UpdateVisible(name, itemPath, visible);
 
@@ -106,24 +105,31 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
 
     private void UpdateVisible(string name, string itemPath, bool visible)
     {
-        var filteredNode = _actorItemTreeViewModel.FilteredTreeCollection.Root;
-        if (!visible)
+        if (!_names.ContainsKey(itemPath))
+            return;
+
+        var sourceNode = _actorItemTreeViewModel.ActorItemTreeCollection.Root;
+        var targetNode = _actorItemTreeViewModel.FilteredTreeCollection.Root;
+        var pathNames = itemPath.Trim('/').Split("/");
+        var targetName = string.Empty;
+        for (var idx = 0; idx < pathNames.Length; idx++)
         {
-            filteredNode.RemoveChild(name);
-        }
-        else
-        {
-            if (filteredNode.FindNode(name) is not null)
+            targetName = pathNames[idx];
+            sourceNode = sourceNode.FindNode(targetName);
+            if (sourceNode == null)
                 return;
 
-            var node = _actorItemTreeViewModel.ActorItemTreeCollection.Root;
-            var pathNames = itemPath.Trim('/').Split("/");
-            foreach (var pathName in pathNames)
-            {
-                var foundNode = node.FindNode(pathName);
-                filteredNode = filteredNode.AddChild(foundNode!.Data);
-            }
+            if (targetNode?.FindNode(targetName) == null)
+                break;
+
+            if (idx < pathNames.Length - 1)
+                targetNode = targetNode.FindNode(targetName);
         }
+
+        if (visible)
+            targetNode?.AddChild(sourceNode.Data);
+        else
+            targetNode?.RemoveChild(targetName);
     }
 
     private void BuildTree()
