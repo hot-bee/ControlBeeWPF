@@ -25,6 +25,12 @@ public class ActorItemTreeNode(ActorItemViewModel data) : ObservableObject
         _children.Add(child);
         return child;
     }
+    
+    public void InsertChild(int index, ActorItemViewModel data)
+    {
+        var child = new ActorItemTreeNode(data) { Parent = this };
+        _children.Insert(index, child);
+    }
 
     public void RemoveChild(string name)
     {

@@ -101,9 +101,9 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
         }
     }
 
-    private void UpdateVisible(string name, string itemPath, bool visible)
+    private void UpdateVisible(string name, string? itemPath, bool visible)
     {
-        if (!_names.ContainsKey(itemPath))
+        if (string.IsNullOrEmpty(itemPath) || !_names.ContainsKey(itemPath))
             return;
 
         var sourceNode = _actorItemTreeViewModel.ActorItemTreeCollection.Root;
@@ -127,7 +127,10 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
         sourceNode.Data.Visible = visible;
 
         if (visible)
-            targetNode?.AddChild(sourceNode.Data);
+        {
+            var sourceIndex = sourceNode.Parent.Children.IndexOf(sourceNode);
+            targetNode?.InsertChild(sourceIndex, sourceNode.Data);
+        }
         else
             targetNode?.RemoveChild(targetName);
     }
