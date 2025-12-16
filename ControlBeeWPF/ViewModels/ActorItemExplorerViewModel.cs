@@ -10,11 +10,12 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
 {
     private readonly IActor _actor;
     private readonly Dictionary<Guid, string> _dataIds = new();
-
     private readonly Dictionary<Guid, string> _metaIds = new();
     private readonly Dictionary<string, string> _names = new();
     private readonly IUiActor _uiActor;
     private readonly Dictionary<string, object> _values = new();
+
+    private bool _buildDone;
     private ActorItemTreeViewModel _actorItemTreeViewModel;
 
     [ObservableProperty] private ActorItemTreeNode? _selectedItem;
@@ -67,7 +68,7 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
                     if (_metaIds.Count == 0 && _dataIds.Count == 0)
                         BuildTree();
                 }
-                else if (_metaIds.Count == 0 && _dataIds.Count == 0)
+                else if (_buildDone)
                 {
                     if (e.DictPayload!.ContainsKey("Visible") || e.DictPayload!.ContainsKey("ItemPath"))
                     {
@@ -170,5 +171,6 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
         }
 
         _actorItemTreeViewModel.UpdateFilter();
+        _buildDone = true;
     }
 }
