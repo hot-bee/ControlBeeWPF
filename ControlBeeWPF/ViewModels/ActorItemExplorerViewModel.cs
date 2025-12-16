@@ -124,6 +124,8 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
                 targetNode = targetNode.FindNode(targetName);
         }
 
+        sourceNode.Data.Visible = visible;
+
         if (visible)
             targetNode?.AddChild(sourceNode.Data);
         else

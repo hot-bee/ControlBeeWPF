@@ -28,7 +28,7 @@ public class ActorItemTreeFilter
             return null;
 
         var newNode = new ActorItemTreeNode(node.Data);
-        foreach (var matchedChild in matchedChildren)
+        foreach (var matchedChild in matchedChildren.Where(model => model.Data.Visible))
             newNode.Children.Add(matchedChild);
 
         return newNode;
@@ -44,7 +44,7 @@ public class ActorItemTreeFilter
     {
         var newNode = new ActorItemTreeNode(node.Data);
 
-        foreach (var child in node.Children)
+        foreach (var child in node.Children.Where(model => model.Data.Visible))
             newNode.Children.Add(CloneTree(child));
 
         return newNode;
