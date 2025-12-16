@@ -67,6 +67,19 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
                     if (_metaIds.Count == 0 && _dataIds.Count == 0)
                         BuildTree();
                 }
+                else if (_metaIds.Count == 0 && _dataIds.Count == 0)
+                {
+                    if (e.DictPayload!.ContainsKey("Visible") || e.DictPayload!.ContainsKey("ItemPath"))
+                    {
+                        var name = e.DictPayload!["Name"] as string ?? string.Empty;
+                        if (name.StartsWith('/'))
+                            name = name.Split('/')[^1];
+
+                        var visible = e.DictPayload!["Visible"] is true;
+                        itemPath = (string?)e.DictPayload!["ItemPath"];
+                        UpdateVisible(name, itemPath, visible);
+                    }
+                }
 
                 break;
             }
@@ -82,21 +95,6 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
                     if (_metaIds.Count == 0 && _dataIds.Count == 0)
                         BuildTree();
                 }
-
-                break;
-            }
-            case "_itemMetaDataChanged":
-            {
-                if (_metaIds.Count != 0 || _dataIds.Count != 0)
-                    break;
-                
-                var name = e.DictPayload!["Name"] as string ?? string.Empty;
-                if (name.StartsWith('/'))
-                    name = name.Split('/')[^1];
-
-                var itemPath = e.DictPayload!["ItemPath"] as string ?? string.Empty;
-                var visible = e.DictPayload!["Visible"] is true;
-                UpdateVisible(name, itemPath, visible);
 
                 break;
             }

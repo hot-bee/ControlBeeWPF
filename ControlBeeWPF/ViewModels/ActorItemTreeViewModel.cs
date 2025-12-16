@@ -30,7 +30,7 @@ public partial class ActorItemTreeViewModel : ObservableObject
         set
         {
             SetProperty(ref _actorItemTreeCollection, value);
-            _filteredTree = _actorItemTreeCollection;
+            UpdateFilter();
         }
     }
     
