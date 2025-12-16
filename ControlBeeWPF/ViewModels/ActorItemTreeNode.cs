@@ -16,8 +16,7 @@ public class ActorItemTreeNode(ActorItemViewModel data) : ObservableObject
         set => SetProperty(ref _children, value);
     }
 
-    [AllowNull]
-    public ActorItemTreeNode Parent { get; set; }
+    [AllowNull] public ActorItemTreeNode Parent { get; set; }
 
     public ActorItemTreeNode AddChild(ActorItemViewModel data)
     {
@@ -25,7 +24,7 @@ public class ActorItemTreeNode(ActorItemViewModel data) : ObservableObject
         _children.Add(child);
         return child;
     }
-    
+
     public void InsertChild(int index, ActorItemViewModel data)
     {
         var child = new ActorItemTreeNode(data) { Parent = this };

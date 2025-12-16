@@ -132,7 +132,9 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
             targetNode?.InsertChild(sourceIndex, sourceNode.Data);
         }
         else
+        {
             targetNode?.RemoveChild(targetName);
+        }
     }
 
     private void BuildTree()
