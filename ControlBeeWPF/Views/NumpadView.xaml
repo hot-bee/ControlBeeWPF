@@ -6,7 +6,7 @@
         xmlns:viewModels="clr-namespace:ControlBeeWPF.ViewModels"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=viewModels:NumpadViewModel}"
-        Title="Numpad" Height="350" Width="250"
+        Title="Numpad" Height="400" Width="250"
         WindowStartupLocation="CenterScreen"
         PreviewKeyDown="Window_PreviewKeyDown"
         FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}">
@@ -25,8 +25,16 @@
                 <Setter Property="Padding" Value="0 0 10 0"></Setter>
                 <Setter Property="Background" Value="FloralWhite"></Setter>
             </Style>
+            <Style TargetType="Label">
+                <Setter Property="Height" Value="30"/>
+                <Setter Property="BorderBrush" Value="Silver"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            </Style>
         </Grid.Resources>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
@@ -35,8 +43,21 @@
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <TextBox Grid.Row="0" Name="ValueText" Text="{Binding Input, Mode=OneWay}" Margin="1"/>
-        <Grid Grid.Row="1">
+
+        <Grid Grid.Row="0" Name="ValueLimitGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Column="0" Content="{Binding MinValue, Mode=OneWay}" Margin="0 0 5 5"/>
+            <Label Grid.Column="1" Content="~" Margin="0 0 0 5"/>
+            <Label Grid.Column="2" Content="{Binding MaxValue, Mode=OneWay}" Margin="5 0 0 5"/>
+        </Grid>
+
+        <TextBox Grid.Row="1" Name="ValueText" Text="{Binding Input, Mode=OneWay}" Margin="1"/>
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
@@ -46,7 +67,7 @@
             <Button Grid.Column="1" Content="Clear" Name="ClearButton" Command="{Binding ClearCommand}"/>
             <Button Grid.Column="2" Content="Back" Name="BackButton" Command="{Binding BackspaceCommand}"/>
         </Grid>
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
@@ -56,7 +77,7 @@
             <Button Grid.Column="1" Content="8" Name="EightButton" Command="{Binding InputDigitCommand}" CommandParameter="8"/>
             <Button Grid.Column="2" Content="9" Name="NineButton" Command="{Binding InputDigitCommand}" CommandParameter="9"/>
         </Grid>
-        <Grid Grid.Row="3">
+        <Grid Grid.Row="4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
@@ -66,7 +87,7 @@
             <Button Grid.Column="1" Content="5" Name="FiveButton" Command="{Binding InputDigitCommand}" CommandParameter="5" />
             <Button Grid.Column="2" Content="6" Name="SixButton" Command="{Binding InputDigitCommand}" CommandParameter="6" />
         </Grid>
-        <Grid Grid.Row="4">
+        <Grid Grid.Row="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
@@ -76,7 +97,7 @@
             <Button Grid.Column="1" Content="2" Name="TwoButton" Command="{Binding InputDigitCommand}" CommandParameter="2" />
             <Button Grid.Column="2" Content="3" Name="ThreeButton" Command="{Binding InputDigitCommand}" CommandParameter="3" />
         </Grid>
-        <Grid Grid.Row="5">
+        <Grid Grid.Row="6">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
@@ -86,7 +107,7 @@
             <Button Grid.Column="1" Content="000" Name="ThousandButton" Command="{Binding InputDigitCommand}" CommandParameter="000" />
             <Button Grid.Column="2" Content="." Name="PointButton" Command="{Binding InputDotCommand}" />
         </Grid>
-        <Grid Grid.Row="6">
+        <Grid Grid.Row="7">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />

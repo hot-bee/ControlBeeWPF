@@ -173,7 +173,9 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
         {
             var initialValue = (string)args![0]!;
             var allowDecimal = args![1] is true;
-            var viewModel = new NumpadViewModel(initialValue, allowDecimal);
+            var minValue = args.Length > 2 ? (string?)args[2] : null;
+            var maxValue = args.Length > 3 ? (string?)args[3] : null;
+            var viewModel = new NumpadViewModel(initialValue, allowDecimal, minValue!, maxValue!);
             var view = new NumpadView(viewModel);
             return (view as T)!;
         }

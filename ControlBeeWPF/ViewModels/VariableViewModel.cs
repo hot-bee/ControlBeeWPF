@@ -24,6 +24,8 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
     private string? _toolTip;
     private string? _unit;
     private object? _value;
+    private string? _minValue;
+    private string? _maxValue;
 
     public event EventHandler<string>? WriteFailed;
 
@@ -70,6 +72,18 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
         private set => SetField(ref _toolTip, value);
     }
 
+    public string? MinValue
+    {
+        get => _minValue;
+        private set => SetField(ref _minValue, value);
+    }
+
+    public string? MaxValue
+    {
+        get => _maxValue;
+        private set => SetField(ref _maxValue, value);
+    }
+
     public void Dispose()
     {
         _binder.MetaDataChanged -= BinderOnMetaDataChanged;
@@ -84,9 +98,13 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
         var name = e["Name"] as string;
         var unit = e["Unit"]?.ToString();
         var desc = e["Desc"]?.ToString();
+        var min = e["MinValue"]?.ToString();
+        var max = e["MaxValue"]?.ToString();
         if (!string.IsNullOrEmpty(name)) Name = name;
         Unit = unit ?? "";
         ToolTip = desc ?? "";
+        MinValue = min ?? null;
+        MaxValue = max ?? null;
     }
 
     private void Binder_DataChanged(object? sender, Dict e)
