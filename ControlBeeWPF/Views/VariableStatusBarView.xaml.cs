@@ -196,7 +196,7 @@ public partial class VariableStatusBarView : UserControl, IDisposable
                 MessageBoxImage.Question
             ) == MessageBoxResult.Yes
         )
-            _viewModel.ToggleBoolValue(booleanValue);
+            _viewModel.ChangeValue(!booleanValue);
     }
 
     private void ValueLabel_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

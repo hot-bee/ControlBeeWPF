@@ -193,16 +193,9 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
         return curValue;
     }
 
-    public void ToggleBoolValue(bool booleanValue)
+    public void ChangeValue(bool newValue)
     {
-        _actor.Send(
-            new ActorItemMessage(
-                _uiActor,
-                _itemPath,
-                "_itemDataWrite",
-                new ItemDataWriteArgs(_subItemPath, !booleanValue)
-            )
-        );
+        ChangeValue(newValue.ToString());
     }
 
     public void ChangeValue(string newValue)

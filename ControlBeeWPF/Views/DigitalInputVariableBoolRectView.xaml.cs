@@ -68,7 +68,7 @@ public partial class DigitalInputVariableBoolRectView : INotifyPropertyChanged
                 MessageBoxImage.Question
             ) == MessageBoxResult.Yes
         )
-            _variableViewModel.ToggleBoolValue(boolValue);
+            _variableViewModel.ChangeValue(!boolValue);
     }
 
     private void OnVariablePropertyChanged(object? sender, PropertyChangedEventArgs e)
