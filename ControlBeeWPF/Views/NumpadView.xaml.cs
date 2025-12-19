@@ -19,6 +19,9 @@ public partial class NumpadView : Window
         _viewModel = viewModel;
         DataContext = viewModel;
         InitializeComponent();
+
+        if (!_viewModel.HasValueLimit)
+            ValueLimitGrid.Visibility = Visibility.Collapsed;
     }
 
     public string Value => _viewModel.Input;

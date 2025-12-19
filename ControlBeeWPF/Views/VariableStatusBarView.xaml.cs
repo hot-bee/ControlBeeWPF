@@ -230,7 +230,7 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         {
             var initialValue = _viewModel.Value.ToString() ?? "0";
             var allowDecimal = _viewModel.Value is double;
-            var inputBox = _viewFactory.Create<NumpadView>(initialValue, allowDecimal)!;
+            var inputBox = _viewFactory.Create<NumpadView>(initialValue, allowDecimal, _viewModel.MinValue, _viewModel.MaxValue)!;
             if (inputBox.ShowDialog() is not true)
                 return;
             newValue = inputBox.Value;
