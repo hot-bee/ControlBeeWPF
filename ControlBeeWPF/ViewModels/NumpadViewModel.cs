@@ -15,7 +15,7 @@ public partial class NumpadViewModel : ObservableObject
 
     private readonly bool allowDecimal;
     private bool _hasUserInteracted = false;
-    public bool HasValueLimit => MinValue != null && MaxValue != null;
+    public bool HasValueLimit => MinValue != null || MaxValue != null;
 
     public NumpadViewModel(string initialValue = "0", bool allowDecimal = true, string? minValue = null, string? maxValue = null)
     {
