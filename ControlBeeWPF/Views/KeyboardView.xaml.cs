@@ -64,7 +64,6 @@ public partial class KeyboardView
             e.Handled = true;
             return;
         }
-
         if (e.Key is Key.Escape)
         {
             Cancel();
@@ -74,29 +73,81 @@ public partial class KeyboardView
 
         if (e.Key == Key.Back)
         {
-            if (viewModel.BackspaceCommand.CanExecute(null))
-                viewModel.BackspaceCommand.Execute(null);
+            if ((Keyboard.Modifiers & ModifierKeys.Control) != 0)
+            {
+                viewModel.ClearCommand.Execute(null);
+            }
+            else
+            {
+                if (viewModel.BackspaceCommand.CanExecute(null))
+                    viewModel.BackspaceCommand.Execute(null);
+            }
 
             e.Handled = true;
             return;
         }
 
-        if (e.Key == Key.Delete || (e.Key == Key.Back && (Keyboard.Modifiers & ModifierKeys.Control) != 0))
+        if (e.Key == Key.Delete)
         {
             viewModel.ClearCommand.Execute(null);
             e.Handled = true;
             return;
         }
 
-        if (e.Key is >= Key.A and <= Key.Z)
+        if (e.Key == Key.Space)
         {
-            char key = (char)('A' + (e.Key - Key.A));
-            bool shift = (Keyboard.Modifiers & ModifierKeys.Shift) != 0;
-            string letter = shift ? key.ToString() : char.ToLowerInvariant(key).ToString();
-
-            viewModel.InputLetterCommand.Execute(letter);
+            viewModel.InputTextCommand.Execute(" ");
             e.Handled = true;
             return;
+        }
+
+        if (e.Key == Key.CapsLock)
+        {
+            viewModel.ToggleCapsCommand.Execute(null);
+            e.Handled = true;
+            return;
+        }
+
+        if (e.Key is >= Key.D0 and <= Key.D9)
+        {
+            char ch = (char)('0' + (e.Key - Key.D0));
+            viewModel.InputTextCommand.Execute(ch.ToString());
+            e.Handled = true;
+            return;
+        }
+
+        if (e.Key is >= Key.A and <= Key.Z)
+        {
+            char baseCh = (char)('a' + (e.Key - Key.A));
+            bool shiftDown = (Keyboard.Modifiers & ModifierKeys.Shift) != 0;
+
+            bool upper = viewModel.IsCaps ^ shiftDown;
+            char outCh = upper ? char.ToUpperInvariant(baseCh) : baseCh;
+
+            viewModel.InputTextCommand.Execute(outCh.ToString());
+            e.Handled = true;
+            return;
+        }
+
+        string? oem = e.Key switch
+        {
+            Key.OemMinus => "-",
+            Key.OemPlus => "=",
+            Key.OemComma => ",",
+            Key.OemPeriod => ".",
+            Key.OemQuestion => "?",
+            Key.Oem1 => ";",
+            Key.OemQuotes => "\"",
+            Key.OemOpenBrackets => "[",
+            Key.Oem6 => "]",
+            Key.Oem5 => "\\",
+            _ => null
+        };
+
+        if (oem is not null)
+        {
+            viewModel.InputTextCommand.Execute(oem);
+            e.Handled = true;
         }
     }
 }
