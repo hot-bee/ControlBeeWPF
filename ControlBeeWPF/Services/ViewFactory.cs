@@ -159,8 +159,9 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
         {
             var actorName = (string)args![0]!;
             var columns = (int)args![1]!;
+            var pageSize = args.Length > 2 ? (int?)args[2]! : null;
             var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
-            var view = new IoListView(actorName, columns, actorRegistry, this);
+            var view = new IoListView(actorName, columns, actorRegistry, this, pageSize);
             return view;
         }
 
