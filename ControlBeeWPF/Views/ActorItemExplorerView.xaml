@@ -10,31 +10,39 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*" />
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
         <GroupBox Grid.Column="0" Header="Items" Margin="5">
-            <TreeView 
-                DataContext="{Binding ActorItemTreeViewModel}"
-                ItemsSource="{Binding ActorItemTreeCollection.Root.Children}"
-                SelectedItemChanged="TreeView_OnSelectedItemChanged"
-                Margin="5">
-                <TreeView.Resources>
-                    <HierarchicalDataTemplate DataType="{x:Type viewModels:ActorItemTreeNode}" 
-                                              ItemsSource="{Binding Children}">
-                        <TextBlock Text="{Binding Data.Title}"/>
-                    </HierarchicalDataTemplate>
-                </TreeView.Resources>
-            </TreeView>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <TextBox Grid.Row="0"
+                         Text="{Binding ActorItemTreeViewModel.FilterText, UpdateSourceTrigger=PropertyChanged}" />
+                <TreeView Grid.Row="1"
+                          DataContext="{Binding ActorItemTreeViewModel}"
+                          ItemsSource="{Binding FilteredTreeCollection.Root.Children}"
+                          SelectedItemChanged="TreeView_OnSelectedItemChanged"
+                          Margin="5">
+                    <TreeView.Resources>
+                        <HierarchicalDataTemplate DataType="{x:Type viewModels:ActorItemTreeNode}"
+                                                  ItemsSource="{Binding Children}">
+                            <TextBlock Text="{Binding Data.Title}" />
+                        </HierarchicalDataTemplate>
+                    </TreeView.Resources>
+                </TreeView>
+            </Grid>
         </GroupBox>
         <GroupBox Grid.Column="1" Header="Details" Margin="5">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <Grid Margin="5">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto" />
                         <RowDefinition />
                     </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Name="MyContentLabel"></Label>
-                    <ContentControl Grid.Row="1" Name="MyContentControl"></ContentControl>
+                    <Label Grid.Row="0" Name="MyContentLabel" />
+                    <ContentControl Grid.Row="1" Name="MyContentControl" />
                 </Grid>
             </ScrollViewer>
         </GroupBox>

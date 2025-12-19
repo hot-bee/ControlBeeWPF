@@ -16,8 +16,7 @@ public class ActorItemTreeNode(ActorItemViewModel data) : ObservableObject
         set => SetProperty(ref _children, value);
     }
 
-    [AllowNull]
-    public ActorItemTreeNode Parent { get; set; }
+    [AllowNull] public ActorItemTreeNode Parent { get; set; }
 
     public ActorItemTreeNode AddChild(ActorItemViewModel data)
     {
@@ -26,9 +25,19 @@ public class ActorItemTreeNode(ActorItemViewModel data) : ObservableObject
         return child;
     }
 
-    public void RemoveChild(ActorItemViewModel data)
+    public void InsertChild(int index, ActorItemViewModel data)
     {
-        throw new NotImplementedException();
+        var child = new ActorItemTreeNode(data) { Parent = this };
+        _children.Insert(index, child);
+    }
+
+    public void RemoveChild(string name)
+    {
+        var foundNode = FindNode(name);
+        if (foundNode == null)
+            return;
+
+        Children.Remove(foundNode);
     }
 
     public ActorItemTreeNode? FindNode(string name)

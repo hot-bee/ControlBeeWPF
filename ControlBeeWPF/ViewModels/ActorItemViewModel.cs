@@ -4,6 +4,7 @@ namespace ControlBeeWPF.ViewModels;
 
 public class ActorItemViewModel
 {
+    public bool Visible { get; set; } = true;
     public string Name { get; set; } = string.Empty;
     public string ItemPath { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
