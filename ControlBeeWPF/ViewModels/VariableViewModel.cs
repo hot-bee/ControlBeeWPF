@@ -20,14 +20,13 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
     private readonly string _itemPath;
     private readonly object[] _subItemPath;
     private readonly IActor _uiActor;
+    private string? _maxValue;
+    private string? _minValue;
     private string _name = "";
+    private object? _oldValue;
     private string? _toolTip;
     private string? _unit;
     private object? _value;
-    private string? _minValue;
-    private string? _maxValue;
-
-    public event EventHandler<string>? WriteFailed;
 
     public VariableViewModel(
         IActorRegistry actorRegistry,
@@ -58,6 +57,12 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
     {
         get => _value;
         private set => SetField(ref _value, value);
+    }
+
+    public object? OldValue
+    {
+        get => _oldValue;
+        private set => SetField(ref _oldValue, value);
     }
 
     public string? Unit
@@ -93,6 +98,8 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    public event EventHandler<string>? WriteFailed;
+
     private void BinderOnMetaDataChanged(object? sender, Dict e)
     {
         var name = e["Name"] as string;
@@ -111,10 +118,17 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
     {
         var valueChangedArgs = e[nameof(ValueChangedArgs)] as ValueChangedArgs;
         var location = valueChangedArgs?.Location!;
-        var newValue = valueChangedArgs?.NewValue!;
-        var value = GetValue(location, newValue);
-        if (value == null) return;
-        Value = value;
+
+        var newValueArg = valueChangedArgs?.NewValue!;
+        var newValue = GetValue(location, newValueArg);
+        if (newValue != null) Value = newValue;
+
+        var oldValueArg = valueChangedArgs?.OldValue;
+        if (oldValueArg != null)
+        {
+            var oldValue = GetValue(location, oldValueArg);
+            if (oldValue != null) OldValue = oldValue;
+        }
     }
 
     private void BinderOnErrorOccurred(object? sender, Dict e)
