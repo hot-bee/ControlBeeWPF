@@ -205,6 +205,8 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
             switch (Value)
             {
                 case string value:
+                {
+                    if (value == newValue) return;
                     _actor.Send(
                         new ActorItemMessage(
                             _uiActor,
@@ -214,7 +216,11 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
                         )
                     );
                     break;
+                }
                 case int value:
+                {
+                    var parsedValue = int.Parse(newValue);
+                    if (value == parsedValue) return;
                     _actor.Send(
                         new ActorItemMessage(
                             _uiActor,
@@ -224,7 +230,11 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
                         )
                     );
                     break;
+                }
                 case double value:
+                {
+                    var parsedValue = double.Parse(newValue);
+                    if (value == parsedValue) return;
                     _actor.Send(
                         new ActorItemMessage(
                             _uiActor,
@@ -234,16 +244,21 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
                         )
                     );
                     break;
+                }
                 case bool value:
+                {
+                    var parsedValue = bool.Parse(newValue);
+                    if (value == parsedValue) return;
                     _actor.Send(
                         new ActorItemMessage(
                             _uiActor,
                             _itemPath,
                             "_itemDataWrite",
-                            new ItemDataWriteArgs(_subItemPath, bool.Parse(newValue))
+                            new ItemDataWriteArgs(_subItemPath, parsedValue)
                         )
                     );
                     break;
+                }
                 default:
                     throw new ValueError();
             }
