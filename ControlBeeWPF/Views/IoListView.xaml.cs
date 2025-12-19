@@ -12,7 +12,7 @@ namespace ControlBeeWPF.Views;
 /// </summary>
 public partial class IoListView
 {
-    private const int PageSize = 32;
+    private readonly int _pageSize;
 
     private readonly IViewFactory _viewFactory;
     private readonly IActor _actor;
@@ -25,10 +25,11 @@ public partial class IoListView
     private int _inputPageIndex;
     private int _outputPageIndex;
 
-    public IoListView(string actorName, int columns, IActorRegistry actorRegistry, IViewFactory viewFactory)
+    public IoListView(string actorName, int columns, IActorRegistry actorRegistry, IViewFactory viewFactory, int? pageSize = 32)
     {
         _actorName = actorName;
         _columns = columns;
+        _pageSize = pageSize ?? 32;
         _viewFactory = viewFactory;
         _actor = actorRegistry.Get(actorName)!;
 
@@ -57,8 +58,8 @@ public partial class IoListView
         GoToOutputPage(0);
     }
 
-    private static int GetTotalPages(int totalCount)
-        => Math.Max(1, (int)Math.Ceiling(totalCount / (double)PageSize));
+    private int GetTotalPages(int totalCount)
+        => Math.Max(1, (int)Math.Ceiling(totalCount / (double)_pageSize));
 
     private void GoToInputPage(int pageIndex)
     {
@@ -139,8 +140,8 @@ public partial class IoListView
     private void RenderPage(Grid grid, List<string> allPaths, int pageIndex, Type viewType)
     {
         var pageItems = allPaths
-            .Skip(pageIndex * PageSize)
-            .Take(PageSize)
+            .Skip(pageIndex * _pageSize)
+            .Take(_pageSize)
             .ToList();
 
         grid.Children.Clear();
