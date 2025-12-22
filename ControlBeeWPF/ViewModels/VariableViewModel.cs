@@ -32,12 +32,17 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
         IActorRegistry actorRegistry,
         string actorName,
         string itemPath,
-        object[]? subItemPath
-    )
+        object[]? subItemPath)
     {
         _actorName = actorName;
         _itemPath = itemPath;
         _subItemPath = subItemPath ?? [];
+
+        if (!itemPath.StartsWith("/"))
+        {
+            HasBindingFailed = true;
+            Logger.Error($"ItemPath must start with '/'. (actor='{actorName}', itemPath='{itemPath}')");
+        }
 
         _actor = actorRegistry.Get(actorName)!;
         _uiActor = actorRegistry.Get("Ui")!;
@@ -88,6 +93,8 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
         get => _maxValue;
         private set => SetField(ref _maxValue, value);
     }
+
+    public bool HasBindingFailed { get; private set; }
 
     public void Dispose()
     {
