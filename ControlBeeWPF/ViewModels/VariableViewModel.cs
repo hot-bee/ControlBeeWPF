@@ -27,7 +27,6 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
     private string? _toolTip;
     private string? _unit;
     private object? _value;
-    private bool _hasBindingFailed;
 
     public VariableViewModel(
         IActorRegistry actorRegistry,
@@ -95,11 +94,7 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
         private set => SetField(ref _maxValue, value);
     }
 
-    public bool HasBindingFailed
-    {
-        get => _hasBindingFailed;
-        private set => SetField(ref _hasBindingFailed, value);
-    }
+    public bool HasBindingFailed { get; private set; }
 
     public void Dispose()
     {
