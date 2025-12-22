@@ -28,16 +28,35 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
     private string? _unit;
     private object? _value;
 
+    private readonly bool _hasBindingFailed;
+    private EventHandler? _bindingFailed;
+    public event EventHandler? BindingFailed
+    {
+        add
+        {
+            _bindingFailed += value;
+            if (_hasBindingFailed)
+                value!(this, EventArgs.Empty);
+        }
+        remove => _bindingFailed -= value;
+    }
+
     public VariableViewModel(
         IActorRegistry actorRegistry,
         string actorName,
         string itemPath,
-        object[]? subItemPath
-    )
+        object[]? subItemPath)
     {
         _actorName = actorName;
         _itemPath = itemPath;
         _subItemPath = subItemPath ?? [];
+
+        if (!itemPath.StartsWith("/"))
+        {
+            _hasBindingFailed = true;
+            Logger.Error($"ItemPath must start with '/'. (actor='{actorName}', itemPath='{itemPath}')");
+            _bindingFailed?.Invoke(this, EventArgs.Empty);
+        }
 
         _actor = actorRegistry.Get(actorName)!;
         _uiActor = actorRegistry.Get("Ui")!;

@@ -4,6 +4,7 @@ using ControlBeeWPF.ViewModels;
 using log4net;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Brush = System.Windows.Media.Brush;
 using Brushes = System.Windows.Media.Brushes;
@@ -55,6 +56,7 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         GaugeRect.Width = 0;
         SizeChanged += OnSizeChanged;
         _viewModel.WriteFailed += ViewModelOnWriteFailed;
+        _viewModel.BindingFailed += ViewModelOnBindingFailed;
     }
 
     public object? GaugeMin { get; set; }
@@ -117,6 +119,8 @@ public partial class VariableStatusBarView : UserControl, IDisposable
 
     public void Dispose()
     {
+        _viewModel.WriteFailed -= ViewModelOnWriteFailed;
+        _viewModel.BindingFailed -= ViewModelOnBindingFailed;
         _viewModel.Dispose();
     }
 
@@ -266,5 +270,17 @@ public partial class VariableStatusBarView : UserControl, IDisposable
             MessageBoxButton.OK,
             MessageBoxImage.Warning
         );
+    }
+
+    private void ViewModelOnBindingFailed(object? sender, EventArgs e)
+    {
+        Grid.SetColumnSpan(NameLabel, 4);
+
+        ValueLabel.Visibility = Visibility.Collapsed;
+        BoolValueLabel.Visibility = Visibility.Collapsed;
+        UnitLabel.Visibility = Visibility.Collapsed;
+
+        NameLabel.Background = Brushes.DarkOrange;
+        NameLabel.Foreground = Brushes.White;
     }
 }
