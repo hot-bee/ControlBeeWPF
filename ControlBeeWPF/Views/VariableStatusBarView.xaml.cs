@@ -56,7 +56,8 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         GaugeRect.Width = 0;
         SizeChanged += OnSizeChanged;
         _viewModel.WriteFailed += ViewModelOnWriteFailed;
-        _viewModel.BindingFailed += ViewModelOnBindingFailed;
+        if (_viewModel.HasBindingFailed)
+            ApplyBindingFailedUi();
     }
 
     public object? GaugeMin { get; set; }
@@ -120,7 +121,6 @@ public partial class VariableStatusBarView : UserControl, IDisposable
     public void Dispose()
     {
         _viewModel.WriteFailed -= ViewModelOnWriteFailed;
-        _viewModel.BindingFailed -= ViewModelOnBindingFailed;
         _viewModel.Dispose();
     }
 
@@ -272,7 +272,7 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         );
     }
 
-    private void ViewModelOnBindingFailed(object? sender, EventArgs e)
+    private void ApplyBindingFailedUi()
     {
         Grid.SetColumnSpan(NameLabel, 4);
 

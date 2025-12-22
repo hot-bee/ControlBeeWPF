@@ -27,19 +27,7 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
     private string? _toolTip;
     private string? _unit;
     private object? _value;
-
-    private readonly bool _hasBindingFailed;
-    private EventHandler? _bindingFailed;
-    public event EventHandler? BindingFailed
-    {
-        add
-        {
-            _bindingFailed += value;
-            if (_hasBindingFailed)
-                value!(this, EventArgs.Empty);
-        }
-        remove => _bindingFailed -= value;
-    }
+    private bool _hasBindingFailed;
 
     public VariableViewModel(
         IActorRegistry actorRegistry,
@@ -53,9 +41,8 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
 
         if (!itemPath.StartsWith("/"))
         {
-            _hasBindingFailed = true;
+            HasBindingFailed = true;
             Logger.Error($"ItemPath must start with '/'. (actor='{actorName}', itemPath='{itemPath}')");
-            _bindingFailed?.Invoke(this, EventArgs.Empty);
         }
 
         _actor = actorRegistry.Get(actorName)!;
@@ -106,6 +93,12 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
     {
         get => _maxValue;
         private set => SetField(ref _maxValue, value);
+    }
+
+    public bool HasBindingFailed
+    {
+        get => _hasBindingFailed;
+        private set => SetField(ref _hasBindingFailed, value);
     }
 
     public void Dispose()
