@@ -47,10 +47,10 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
             _binder.DataChanged += Binder_DataChanged;
             _binder.ErrorOccurred += BinderOnErrorOccurred;
         }
-        catch (ArgumentException)
+        catch (ArgumentException ex)
         {
             HasBindingFailed = true;
-            Logger.Error($"ItemPath must start with '/'. (actor='{actorName}', itemPath='{itemPath}')");
+            Logger.Error(ex);
         }
     }
 
