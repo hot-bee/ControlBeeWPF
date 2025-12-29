@@ -37,19 +37,21 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
         _actorName = actorName;
         _itemPath = itemPath;
         _subItemPath = subItemPath ?? [];
+        _actor = actorRegistry.Get(actorName)!;
+        _uiActor = actorRegistry.Get("Ui")!;
 
-        if (!itemPath.StartsWith("/"))
+        try
+        {
+            _binder = new ActorItemBinder(actorRegistry, actorName, itemPath);
+            _binder.MetaDataChanged += BinderOnMetaDataChanged;
+            _binder.DataChanged += Binder_DataChanged;
+            _binder.ErrorOccurred += BinderOnErrorOccurred;
+        }
+        catch (ArgumentException)
         {
             HasBindingFailed = true;
             Logger.Error($"ItemPath must start with '/'. (actor='{actorName}', itemPath='{itemPath}')");
         }
-
-        _actor = actorRegistry.Get(actorName)!;
-        _uiActor = actorRegistry.Get("Ui")!;
-        _binder = new ActorItemBinder(actorRegistry, actorName, itemPath);
-        _binder.MetaDataChanged += BinderOnMetaDataChanged;
-        _binder.DataChanged += Binder_DataChanged;
-        _binder.ErrorOccurred += BinderOnErrorOccurred;
     }
 
     public string Name
