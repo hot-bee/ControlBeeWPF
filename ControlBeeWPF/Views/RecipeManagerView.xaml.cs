@@ -27,7 +27,8 @@ public partial class RecipeManagerView : UserControl
     private void OpenButton_OnClick(object sender, RoutedEventArgs e)
     {
         var recipeName = RecipeListBox.SelectedItem as string;
-        if (string.IsNullOrEmpty(recipeName)) return;
+        if (string.IsNullOrEmpty(recipeName))
+            return;
         _variableManager.Load(recipeName);
     }
 
@@ -37,14 +38,16 @@ public partial class RecipeManagerView : UserControl
         if (inputBox.ShowDialog() is not true)
             return;
         var recipeName = inputBox.ResponseText;
-        if (string.IsNullOrEmpty(recipeName)) return;
+        if (string.IsNullOrEmpty(recipeName))
+            return;
         _variableManager.Save(recipeName);
     }
 
     private void DeleteButton_OnClick(object sender, RoutedEventArgs e)
     {
         var recipeName = RecipeListBox.SelectedItem as string;
-        if (string.IsNullOrEmpty(recipeName)) return;
+        if (string.IsNullOrEmpty(recipeName))
+            return;
         if (
             MessageBox.Show(
                 $"Are you sure to DELETE \"{recipeName}\"?",

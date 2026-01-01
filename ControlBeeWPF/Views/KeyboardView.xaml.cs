@@ -1,7 +1,7 @@
-﻿using ControlBeeWPF.ViewModels;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
+using ControlBeeWPF.ViewModels;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 
 namespace ControlBeeWPF.Views;
@@ -141,7 +141,7 @@ public partial class KeyboardView
             Key.OemOpenBrackets => "[",
             Key.Oem6 => "]",
             Key.Oem5 => "\\",
-            _ => null
+            _ => null,
         };
 
         if (oem is not null)

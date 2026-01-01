@@ -5,20 +5,12 @@ using ControlBeeWPF.Views;
 
 namespace ControlBeeWPF.Services;
 
-public class TeachingViewFactory(
-    IActorRegistry actorRegistry,
-    IViewFactory viewFactory
-)
+public class TeachingViewFactory(IActorRegistry actorRegistry, IViewFactory viewFactory)
 {
     public TeachingView Create(string actorName)
     {
         var viewModel = new TeachingViewModel(actorName, actorRegistry);
-        var view = new TeachingView(
-            actorName,
-            viewModel,
-            this,
-            viewFactory
-        );
+        var view = new TeachingView(actorName, viewModel, this, viewFactory);
         return view;
     }
 

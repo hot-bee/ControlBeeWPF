@@ -20,7 +20,11 @@ public partial class TeachingWholeView : UserControl, IDisposable
 
     private readonly Dictionary<string, UserControl> _views = new();
 
-    public TeachingWholeView(IActorRegistry actorRegistry, IViewFactory viewFactory, TeachingViewFactory teachingViewFactory)
+    public TeachingWholeView(
+        IActorRegistry actorRegistry,
+        IViewFactory viewFactory,
+        TeachingViewFactory teachingViewFactory
+    )
     {
         _actorRegistry = actorRegistry;
         _viewFactory = viewFactory;
@@ -80,10 +84,12 @@ public partial class TeachingWholeView : UserControl, IDisposable
 
     private void UpdateContent(string actorName)
     {
-
         if (!_views.ContainsKey(actorName))
         {
-            var view = _viewFactory.Create(typeof(EditableFrameView), _teachingViewFactory.Create(actorName));
+            var view = _viewFactory.Create(
+                typeof(EditableFrameView),
+                _teachingViewFactory.Create(actorName)
+            );
             _views[actorName] = view;
         }
         MyContentControl.Content = _views[actorName];

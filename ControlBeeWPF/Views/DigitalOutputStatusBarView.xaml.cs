@@ -12,12 +12,12 @@ namespace ControlBeeWPF.Views;
 // ReSharper disable once InconsistentNaming
 public partial class DigitalOutputStatusBarView : UserControl, IDisposable
 {
-    public static readonly DependencyProperty NameColumnWidthProperty =
-        DependencyProperty.Register(
-            nameof(NameColumnWidth),
-            typeof(GridLength),
-            typeof(DigitalOutputStatusBarView),
-            new PropertyMetadata(new GridLength(1, GridUnitType.Auto)));
+    public static readonly DependencyProperty NameColumnWidthProperty = DependencyProperty.Register(
+        nameof(NameColumnWidth),
+        typeof(GridLength),
+        typeof(DigitalOutputStatusBarView),
+        new PropertyMetadata(new GridLength(1, GridUnitType.Auto))
+    );
 
     private readonly DigitalOutputViewModel _viewModel;
 
@@ -27,7 +27,6 @@ public partial class DigitalOutputStatusBarView : UserControl, IDisposable
         _viewModel = viewModel;
         _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
     }
-
 
     public GridLength NameColumnWidth
     {

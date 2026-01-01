@@ -25,7 +25,13 @@ public partial class IoListView
     private int _inputPageIndex;
     private int _outputPageIndex;
 
-    public IoListView(string actorName, int columns, IActorRegistry actorRegistry, IViewFactory viewFactory, int? pageSize = 32)
+    public IoListView(
+        string actorName,
+        int columns,
+        IActorRegistry actorRegistry,
+        IViewFactory viewFactory,
+        int? pageSize = 32
+    )
     {
         _actorName = actorName;
         _columns = columns;
@@ -58,8 +64,8 @@ public partial class IoListView
         GoToOutputPage(0);
     }
 
-    private int GetTotalPages(int totalCount)
-        => Math.Max(1, (int)Math.Ceiling(totalCount / (double)_pageSize));
+    private int GetTotalPages(int totalCount) =>
+        Math.Max(1, (int)Math.Ceiling(totalCount / (double)_pageSize));
 
     private void GoToInputPage(int pageIndex)
     {
@@ -81,9 +87,12 @@ public partial class IoListView
 
     private static int ClampPage(int pageIndex, int totalPages)
     {
-        if (totalPages <= 0) return 0;
-        if (pageIndex < 0) return 0;
-        if (pageIndex > totalPages - 1) return totalPages - 1;
+        if (totalPages <= 0)
+            return 0;
+        if (pageIndex < 0)
+            return 0;
+        if (pageIndex > totalPages - 1)
+            return totalPages - 1;
         return pageIndex;
     }
 
@@ -111,7 +120,12 @@ public partial class IoListView
         BuildPagerSimple(OutputPager, total, _outputPageIndex, GoToOutputPage);
     }
 
-    private void BuildPagerSimple(WrapPanel pagerHost, int totalPages, int currentPageIndex, Action<int> onPageClicked)
+    private void BuildPagerSimple(
+        WrapPanel pagerHost,
+        int totalPages,
+        int currentPageIndex,
+        Action<int> onPageClicked
+    )
     {
         pagerHost.Children.Clear();
         totalPages = Math.Max(1, totalPages);
@@ -120,14 +134,15 @@ public partial class IoListView
         {
             bool isActive = pageIndex == currentPageIndex;
 
-            var style = (Style?)TryFindResource(isActive ? "PagerButtonActiveStyle" : "PagerButtonStyle")
-                        ?? (Style?)TryFindResource("PagerButtonStyle");
+            var style =
+                (Style?)TryFindResource(isActive ? "PagerButtonActiveStyle" : "PagerButtonStyle")
+                ?? (Style?)TryFindResource("PagerButtonStyle");
 
             var button = new Button
             {
                 Content = (pageIndex + 1).ToString(),
                 Style = style,
-                HorizontalAlignment = HorizontalAlignment.Stretch
+                HorizontalAlignment = HorizontalAlignment.Stretch,
             };
 
             int index = pageIndex;
@@ -139,10 +154,7 @@ public partial class IoListView
 
     private void RenderPage(Grid grid, List<string> allPaths, int pageIndex, Type viewType)
     {
-        var pageItems = allPaths
-            .Skip(pageIndex * _pageSize)
-            .Take(_pageSize)
-            .ToList();
+        var pageItems = allPaths.Skip(pageIndex * _pageSize).Take(_pageSize).ToList();
 
         grid.Children.Clear();
         grid.RowDefinitions.Clear();
@@ -160,11 +172,13 @@ public partial class IoListView
             for (int column = 0; column < _columns; column++)
             {
                 int index = row * _columns + column;
-                if (index >= pageItems.Count) continue;
+                if (index >= pageItems.Count)
+                    continue;
 
                 string itemPath = pageItems[index];
                 var view = _viewFactory.Create(viewType, _actorName, itemPath);
-                if (view is null) continue;
+                if (view is null)
+                    continue;
 
                 Grid.SetRow(view, row);
                 Grid.SetColumn(view, column);

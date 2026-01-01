@@ -9,7 +9,8 @@ public partial class EditableFrameViewModel : ObservableObject
 {
     private readonly IVariableManager _variableManager;
 
-    [ObservableProperty] private bool _modified;
+    [ObservableProperty]
+    private bool _modified;
 
     public EditableFrameViewModel(IVariableManager variableManager)
     {

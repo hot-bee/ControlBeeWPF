@@ -37,9 +37,12 @@ public partial class ActorItemExplorerWholeView : UserControl, IDisposable
             {
                 Content = title,
                 Height = 40,
-                Margin = new Thickness(1)
+                Margin = new Thickness(1),
             };
-            button.Click += (sender, args) => { SelectActor(name); };
+            button.Click += (sender, args) =>
+            {
+                SelectActor(name);
+            };
             _buttons[name] = button;
             ActorPanel.Children.Add(button);
         }
@@ -81,7 +84,10 @@ public partial class ActorItemExplorerWholeView : UserControl, IDisposable
     {
         if (!_views.ContainsKey(actorName))
         {
-            var view = _viewFactory.Create(typeof(EditableFrameView), _actorItemExplorerViewFactory.Create(actorName));
+            var view = _viewFactory.Create(
+                typeof(EditableFrameView),
+                _actorItemExplorerViewFactory.Create(actorName)
+            );
             _views[actorName] = view;
         }
 

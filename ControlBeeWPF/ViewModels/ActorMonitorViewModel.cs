@@ -15,15 +15,17 @@ public partial class ActorMonitorViewModel : ObservableObject, IDisposable
     private readonly JsonSerializerSettings _jsonSettings = new()
     {
         ContractResolver = new RespectSystemTextJsonIgnoreResolver(),
-        Formatting = Formatting.Indented
+        Formatting = Formatting.Indented,
     };
 
     private readonly Dictionary<IActor, DataRow> _rows = new();
     private readonly IUiActor _uiActor;
 
-    [ObservableProperty] private Dictionary<string, string> _actorStatus = [];
+    [ObservableProperty]
+    private Dictionary<string, string> _actorStatus = [];
 
-    [ObservableProperty] private DataTable _data = new();
+    [ObservableProperty]
+    private DataTable _data = new();
 
     public ActorMonitorViewModel(IActorRegistry actorRegistry)
     {

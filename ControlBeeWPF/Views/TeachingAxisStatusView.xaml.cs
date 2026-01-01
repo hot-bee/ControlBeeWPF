@@ -25,7 +25,13 @@ public partial class TeachingAxisStatusView : UserControl
         {
             if (type.IsAssignableTo(typeof(IAxis)))
             {
-                var view = viewFactory.Create(typeof(AxisStatusView), actorName, itemPath, index, true);
+                var view = viewFactory.Create(
+                    typeof(AxisStatusView),
+                    actorName,
+                    itemPath,
+                    index,
+                    true
+                );
                 AxesPanel.Children.Add(view);
                 index++;
             }

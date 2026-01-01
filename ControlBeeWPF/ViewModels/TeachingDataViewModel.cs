@@ -26,7 +26,12 @@ public partial class TeachingDataViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     private DataTable _tableData;
 
-    public TeachingDataViewModel(string actorName, string itemPath, object[] location, IActorRegistry actorRegistry)
+    public TeachingDataViewModel(
+        string actorName,
+        string itemPath,
+        object[] location,
+        IActorRegistry actorRegistry
+    )
     {
         _location = location;
         _positionBinder = new ActorItemBinder(actorRegistry, actorName, itemPath);
@@ -95,7 +100,8 @@ public partial class TeachingDataViewModel : ObservableObject, IDisposable
         {
             if (location?.Length > 0)
             {
-                if (!location[0].Equals(key)) return;
+                if (!location[0].Equals(key))
+                    return;
                 location = location[1..];
                 continue;
             }
@@ -103,9 +109,9 @@ public partial class TeachingDataViewModel : ObservableObject, IDisposable
             {
                 newValue = index1D.GetValue((int)key);
             }
-            else throw new ArgumentException();
+            else
+                throw new ArgumentException();
         }
-
 
         if (location?.Length > 0)
         {

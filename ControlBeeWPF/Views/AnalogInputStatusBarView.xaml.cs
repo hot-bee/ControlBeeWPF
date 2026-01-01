@@ -8,12 +8,12 @@ namespace ControlBeeWPF.Views;
 
 public partial class AnalogInputStatusBarView : UserControl, IDisposable
 {
-    public static readonly DependencyProperty NameColumnWidthProperty =
-        DependencyProperty.Register(
-            nameof(NameColumnWidth),
-            typeof(GridLength),
-            typeof(AnalogInputStatusBarView),
-            new PropertyMetadata(new GridLength(1, GridUnitType.Auto)));
+    public static readonly DependencyProperty NameColumnWidthProperty = DependencyProperty.Register(
+        nameof(NameColumnWidth),
+        typeof(GridLength),
+        typeof(AnalogInputStatusBarView),
+        new PropertyMetadata(new GridLength(1, GridUnitType.Auto))
+    );
 
     private readonly AnalogInputViewModel _viewModel;
 

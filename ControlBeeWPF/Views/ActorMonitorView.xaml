@@ -1,19 +1,25 @@
-﻿<UserControl x:Class="ControlBeeWPF.Views.ActorMonitorView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:viewModels="clr-namespace:ControlBeeWPF.ViewModels"
-             d:DataContext="{d:DesignInstance Type=viewModels:ActorMonitorViewModel}"
-             mc:Ignorable="d" 
-             Width="600" Height="600">
+﻿<UserControl
+    x:Class="ControlBeeWPF.Views.ActorMonitorView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:ControlBeeWPF.ViewModels"
+    Width="600"
+    Height="600"
+    d:DataContext="{d:DesignInstance Type=viewModels:ActorMonitorViewModel}"
+    mc:Ignorable="d">
     <Grid>
-        <DataGrid ItemsSource="{Binding Data}"
-                  CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False"
-                  CanUserSortColumns="False" IsReadOnly="True">
+        <DataGrid
+            CanUserAddRows="False"
+            CanUserDeleteRows="False"
+            CanUserReorderColumns="False"
+            CanUserSortColumns="False"
+            IsReadOnly="True"
+            ItemsSource="{Binding Data}">
             <DataGrid.Resources>
                 <Style TargetType="DataGridRow">
-                    <EventSetter Event="MouseDoubleClick" Handler="Row_DoubleClick"/>
+                    <EventSetter Event="MouseDoubleClick" Handler="Row_DoubleClick" />
                 </Style>
             </DataGrid.Resources>
         </DataGrid>

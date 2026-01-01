@@ -1,10 +1,10 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using ControlBee.Interfaces;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Data;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using ControlBee.Interfaces;
 using Dict = System.Collections.Generic.Dictionary<string, object?>;
 using MessageBox = System.Windows.MessageBox;
 using MessageBoxButton = System.Windows.MessageBoxButton;
@@ -17,13 +17,22 @@ public partial class UserManagementViewModel : ObservableObject
     private readonly IAuthorityLevels _authorityLevels;
     private readonly IUserManager _userManager;
 
-    [ObservableProperty] private string _name = string.Empty;
-    [ObservableProperty] private string _password = string.Empty;
-    [ObservableProperty] private string _userId = string.Empty;
-    [ObservableProperty] private int _userLevel;
+    [ObservableProperty]
+    private string _name = string.Empty;
+
+    [ObservableProperty]
+    private string _password = string.Empty;
+
+    [ObservableProperty]
+    private string _userId = string.Empty;
+
+    [ObservableProperty]
+    private int _userLevel;
 
     public ObservableCollection<UserRow> Users { get; } = new();
-    [ObservableProperty] private UserRow? _selectedUser;
+
+    [ObservableProperty]
+    private UserRow? _selectedUser;
 
     public IReadOnlyList<KeyValuePair<int, string>> LevelItems { get; }
 
@@ -32,15 +41,15 @@ public partial class UserManagementViewModel : ObservableObject
         _userManager = userManager;
         _authorityLevels = authorityLevels;
 
-        LevelItems = _authorityLevels.LevelMap
-            .Where(keyValuePair => keyValuePair.Key < _userManager.CurrentUser!.Level)
+        LevelItems = _authorityLevels
+            .LevelMap.Where(keyValuePair => keyValuePair.Key < _userManager.CurrentUser!.Level)
             .OrderBy(keyValuePair => keyValuePair.Key)
             .ToList();
         if (LevelItems.Count > 0)
             UserLevel = LevelItems[0].Key;
 
         LoadUsers();
-        _userManager.UserListUpdated += (_, _) => LoadUsers(); 
+        _userManager.UserListUpdated += (_, _) => LoadUsers();
     }
 
     private void LoadUsers()
@@ -61,19 +70,36 @@ public partial class UserManagementViewModel : ObservableObject
     [RelayCommand]
     private void Register()
     {
-        if (string.IsNullOrWhiteSpace(UserId) ||
-            string.IsNullOrWhiteSpace(Password) ||
-            string.IsNullOrWhiteSpace(Name))
+        if (
+            string.IsNullOrWhiteSpace(UserId)
+            || string.IsNullOrWhiteSpace(Password)
+            || string.IsNullOrWhiteSpace(Name)
+        )
         {
-            MessageBox.Show("Please fill in all fields.", "Notice", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(
+                "Please fill in all fields.",
+                "Notice",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning
+            );
             return;
         }
 
         var registerSucceeded = _userManager.Register(UserId, Password, Name, UserLevel);
         if (registerSucceeded)
-            MessageBox.Show("Registration successful.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(
+                "Registration successful.",
+                "Success",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information
+            );
         else
-            MessageBox.Show("Registration failed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(
+                "Registration failed.",
+                "Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error
+            );
 
         Name = string.Empty;
         Password = string.Empty;
@@ -95,14 +121,21 @@ public partial class UserManagementViewModel : ObservableObject
             {
                 ["Id"] = userRow.Id,
                 ["Name"] = userRow.Name,
-                ["RawPassword"] = string.IsNullOrWhiteSpace(userRow.PasswordInput) ? null : userRow.PasswordInput,
-                ["Level"] = userRow.Level
+                ["RawPassword"] = string.IsNullOrWhiteSpace(userRow.PasswordInput)
+                    ? null
+                    : userRow.PasswordInput,
+                ["Level"] = userRow.Level,
             })
             .ToList();
 
         if (changes.Count == 0)
         {
-            MessageBox.Show("No changes to update.", "Notice", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(
+                "No changes to update.",
+                "Notice",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information
+            );
             return;
         }
 
@@ -115,34 +148,64 @@ public partial class UserManagementViewModel : ObservableObject
                 user.IsDirty = false;
                 user.LevelName = _authorityLevels.GetLevelName(user.Level);
             }
-            MessageBox.Show($"Successfully updated user(s).", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(
+                $"Successfully updated user(s).",
+                "Success",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information
+            );
         }
         else
         {
-            MessageBox.Show("Failed to update users.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(
+                "Failed to update users.",
+                "Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error
+            );
         }
     }
 
     [RelayCommand]
     private void Delete(int id)
     {
-        if (MessageBox.Show($"Delete user ID {id}?", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+        if (
+            MessageBox.Show(
+                $"Delete user ID {id}?",
+                "Confirm",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question
+            ) != MessageBoxResult.Yes
+        )
             return;
 
         var deleteSucceeded = _userManager.Delete(id);
-        if (!deleteSucceeded) return;
+        if (!deleteSucceeded)
+            return;
     }
 
     public partial class UserRow : ObservableObject
     {
-        [ObservableProperty] private int _id;
-        [ObservableProperty] private string _userId;
-        [ObservableProperty] private string _name;
-        [ObservableProperty] private string? _passwordInput;
-        [ObservableProperty] private int _level;
-        [ObservableProperty] private string _levelName;
+        [ObservableProperty]
+        private int _id;
 
-        [ObservableProperty] private bool _isDirty;
+        [ObservableProperty]
+        private string _userId;
+
+        [ObservableProperty]
+        private string _name;
+
+        [ObservableProperty]
+        private string? _passwordInput;
+
+        [ObservableProperty]
+        private int _level;
+
+        [ObservableProperty]
+        private string _levelName;
+
+        [ObservableProperty]
+        private bool _isDirty;
 
         public UserRow(IUserInfo user, string? passwordInput)
         {
@@ -155,7 +218,9 @@ public partial class UserManagementViewModel : ObservableObject
         }
 
         partial void OnNameChanged(string value) => IsDirty = true;
+
         partial void OnLevelChanged(int value) => IsDirty = true;
+
         partial void OnPasswordInputChanged(string? value) => IsDirty = true;
     }
 }

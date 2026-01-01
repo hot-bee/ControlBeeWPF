@@ -55,7 +55,8 @@ public partial class TeachingView : UserControl, IDisposable
         foreach (var (itemPath, location) in _viewModel.PositionItemPaths)
         {
             var name = _viewModel.ItemNames[itemPath];
-            if (location.Length > 0) name = $"{name}({location[0]})";
+            if (location.Length > 0)
+                name = $"{name}({location[0]})";
             PositionItemList.Items.Add(name);
         }
     }
@@ -74,7 +75,7 @@ public partial class TeachingView : UserControl, IDisposable
 
             DataContent.Content = view;
 
-            _viewFactory.Create(typeof(TeachingJogView), _actorName, itemPath, location);  // TODO: risk of memory leak
+            _viewFactory.Create(typeof(TeachingJogView), _actorName, itemPath, location); // TODO: risk of memory leak
         }
         catch (ArgumentOutOfRangeException exception)
         {

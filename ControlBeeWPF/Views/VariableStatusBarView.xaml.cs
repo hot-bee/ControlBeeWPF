@@ -1,11 +1,11 @@
-﻿using ControlBeeWPF.Components;
-using ControlBeeWPF.Interfaces;
-using ControlBeeWPF.ViewModels;
-using log4net;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using ControlBeeWPF.Components;
+using ControlBeeWPF.Interfaces;
+using ControlBeeWPF.ViewModels;
+using log4net;
 using Brush = System.Windows.Media.Brush;
 using Brushes = System.Windows.Media.Brushes;
 using MessageBox = System.Windows.MessageBox;
@@ -20,26 +20,27 @@ public partial class VariableStatusBarView : UserControl, IDisposable
 {
     private static readonly ILog Logger = LogManager.GetLogger(nameof(VariableStatusBarView));
 
-    public static readonly DependencyProperty NameColumnWidthProperty =
-        DependencyProperty.Register(
-            nameof(NameColumnWidth),
-            typeof(GridLength),
-            typeof(VariableStatusBarView),
-            new PropertyMetadata(new GridLength(1, GridUnitType.Auto)));
+    public static readonly DependencyProperty NameColumnWidthProperty = DependencyProperty.Register(
+        nameof(NameColumnWidth),
+        typeof(GridLength),
+        typeof(VariableStatusBarView),
+        new PropertyMetadata(new GridLength(1, GridUnitType.Auto))
+    );
 
     public static readonly DependencyProperty ValueColumnWidthProperty =
         DependencyProperty.Register(
             nameof(ValueColumnWidth),
             typeof(GridLength),
             typeof(VariableStatusBarView),
-            new PropertyMetadata(new GridLength(1, GridUnitType.Star)));
+            new PropertyMetadata(new GridLength(1, GridUnitType.Star))
+        );
 
-    public static readonly DependencyProperty UnitColumnWidthProperty =
-        DependencyProperty.Register(
-            nameof(UnitColumnWidth),
-            typeof(GridLength),
-            typeof(VariableStatusBarView),
-            new PropertyMetadata(new GridLength(1, GridUnitType.Auto)));
+    public static readonly DependencyProperty UnitColumnWidthProperty = DependencyProperty.Register(
+        nameof(UnitColumnWidth),
+        typeof(GridLength),
+        typeof(VariableStatusBarView),
+        new PropertyMetadata(new GridLength(1, GridUnitType.Auto))
+    );
 
     private readonly IViewFactory _viewFactory;
     private readonly VariableViewModel _viewModel;
@@ -156,13 +157,17 @@ public partial class VariableStatusBarView : UserControl, IDisposable
                 if (_viewModel.Value is bool)
                 {
                     ValueColumn.Width = new GridLength(0);
-                    BoolValueRect.Fill = _viewModel.Value is true ? Brushes.LawnGreen : Brushes.WhiteSmoke;
+                    BoolValueRect.Fill = _viewModel.Value is true
+                        ? Brushes.LawnGreen
+                        : Brushes.WhiteSmoke;
                 }
                 else
                 {
                     string valueContent;
-                    if (_viewModel.Value is double doubleValue) valueContent = Math.Round(doubleValue, 3).ToString();
-                    else valueContent = _viewModel.Value?.ToString() ?? "";
+                    if (_viewModel.Value is double doubleValue)
+                        valueContent = Math.Round(doubleValue, 3).ToString();
+                    else
+                        valueContent = _viewModel.Value?.ToString() ?? "";
                     BinaryValueColumn.Width = new GridLength(0);
                     ValueLabel.Content = valueContent;
                     UpdateGauge();
@@ -174,7 +179,8 @@ public partial class VariableStatusBarView : UserControl, IDisposable
 
     private void UpdateGauge()
     {
-        if (GaugeMin == null || GaugeMax == null) return;
+        if (GaugeMin == null || GaugeMax == null)
+            return;
         if (_viewModel.Value is double value)
         {
             var ratio = (value - (double)GaugeMin) / ((double)GaugeMax - (double)GaugeMin);
@@ -188,7 +194,6 @@ public partial class VariableStatusBarView : UserControl, IDisposable
     {
         _clickAction = clickAction;
     }
-
 
     private void ToggleBoolValue(bool booleanValue)
     {
@@ -208,7 +213,8 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         if (_viewModel.Value == null)
             return;
 
-        if (ReadOnly) return;
+        if (ReadOnly)
+            return;
 
         if (_clickAction != null)
         {
@@ -234,7 +240,12 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         {
             var initialValue = _viewModel.Value.ToString() ?? "0";
             var allowDecimal = _viewModel.Value is double;
-            var inputBox = _viewFactory.Create<NumpadView>(initialValue, allowDecimal, _viewModel.MinValue, _viewModel.MaxValue)!;
+            var inputBox = _viewFactory.Create<NumpadView>(
+                initialValue,
+                allowDecimal,
+                _viewModel.MinValue,
+                _viewModel.MaxValue
+            )!;
             if (inputBox.ShowDialog() is not true)
                 return;
             newValue = inputBox.Value;

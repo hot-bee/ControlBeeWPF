@@ -1,10 +1,12 @@
-﻿<UserControl x:Class="ControlBeeWPF.Views.IoListView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800">
+﻿<UserControl
+    x:Class="ControlBeeWPF.Views.IoListView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
 
     <UserControl.Resources>
         <Style TargetType="{x:Type GroupBox}">
@@ -15,20 +17,21 @@
             <Setter Property="Margin" Value="5" />
             <Setter Property="Width" Value="50" />
             <Setter Property="Height" Value="40" />
-            <Setter Property="Padding" Value="10 5" />
+            <Setter Property="Padding" Value="10,5" />
             <Setter Property="FontWeight" Value="Normal" />
             <Setter Property="FontSize" Value="15" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="Black" />
         </Style>
 
-        <Style x:Key="PagerButtonActiveStyle"
-               TargetType="Button"
-               BasedOn="{StaticResource PagerButtonStyle}">
+        <Style
+            x:Key="PagerButtonActiveStyle"
+            BasedOn="{StaticResource PagerButtonStyle}"
+            TargetType="Button">
             <Setter Property="FontWeight" Value="Bold" />
             <Setter Property="BorderThickness" Value="2" />
-            <Setter Property="Background" Value="LightGoldenrodYellow"/>
+            <Setter Property="Background" Value="LightGoldenrodYellow" />
         </Style>
     </UserControl.Resources>
 
@@ -41,29 +44,33 @@
 
             <GroupBox Grid.Column="0" Header="Input">
                 <DockPanel LastChildFill="True">
-                    <DockPanel DockPanel.Dock="Bottom" Margin="0,10,0,0">
-                        <StackPanel Orientation="Horizontal"
-                                    HorizontalAlignment="Center">
+                    <DockPanel Margin="0,10,0,0" DockPanel.Dock="Bottom">
+                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
 
-                            <Button Content="&lt;&lt;"
-                                    Name="InputFirstButton"
-                                    Style="{StaticResource PagerButtonStyle}" />
+                            <Button
+                                Name="InputFirstButton"
+                                Content="&lt;&lt;"
+                                Style="{StaticResource PagerButtonStyle}" />
 
-                            <Button Content="&lt;"
-                                    Name="InputPrevButton"
-                                    Style="{StaticResource PagerButtonStyle}" />
+                            <Button
+                                Name="InputPrevButton"
+                                Content="&lt;"
+                                Style="{StaticResource PagerButtonStyle}" />
 
-                            <WrapPanel Name="InputPager"
-                                       VerticalAlignment="Center"
-                                       Margin="5,0" />
+                            <WrapPanel
+                                Name="InputPager"
+                                Margin="5,0"
+                                VerticalAlignment="Center" />
 
-                            <Button Content="&gt;"
-                                    Name="InputNextButton"
-                                    Style="{StaticResource PagerButtonStyle}" />
+                            <Button
+                                Name="InputNextButton"
+                                Content="&gt;"
+                                Style="{StaticResource PagerButtonStyle}" />
 
-                            <Button Content="&gt;&gt;"
-                                    Name="InputLastButton"
-                                    Style="{StaticResource PagerButtonStyle}" />
+                            <Button
+                                Name="InputLastButton"
+                                Content="&gt;&gt;"
+                                Style="{StaticResource PagerButtonStyle}" />
                         </StackPanel>
                     </DockPanel>
                     <Grid Name="InputGrid" />
@@ -72,29 +79,33 @@
 
             <GroupBox Grid.Column="1" Header="Output">
                 <DockPanel LastChildFill="True">
-                    <DockPanel DockPanel.Dock="Bottom" Margin="0,10,0,0">
-                        <StackPanel Orientation="Horizontal"
-                                    HorizontalAlignment="Center">
+                    <DockPanel Margin="0,10,0,0" DockPanel.Dock="Bottom">
+                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
 
-                            <Button Content="&lt;&lt;"
-                                    Name="OutputFirstButton"
-                                    Style="{StaticResource PagerButtonStyle}" />
+                            <Button
+                                Name="OutputFirstButton"
+                                Content="&lt;&lt;"
+                                Style="{StaticResource PagerButtonStyle}" />
 
-                            <Button Content="&lt;"
-                                    Name="OutputPrevButton"
-                                    Style="{StaticResource PagerButtonStyle}" />
+                            <Button
+                                Name="OutputPrevButton"
+                                Content="&lt;"
+                                Style="{StaticResource PagerButtonStyle}" />
 
-                            <WrapPanel Name="OutputPager"
-                                       VerticalAlignment="Center"
-                                       Margin="5,0" />
+                            <WrapPanel
+                                Name="OutputPager"
+                                Margin="5,0"
+                                VerticalAlignment="Center" />
 
-                            <Button Content="&gt;"
-                                    Name="OutputNextButton"
-                                    Style="{StaticResource PagerButtonStyle}" />
+                            <Button
+                                Name="OutputNextButton"
+                                Content="&gt;"
+                                Style="{StaticResource PagerButtonStyle}" />
 
-                            <Button Content="&gt;&gt;"
-                                    Name="OutputLastButton"
-                                    Style="{StaticResource PagerButtonStyle}" />
+                            <Button
+                                Name="OutputLastButton"
+                                Content="&gt;&gt;"
+                                Style="{StaticResource PagerButtonStyle}" />
                         </StackPanel>
                     </DockPanel>
                     <Grid Name="OutputGrid" />

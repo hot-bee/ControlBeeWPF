@@ -56,7 +56,8 @@ public class StatusViewModel : INotifyPropertyChanged, IDisposable
         switch (message.Name)
         {
             case "_status":
-                if (message.Sender.Name == _actorName) ReadStatusValue(message.DictPayload!);
+                if (message.Sender.Name == _actorName)
+                    ReadStatusValue(message.DictPayload!);
 
                 break;
         }
@@ -69,7 +70,8 @@ public class StatusViewModel : INotifyPropertyChanged, IDisposable
 
     protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
     {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+        if (EqualityComparer<T>.Default.Equals(field, value))
+            return false;
         field = value;
         OnPropertyChanged(propertyName);
         return true;

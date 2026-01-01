@@ -7,7 +7,6 @@ using ControlBeeAbstract.Exceptions;
 using log4net;
 using Dict = System.Collections.Generic.Dictionary<string, object?>;
 
-
 namespace ControlBeeWPF.ViewModels;
 
 public class VariableViewModel : INotifyPropertyChanged, IDisposable
@@ -32,7 +31,8 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
         IActorRegistry actorRegistry,
         string actorName,
         string itemPath,
-        object[]? subItemPath)
+        object[]? subItemPath
+    )
     {
         _actorName = actorName;
         _itemPath = itemPath;
@@ -116,7 +116,8 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
         var desc = e["Desc"]?.ToString();
         var min = e["MinValue"]?.ToString();
         var max = e["MaxValue"]?.ToString();
-        if (!string.IsNullOrEmpty(name)) Name = name;
+        if (!string.IsNullOrEmpty(name))
+            Name = name;
         Unit = unit ?? "";
         ToolTip = desc ?? "";
         MinValue = min ?? null;
@@ -130,20 +131,23 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
 
         var newValueArg = valueChangedArgs?.NewValue!;
         var newValue = GetValue(location, newValueArg);
-        if (newValue != null) Value = newValue;
+        if (newValue != null)
+            Value = newValue;
 
         var oldValueArg = valueChangedArgs?.OldValue;
         if (oldValueArg != null)
         {
             var oldValue = GetValue(location, oldValueArg);
-            if (oldValue != null) OldValue = oldValue;
+            if (oldValue != null)
+                OldValue = oldValue;
         }
     }
 
     private void BinderOnErrorOccurred(object? sender, Dict e)
     {
-        if (e.TryGetValue("ErrorMessage", out var errorObject) &&
-            errorObject is string errorMessage)
+        if (
+            e.TryGetValue("ErrorMessage", out var errorObject) && errorObject is string errorMessage
+        )
             WriteFailed?.Invoke(this, errorMessage);
     }
 
@@ -215,7 +219,8 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
             {
                 case string value:
                 {
-                    if (value == newValue) return;
+                    if (value == newValue)
+                        return;
                     _actor.Send(
                         new ActorItemMessage(
                             _uiActor,
@@ -229,7 +234,8 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
                 case int value:
                 {
                     var parsedValue = int.Parse(newValue);
-                    if (value == parsedValue) return;
+                    if (value == parsedValue)
+                        return;
                     _actor.Send(
                         new ActorItemMessage(
                             _uiActor,
@@ -243,7 +249,8 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
                 case double value:
                 {
                     var parsedValue = double.Parse(newValue);
-                    if (value == parsedValue) return;
+                    if (value == parsedValue)
+                        return;
                     _actor.Send(
                         new ActorItemMessage(
                             _uiActor,
@@ -257,7 +264,8 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
                 case bool value:
                 {
                     var parsedValue = bool.Parse(newValue);
-                    if (value == parsedValue) return;
+                    if (value == parsedValue)
+                        return;
                     _actor.Send(
                         new ActorItemMessage(
                             _uiActor,
@@ -285,7 +293,8 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
 
     protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
     {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+        if (EqualityComparer<T>.Default.Equals(field, value))
+            return false;
         field = value;
         OnPropertyChanged(propertyName);
         return true;

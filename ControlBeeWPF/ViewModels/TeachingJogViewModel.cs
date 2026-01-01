@@ -118,20 +118,31 @@ public partial class TeachingJogViewModel : ObservableObject
     [RelayCommand]
     private void MoveToHomePos()
     {
-        _actor.Send(new VariableActorItemMessage(_uiActor, _positionItemPath, _location, "MoveToHomePos"));
+        _actor.Send(
+            new VariableActorItemMessage(_uiActor, _positionItemPath, _location, "MoveToHomePos")
+        );
     }
 
     [RelayCommand]
     private void MoveToSavedPos()
     {
-        _actor.Send(new VariableActorItemMessage(_uiActor, _positionItemPath, _location, "MoveToSavedPos"));
+        _actor.Send(
+            new VariableActorItemMessage(_uiActor, _positionItemPath, _location, "MoveToSavedPos")
+        );
     }
 
     [RelayCommand]
     private void SetPos()
     {
-        if (_dialogService.Confirm($"Do you want to set {_positionItemPath}", "Confirm setting position"))
-            _actor.Send(new VariableActorItemMessage(_uiActor, _positionItemPath, _location, "SetPos"));
+        if (
+            _dialogService.Confirm(
+                $"Do you want to set {_positionItemPath}",
+                "Confirm setting position"
+            )
+        )
+            _actor.Send(
+                new VariableActorItemMessage(_uiActor, _positionItemPath, _location, "SetPos")
+            );
     }
 
     [RelayCommand]

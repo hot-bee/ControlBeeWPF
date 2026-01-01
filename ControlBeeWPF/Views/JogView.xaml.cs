@@ -4,9 +4,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using ControlBee.Constants;
+using ControlBeeAbstract.Constants;
 using ControlBeeAbstract.Exceptions;
 using ControlBeeWPF.ViewModels;
-using ControlBeeAbstract.Constants;
 using log4net;
 using Button = System.Windows.Controls.Button;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
@@ -97,16 +97,8 @@ public partial class JogView : UserControl, IDisposable
         var stackPanel = new StackPanel { HorizontalAlignment = HorizontalAlignment.Center };
         foreach (var itemPath in _viewModel.AxisItemPaths)
         {
-            var negButton = new Button
-            {
-                Content = "- Neg",
-                Margin = new Thickness(10),
-            };
-            var posButton = new Button
-            {
-                Content = "Pos +",
-                Margin = new Thickness(10),
-            };
+            var negButton = new Button { Content = "- Neg", Margin = new Thickness(10) };
+            var posButton = new Button { Content = "Pos +", Margin = new Thickness(10) };
             var label = new Label
             {
                 Content = itemPath,

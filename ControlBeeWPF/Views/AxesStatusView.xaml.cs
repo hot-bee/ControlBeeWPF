@@ -17,10 +17,7 @@ public partial class AxesStatusView : UserControl
     private readonly List<AxisStatusView> _axisStatusViews = [];
     private readonly AxesStatusViewModel _viewModel;
 
-    public AxesStatusView(
-        AxesStatusViewModel viewModel,
-        IViewFactory viewFactory
-    )
+    public AxesStatusView(AxesStatusViewModel viewModel, IViewFactory viewFactory)
     {
         _viewFactory = viewFactory;
         DataContext = _viewModel = viewModel;
@@ -85,8 +82,8 @@ public partial class AxesStatusView : UserControl
                 {
                     if (panel.Children.Count > 0)
                         panel.Children.Add(new Separator());
-                    var statusView = (AxisStatusView)_viewFactory.Create(
-                        typeof(AxisStatusView), actor.Name, itemPath, index++);
+                    var statusView = (AxisStatusView)
+                        _viewFactory.Create(typeof(AxisStatusView), actor.Name, itemPath, index++);
                     _axisStatusViews.Add(statusView);
                     panel.Children.Add(statusView);
                 }

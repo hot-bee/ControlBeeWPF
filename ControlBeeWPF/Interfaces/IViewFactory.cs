@@ -5,5 +5,6 @@ namespace ControlBeeWPF.Interfaces;
 public interface IViewFactory
 {
     UserControl? Create(Type viewType, params object?[]? args);
-    T? Create<T>(params object?[]? args) where T : class;
+    T? Create<T>(params object?[]? args)
+        where T : class;
 }

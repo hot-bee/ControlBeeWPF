@@ -13,8 +13,10 @@ public partial class DigitalInputVariableBoolRectView : INotifyPropertyChanged
     private readonly DigitalInputViewModel _digitalInputViewModel;
     private readonly VariableViewModel _variableViewModel;
 
-    public DigitalInputVariableBoolRectView(DigitalInputViewModel digitalInputViewModel,
-        VariableViewModel variableViewModel)
+    public DigitalInputVariableBoolRectView(
+        DigitalInputViewModel digitalInputViewModel,
+        VariableViewModel variableViewModel
+    )
     {
         InitializeComponent();
 
@@ -34,8 +36,12 @@ public partial class DigitalInputVariableBoolRectView : INotifyPropertyChanged
     }
 
     public static readonly DependencyProperty VariableRectSizeProperty =
-        DependencyProperty.Register(nameof(VariableRectSize), typeof(double), typeof(DigitalInputVariableBoolRectView),
-            new PropertyMetadata(20.0));
+        DependencyProperty.Register(
+            nameof(VariableRectSize),
+            typeof(double),
+            typeof(DigitalInputVariableBoolRectView),
+            new PropertyMetadata(20.0)
+        );
 
     public double InputRectSize
     {
@@ -43,9 +49,12 @@ public partial class DigitalInputVariableBoolRectView : INotifyPropertyChanged
         set => SetValue(InputRectSizeProperty, value);
     }
 
-    public static readonly DependencyProperty InputRectSizeProperty =
-        DependencyProperty.Register(nameof(InputRectSize), typeof(double), typeof(DigitalInputVariableBoolRectView),
-            new PropertyMetadata(10.0));
+    public static readonly DependencyProperty InputRectSizeProperty = DependencyProperty.Register(
+        nameof(InputRectSize),
+        typeof(double),
+        typeof(DigitalInputVariableBoolRectView),
+        new PropertyMetadata(10.0)
+    );
 
     public Brush DigitalInputBrush =>
         _digitalInputViewModel.Value is true ? Brushes.Red : Brushes.LightGray;

@@ -17,7 +17,8 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
     private readonly Dictionary<string, object> _values = new();
     private ActorItemTreeViewModel _actorItemTreeViewModel;
 
-    [ObservableProperty] private ActorItemTreeNode? _selectedItem;
+    [ObservableProperty]
+    private ActorItemTreeNode? _selectedItem;
 
     public ActorItemExplorerViewModel(string actorName, IActorRegistry actorRegistry)
     {

@@ -1,40 +1,43 @@
-﻿<Window x:Class="ControlBeeWPF.Views.NumpadView"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:viewModels="clr-namespace:ControlBeeWPF.ViewModels"
-        mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance Type=viewModels:NumpadViewModel}"
-        Title="Numpad" Height="400" Width="250"
-        WindowStartupLocation="CenterScreen"
-        PreviewKeyDown="Window_PreviewKeyDown"
-        FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}">
+﻿<Window
+    x:Class="ControlBeeWPF.Views.NumpadView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:ControlBeeWPF.ViewModels"
+    Title="Numpad"
+    Width="250"
+    Height="400"
+    d:DataContext="{d:DesignInstance Type=viewModels:NumpadViewModel}"
+    FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}"
+    PreviewKeyDown="Window_PreviewKeyDown"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
     <Grid Margin="10" Focusable="True">
         <Grid.Resources>
-            <Style TargetType="Control" x:Key="ControlStyle">
+            <Style x:Key="ControlStyle" TargetType="Control">
                 <Setter Property="FontSize" Value="14" />
             </Style>
-            <Style TargetType="Button" BasedOn="{StaticResource ControlStyle}">
-                <Setter Property="Margin" Value="1"></Setter>
-                <Setter Property="Background" Value="WhiteSmoke"></Setter>
+            <Style BasedOn="{StaticResource ControlStyle}" TargetType="Button">
+                <Setter Property="Margin" Value="1" />
+                <Setter Property="Background" Value="WhiteSmoke" />
             </Style>
-            <Style TargetType="TextBox" BasedOn="{StaticResource ControlStyle}">
-                <Setter Property="HorizontalContentAlignment" Value="Right"></Setter>
-                <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
-                <Setter Property="Padding" Value="0 0 10 0"></Setter>
-                <Setter Property="Background" Value="FloralWhite"></Setter>
+            <Style BasedOn="{StaticResource ControlStyle}" TargetType="TextBox">
+                <Setter Property="HorizontalContentAlignment" Value="Right" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="Padding" Value="0,0,10,0" />
+                <Setter Property="Background" Value="FloralWhite" />
             </Style>
             <Style TargetType="Label">
-                <Setter Property="Height" Value="30"/>
-                <Setter Property="BorderBrush" Value="Silver"/>
-                <Setter Property="BorderThickness" Value="1"/>
-                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                <Setter Property="Height" Value="30" />
+                <Setter Property="BorderBrush" Value="Silver" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
             </Style>
         </Grid.Resources>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
@@ -44,28 +47,53 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Name="ValueLimitGrid">
+        <Grid Name="ValueLimitGrid" Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="20"/>
-                <ColumnDefinition/>
+                <ColumnDefinition />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <Label Grid.Column="0" Content="{Binding MinValue, Mode=OneWay}" Margin="0 0 5 5"/>
-            <Label Grid.Column="1" Content="~" Margin="0 0 0 5"/>
-            <Label Grid.Column="2" Content="{Binding MaxValue, Mode=OneWay}" Margin="5 0 0 5"/>
+            <Label
+                Grid.Column="0"
+                Margin="0,0,5,5"
+                Content="{Binding MinValue, Mode=OneWay}" />
+            <Label
+                Grid.Column="1"
+                Margin="0,0,0,5"
+                Content="~" />
+            <Label
+                Grid.Column="2"
+                Margin="5,0,0,5"
+                Content="{Binding MaxValue, Mode=OneWay}" />
         </Grid>
 
-        <TextBox Grid.Row="1" Name="ValueText" Text="{Binding Input, Mode=OneWay}" Margin="1"/>
+        <TextBox
+            Name="ValueText"
+            Grid.Row="1"
+            Margin="1"
+            Text="{Binding Input, Mode=OneWay}" />
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Content="±" Name="MinusButton" Command="{Binding InvertSignCommand}"/>
-            <Button Grid.Column="1" Content="Clear" Name="ClearButton" Command="{Binding ClearCommand}"/>
-            <Button Grid.Column="2" Content="Back" Name="BackButton" Command="{Binding BackspaceCommand}"/>
+            <Button
+                Name="MinusButton"
+                Grid.Column="0"
+                Command="{Binding InvertSignCommand}"
+                Content="±" />
+            <Button
+                Name="ClearButton"
+                Grid.Column="1"
+                Command="{Binding ClearCommand}"
+                Content="Clear" />
+            <Button
+                Name="BackButton"
+                Grid.Column="2"
+                Command="{Binding BackspaceCommand}"
+                Content="Back" />
         </Grid>
         <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
@@ -73,9 +101,24 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Content="7" Name="SevenButton" Command="{Binding InputDigitCommand}" CommandParameter="7"/>
-            <Button Grid.Column="1" Content="8" Name="EightButton" Command="{Binding InputDigitCommand}" CommandParameter="8"/>
-            <Button Grid.Column="2" Content="9" Name="NineButton" Command="{Binding InputDigitCommand}" CommandParameter="9"/>
+            <Button
+                Name="SevenButton"
+                Grid.Column="0"
+                Command="{Binding InputDigitCommand}"
+                CommandParameter="7"
+                Content="7" />
+            <Button
+                Name="EightButton"
+                Grid.Column="1"
+                Command="{Binding InputDigitCommand}"
+                CommandParameter="8"
+                Content="8" />
+            <Button
+                Name="NineButton"
+                Grid.Column="2"
+                Command="{Binding InputDigitCommand}"
+                CommandParameter="9"
+                Content="9" />
         </Grid>
         <Grid Grid.Row="4">
             <Grid.ColumnDefinitions>
@@ -83,9 +126,24 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Content="4" Name="FourButton" Command="{Binding InputDigitCommand}" CommandParameter="4" />
-            <Button Grid.Column="1" Content="5" Name="FiveButton" Command="{Binding InputDigitCommand}" CommandParameter="5" />
-            <Button Grid.Column="2" Content="6" Name="SixButton" Command="{Binding InputDigitCommand}" CommandParameter="6" />
+            <Button
+                Name="FourButton"
+                Grid.Column="0"
+                Command="{Binding InputDigitCommand}"
+                CommandParameter="4"
+                Content="4" />
+            <Button
+                Name="FiveButton"
+                Grid.Column="1"
+                Command="{Binding InputDigitCommand}"
+                CommandParameter="5"
+                Content="5" />
+            <Button
+                Name="SixButton"
+                Grid.Column="2"
+                Command="{Binding InputDigitCommand}"
+                CommandParameter="6"
+                Content="6" />
         </Grid>
         <Grid Grid.Row="5">
             <Grid.ColumnDefinitions>
@@ -93,9 +151,24 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Content="1" Name="OneButton" Command="{Binding InputDigitCommand}" CommandParameter="1" />
-            <Button Grid.Column="1" Content="2" Name="TwoButton" Command="{Binding InputDigitCommand}" CommandParameter="2" />
-            <Button Grid.Column="2" Content="3" Name="ThreeButton" Command="{Binding InputDigitCommand}" CommandParameter="3" />
+            <Button
+                Name="OneButton"
+                Grid.Column="0"
+                Command="{Binding InputDigitCommand}"
+                CommandParameter="1"
+                Content="1" />
+            <Button
+                Name="TwoButton"
+                Grid.Column="1"
+                Command="{Binding InputDigitCommand}"
+                CommandParameter="2"
+                Content="2" />
+            <Button
+                Name="ThreeButton"
+                Grid.Column="2"
+                Command="{Binding InputDigitCommand}"
+                CommandParameter="3"
+                Content="3" />
         </Grid>
         <Grid Grid.Row="6">
             <Grid.ColumnDefinitions>
@@ -103,17 +176,40 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Content="0" Name="ZeroButton" Command="{Binding InputDigitCommand}" CommandParameter="0" />
-            <Button Grid.Column="1" Content="000" Name="ThousandButton" Command="{Binding InputDigitCommand}" CommandParameter="000" />
-            <Button Grid.Column="2" Content="." Name="PointButton" Command="{Binding InputDotCommand}" />
+            <Button
+                Name="ZeroButton"
+                Grid.Column="0"
+                Command="{Binding InputDigitCommand}"
+                CommandParameter="0"
+                Content="0" />
+            <Button
+                Name="ThousandButton"
+                Grid.Column="1"
+                Command="{Binding InputDigitCommand}"
+                CommandParameter="000"
+                Content="000" />
+            <Button
+                Name="PointButton"
+                Grid.Column="2"
+                Command="{Binding InputDotCommand}"
+                Content="." />
         </Grid>
         <Grid Grid.Row="7">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Content="Cancel" Name="CancelButton" Click="Button_OnClick"/>
-            <Button Grid.Column="1" Content="Enter" Name="EnterButton" FontWeight="Bold" Click="Button_OnClick"/>
+            <Button
+                Name="CancelButton"
+                Grid.Column="0"
+                Click="Button_OnClick"
+                Content="Cancel" />
+            <Button
+                Name="EnterButton"
+                Grid.Column="1"
+                Click="Button_OnClick"
+                Content="Enter"
+                FontWeight="Bold" />
         </Grid>
     </Grid>
 </Window>

@@ -16,9 +16,11 @@ public partial class VisionStatusViewModel : ObservableObject
     private readonly IVisionDevice? _device;
     private readonly string _visionDeviceName;
 
-    [ObservableProperty] private int _channel;
+    [ObservableProperty]
+    private int _channel;
 
-    [ObservableProperty] private int _inspIndex;
+    [ObservableProperty]
+    private int _inspIndex;
 
     private bool _isConnected;
 
@@ -97,7 +99,7 @@ public partial class VisionStatusViewModel : ObservableObject
             var resultString = result.ToString();
             Logger.Info(resultString);
         }
-        catch(Exception error)
+        catch (Exception error)
         {
             Logger.Error(error.Message);
         }
@@ -124,6 +126,7 @@ public partial class VisionStatusViewModel : ObservableObject
         }
         _device.StartContinuous(channel);
     }
+
     [RelayCommand]
     private void StopContinuous(int channel)
     {

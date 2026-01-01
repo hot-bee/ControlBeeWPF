@@ -1,46 +1,70 @@
-﻿<UserControl x:Class="ControlBeeWPF.Views.VariableStatusBarView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d"
-             d:DesignHeight="40" d:DesignWidth="300">
+﻿<UserControl
+    x:Class="ControlBeeWPF.Views.VariableStatusBarView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="40"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
     <Grid Margin="1">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Name="NameColumn" 
-                              Width="{Binding NameColumnWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-            <ColumnDefinition Name="ValueColumn" 
-                              Width="{Binding ValueColumnWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-            <ColumnDefinition Name="BinaryValueColumn" Width="*"/>
-            <ColumnDefinition Name="UnitColumn" 
-                              Width="{Binding UnitColumnWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+            <ColumnDefinition Name="NameColumn" Width="{Binding NameColumnWidth, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+            <ColumnDefinition Name="ValueColumn" Width="{Binding ValueColumnWidth, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+            <ColumnDefinition Name="BinaryValueColumn" Width="*" />
+            <ColumnDefinition Name="UnitColumn" Width="{Binding UnitColumnWidth, RelativeSource={RelativeSource AncestorType=UserControl}}" />
         </Grid.ColumnDefinitions>
-        <Label Grid.Column="0" Name="NameLabel" Content="name" 
-               VerticalContentAlignment="Center" HorizontalContentAlignment="Left"
-               Margin="1 0"
-               Background="WhiteSmoke" BorderThickness="1" BorderBrush="Silver"/>
+        <Label
+            Name="NameLabel"
+            Grid.Column="0"
+            Margin="1,0"
+            HorizontalContentAlignment="Left"
+            VerticalContentAlignment="Center"
+            Background="WhiteSmoke"
+            BorderBrush="Silver"
+            BorderThickness="1"
+            Content="name" />
         <Grid Grid.Column="1">
-            <Rectangle x:Name="GaugeRect"
-                       Fill="LightGreen"
-                       HorizontalAlignment="Left"
-                       Width="10"/>
-            <Label Name="ValueLabel" Content="value"
-                   VerticalContentAlignment="Center" HorizontalContentAlignment="Right"
-                   Margin="1 0"
-                   MouseLeftButtonDown="ValueLabel_OnMouseLeftButtonDown"
-                   BorderThickness="1" BorderBrush="Silver" />
+            <Rectangle
+                x:Name="GaugeRect"
+                Width="10"
+                HorizontalAlignment="Left"
+                Fill="LightGreen" />
+            <Label
+                Name="ValueLabel"
+                Margin="1,0"
+                HorizontalContentAlignment="Right"
+                VerticalContentAlignment="Center"
+                BorderBrush="Silver"
+                BorderThickness="1"
+                Content="value"
+                MouseLeftButtonDown="ValueLabel_OnMouseLeftButtonDown" />
         </Grid>
-        <Label Grid.Column="2" Name="BoolValueLabel" MouseLeftButtonDown="BoolValueLabel_OnMouseLeftButtonDown"
-               VerticalContentAlignment="Center"  HorizontalContentAlignment="Center" 
-               Margin="1 0"
-               BorderThickness="1" BorderBrush="Silver">
-            <Rectangle Name="BoolValueRect"
-                       Width="14" Height="14" Stroke="DimGray" />
+        <Label
+            Name="BoolValueLabel"
+            Grid.Column="2"
+            Margin="1,0"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            BorderBrush="Silver"
+            BorderThickness="1"
+            MouseLeftButtonDown="BoolValueLabel_OnMouseLeftButtonDown">
+            <Rectangle
+                Name="BoolValueRect"
+                Width="14"
+                Height="14"
+                Stroke="DimGray" />
         </Label>
-        
-        <Label Grid.Column="3" Name="UnitLabel" Content="unit" 
-               VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-               Margin="1 0"
-               Background="WhiteSmoke" BorderThickness="1" BorderBrush="Silver"/>
+
+        <Label
+            Name="UnitLabel"
+            Grid.Column="3"
+            Margin="1,0"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            Background="WhiteSmoke"
+            BorderBrush="Silver"
+            BorderThickness="1"
+            Content="unit" />
     </Grid>
 </UserControl>

@@ -16,10 +16,7 @@ public class JogViewModel : ObservableObject
     public readonly string[] AxisItemPaths;
     public readonly Dictionary<string, double[]> StepJogSizes = new();
 
-    public JogViewModel(
-        string actorName,
-        IActorRegistry actorRegistry
-    )
+    public JogViewModel(string actorName, IActorRegistry actorRegistry)
     {
         _actor = actorRegistry.Get(actorName)!;
         _uiActor = (IUiActor)actorRegistry.Get("Ui")!;
@@ -67,7 +64,7 @@ public class JogViewModel : ObservableObject
                 {
                     ["Type"] = "Step",
                     ["Direction"] = direction,
-                    ["JogStep"] = jogStep
+                    ["JogStep"] = jogStep,
                 }
             )
         );
@@ -88,7 +85,7 @@ public class JogViewModel : ObservableObject
                 {
                     ["Type"] = "Continuous",
                     ["Direction"] = direction,
-                    ["JogSpeed"] = jogSpeedLevel
+                    ["JogSpeed"] = jogSpeedLevel,
                 }
             )
         );

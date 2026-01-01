@@ -1,6 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Collections.ObjectModel;
 
 namespace ControlBeeWPF.ViewModels;
 
@@ -14,12 +14,24 @@ public partial class KeyboardViewModel : ObservableObject
         public bool IsWide { get; init; }
     }
 
-    public enum LayoutMode { Abc, Num, Sym }
+    public enum LayoutMode
+    {
+        Abc,
+        Num,
+        Sym,
+    }
 
-    [ObservableProperty] private string _input = "";
-    [ObservableProperty] private bool _isShift;
-    [ObservableProperty] private bool _isCaps;
-    [ObservableProperty] private LayoutMode _mode = LayoutMode.Abc;
+    [ObservableProperty]
+    private string _input = "";
+
+    [ObservableProperty]
+    private bool _isShift;
+
+    [ObservableProperty]
+    private bool _isCaps;
+
+    [ObservableProperty]
+    private LayoutMode _mode = LayoutMode.Abc;
 
     private bool _hasUserInteracted;
 
@@ -38,7 +50,9 @@ public partial class KeyboardViewModel : ObservableObject
     }
 
     partial void OnIsShiftChanged(bool value) => Rebuild();
+
     partial void OnIsCapsChanged(bool value) => Rebuild();
+
     partial void OnModeChanged(LayoutMode value) => Rebuild();
 
     [RelayCommand]
@@ -128,9 +142,12 @@ public partial class KeyboardViewModel : ObservableObject
     {
         Rows.Clear();
 
-        if (Mode == LayoutMode.Abc) BuildAbc();
-        else if (Mode == LayoutMode.Num) BuildNum();
-        else BuildSym();
+        if (Mode == LayoutMode.Abc)
+            BuildAbc();
+        else if (Mode == LayoutMode.Num)
+            BuildNum();
+        else
+            BuildSym();
     }
 
     private void BuildAbc()
@@ -138,17 +155,27 @@ public partial class KeyboardViewModel : ObservableObject
         Rows.Add(Row(Chars("qwertyuiop")));
         Rows.Add(Row(Chars("asdfghjkl")));
 
-        var row = new List<KeyItem> { new() { Kind = "Shift", Label = "Shift" } };
+        var row = new List<KeyItem>
+        {
+            new() { Kind = "Shift", Label = "Shift" },
+        };
         row.AddRange(Chars("zxcvbnm"));
         row.Add(new KeyItem { Kind = "Back", Label = "⌫" });
         Rows.Add(Row(row.ToArray()));
 
-        Rows.Add(Row(
-            new KeyItem { Kind = "Caps", Label = "Caps" },
-            new KeyItem { Kind = "NUM", Label = "123" },
-            new KeyItem { Kind = "SYM", Label = "#+=" },
-            new KeyItem { Kind = "Space", Label = "Space", IsWide = true }
-        ));
+        Rows.Add(
+            Row(
+                new KeyItem { Kind = "Caps", Label = "Caps" },
+                new KeyItem { Kind = "NUM", Label = "123" },
+                new KeyItem { Kind = "SYM", Label = "#+=" },
+                new KeyItem
+                {
+                    Kind = "Space",
+                    Label = "Space",
+                    IsWide = true,
+                }
+            )
+        );
     }
 
     private void BuildNum()
@@ -157,15 +184,25 @@ public partial class KeyboardViewModel : ObservableObject
 
         Rows.Add(Row(Chars(@"-/:;()₩&@""", applyCase: false)));
 
-        var row = new List<KeyItem> { new() { Kind = "SYM", Label = "#+=" } };
+        var row = new List<KeyItem>
+        {
+            new() { Kind = "SYM", Label = "#+=" },
+        };
         row.AddRange(Chars(".,?!'", applyCase: false));
         row.Add(new KeyItem { Kind = "Back", Label = "⌫" });
         Rows.Add(Row(row.ToArray()));
 
-        Rows.Add(Row(
-            new KeyItem { Kind = "ABC", Label = "ABC" },
-            new KeyItem { Kind = "Space", Label = "Space", IsWide = true }
-        ));
+        Rows.Add(
+            Row(
+                new KeyItem { Kind = "ABC", Label = "ABC" },
+                new KeyItem
+                {
+                    Kind = "Space",
+                    Label = "Space",
+                    IsWide = true,
+                }
+            )
+        );
     }
 
     private void BuildSym()
@@ -173,15 +210,25 @@ public partial class KeyboardViewModel : ObservableObject
         Rows.Add(Row(Chars("[]{}#%^*+=", applyCase: false)));
         Rows.Add(Row(Chars(@"_\|~<>€£¥•", applyCase: false)));
 
-        var row = new List<KeyItem> { new() { Kind = "NUM", Label = "123" } };
+        var row = new List<KeyItem>
+        {
+            new() { Kind = "NUM", Label = "123" },
+        };
         row.AddRange(Chars(".,?!'", applyCase: false));
         row.Add(new KeyItem { Kind = "Back", Label = "⌫" });
         Rows.Add(Row(row.ToArray()));
 
-        Rows.Add(Row(
-            new KeyItem { Kind = "ABC", Label = "ABC" },
-            new KeyItem { Kind = "Space", Label = "Space", IsWide = true }
-        ));
+        Rows.Add(
+            Row(
+                new KeyItem { Kind = "ABC", Label = "ABC" },
+                new KeyItem
+                {
+                    Kind = "Space",
+                    Label = "Space",
+                    IsWide = true,
+                }
+            )
+        );
     }
 
     private static ObservableCollection<KeyItem> Row(params KeyItem[] keys) => new(keys);
@@ -192,12 +239,14 @@ public partial class KeyboardViewModel : ObservableObject
         foreach (var ch in s)
         {
             string outCh = applyCase ? ApplyCase(ch) : ch.ToString();
-            list.Add(new KeyItem
-            {
-                Kind = "Char",
-                Label = outCh,
-                Value = outCh
-            });
+            list.Add(
+                new KeyItem
+                {
+                    Kind = "Char",
+                    Label = outCh,
+                    Value = outCh,
+                }
+            );
         }
         return list.ToArray();
     }

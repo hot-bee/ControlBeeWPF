@@ -8,7 +8,7 @@ public class DialogService : IDialogService
 {
     public bool Confirm(string message, string title = "Confirm")
     {
-        return MessageBox.Show(
-            message, title, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes;
+        return MessageBox.Show(message, title, MessageBoxButton.YesNo, MessageBoxImage.Question)
+            == MessageBoxResult.Yes;
     }
 }

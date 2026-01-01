@@ -8,8 +8,10 @@ public partial class NumpadViewModel : ObservableObject
 {
     [ObservableProperty]
     private string input;
+
     [ObservableProperty]
     private string? minValue;
+
     [ObservableProperty]
     private string? maxValue;
 
@@ -17,12 +19,17 @@ public partial class NumpadViewModel : ObservableObject
     private bool _hasUserInteracted = false;
     public bool HasValueLimit => MinValue != null || MaxValue != null;
 
-    public NumpadViewModel(string initialValue = "0", bool allowDecimal = true, string? minValue = null, string? maxValue = null)
+    public NumpadViewModel(
+        string initialValue = "0",
+        bool allowDecimal = true,
+        string? minValue = null,
+        string? maxValue = null
+    )
     {
         this.allowDecimal = allowDecimal;
         Input = initialValue;
         MinValue = minValue;
-        MaxValue = maxValue;  
+        MaxValue = maxValue;
     }
 
     [RelayCommand]

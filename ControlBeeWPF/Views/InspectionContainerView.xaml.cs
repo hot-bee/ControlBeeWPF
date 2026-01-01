@@ -4,10 +4,10 @@ using System.Windows;
 using ControlBee.Interfaces;
 using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.ViewModels;
-using UserControl = System.Windows.Controls.UserControl;
-using Panel = System.Windows.Forms.Panel;
 using Button = System.Windows.Controls.Button;
 using Dict = System.Collections.Generic.Dictionary<string, object?>;
+using Panel = System.Windows.Forms.Panel;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace ControlBeeWPF.Views;
 
@@ -20,8 +20,11 @@ public partial class InspectionContainerView : UserControl, IRefreshable, INotif
     private readonly Dict _options;
     private readonly VisionStatusViewModel _viewModel;
 
-    public InspectionContainerView(VisionStatusViewModel viewModel, ISystemConfigurations systemConfigurations,
-        Dict options)
+    public InspectionContainerView(
+        VisionStatusViewModel viewModel,
+        ISystemConfigurations systemConfigurations,
+        Dict options
+    )
     {
         _viewModel = viewModel;
         _options = options;
@@ -33,10 +36,7 @@ public partial class InspectionContainerView : UserControl, IRefreshable, INotif
         var channelCount = systemConfigurations.VisionChannelCount;
         if (_mode == "VisionFrame" && 1 < channelCount)
         {
-            var allButton = new Button
-            {
-                Content = "All"
-            };
+            var allButton = new Button { Content = "All" };
             allButton.Click += (sender, args) =>
             {
                 ActiveChannel = -1;
@@ -46,10 +46,7 @@ public partial class InspectionContainerView : UserControl, IRefreshable, INotif
 
             for (var channel = 0; channel < channelCount; channel++)
             {
-                var button = new Button
-                {
-                    Content = $"Ch. {channel}"
-                };
+                var button = new Button { Content = $"Ch. {channel}" };
                 var channel1 = channel;
                 button.Click += (sender, args) =>
                 {
@@ -94,7 +91,8 @@ public partial class InspectionContainerView : UserControl, IRefreshable, INotif
 
     protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
     {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+        if (EqualityComparer<T>.Default.Equals(field, value))
+            return false;
         field = value;
         OnPropertyChanged(propertyName);
         return true;

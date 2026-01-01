@@ -14,12 +14,12 @@ namespace ControlBeeWPF.Views;
 // ReSharper disable once InconsistentNaming
 public partial class DigitalInputStatusBarView : UserControl, IDisposable
 {
-    public static readonly DependencyProperty NameColumnWidthProperty =
-        DependencyProperty.Register(
-            nameof(NameColumnWidth),
-            typeof(GridLength),
-            typeof(DigitalInputStatusBarView),
-            new PropertyMetadata(new GridLength(1, GridUnitType.Auto)));
+    public static readonly DependencyProperty NameColumnWidthProperty = DependencyProperty.Register(
+        nameof(NameColumnWidth),
+        typeof(GridLength),
+        typeof(DigitalInputStatusBarView),
+        new PropertyMetadata(new GridLength(1, GridUnitType.Auto))
+    );
 
     private readonly DigitalInputViewModel _viewModel;
 
@@ -36,7 +36,6 @@ public partial class DigitalInputStatusBarView : UserControl, IDisposable
         get => (GridLength)GetValue(NameColumnWidthProperty);
         set => SetValue(NameColumnWidthProperty, value);
     }
-
 
     public void Dispose()
     {

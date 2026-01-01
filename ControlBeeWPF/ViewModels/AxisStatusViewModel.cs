@@ -46,11 +46,7 @@ public partial class AxisStatusViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     private string _name = string.Empty;
 
-    public AxisStatusViewModel(
-        IActorRegistry actorRegistry,
-        string actorName,
-        string itemPath
-    )
+    public AxisStatusViewModel(IActorRegistry actorRegistry, string actorName, string itemPath)
     {
         _itemPath = itemPath;
         _binder = new ActorItemBinder(actorRegistry, actorName, itemPath);

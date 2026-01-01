@@ -9,8 +9,11 @@ public partial class RecipeManagerViewModel : ObservableObject
 {
     private readonly IVariableManager _variableManager;
 
-    [ObservableProperty] private string _localName;
-    [ObservableProperty] private string[] _localNames;
+    [ObservableProperty]
+    private string _localName;
+
+    [ObservableProperty]
+    private string[] _localNames;
 
     public RecipeManagerViewModel(IVariableManager variableManager)
     {

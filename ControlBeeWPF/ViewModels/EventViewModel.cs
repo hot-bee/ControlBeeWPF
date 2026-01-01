@@ -12,7 +12,9 @@ public partial class EventViewModel : ObservableObject
     private readonly DialogSeverity[] _severities;
     private const int EventLimitCount = 100;
     private static readonly ILog Logger = LogManager.GetLogger(nameof(EventViewModel));
-    [ObservableProperty] private ObservableCollection<string> _events = [];
+
+    [ObservableProperty]
+    private ObservableCollection<string> _events = [];
 
     public EventViewModel(IEventManager eventManager, DialogSeverity[] severities)
     {
@@ -22,11 +24,13 @@ public partial class EventViewModel : ObservableObject
 
     private void EventManagerOnEventOccured(object? sender, EventMessage e)
     {
-        if (!_severities.Contains(e.Severity)) return;
-        Application.Current.Dispatcher.Invoke(() =>  // TODO: Use IDispatcher
+        if (!_severities.Contains(e.Severity))
+            return;
+        Application.Current.Dispatcher.Invoke(() => // TODO: Use IDispatcher
         {
             Events.Add($"[{e.EventTime}] {e.Name}");
-            while (EventLimitCount < Events.Count) Events.RemoveAt(0);
+            while (EventLimitCount < Events.Count)
+                Events.RemoveAt(0);
         });
     }
 }

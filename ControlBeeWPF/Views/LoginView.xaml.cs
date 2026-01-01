@@ -1,5 +1,5 @@
-﻿using ControlBeeWPF.ViewModels;
-using System.Windows;
+﻿using System.Windows;
+using ControlBeeWPF.ViewModels;
 
 namespace ControlBeeWPF.Views;
 

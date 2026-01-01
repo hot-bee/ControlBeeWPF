@@ -18,6 +18,7 @@ public partial class EventView
 
     private void EventsOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        if (e.Action == NotifyCollectionChangedAction.Add) EventListBox.ScrollIntoView(EventListBox.Items[^1]!);
+        if (e.Action == NotifyCollectionChangedAction.Add)
+            EventListBox.ScrollIntoView(EventListBox.Items[^1]!);
     }
 }

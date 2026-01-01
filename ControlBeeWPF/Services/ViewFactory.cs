@@ -4,15 +4,15 @@ using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.ViewModels;
 using ControlBeeWPF.Views;
 using Microsoft.Extensions.DependencyInjection;
-using UserControl = System.Windows.Controls.UserControl;
 using Dict = System.Collections.Generic.Dictionary<string, object?>;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace ControlBeeWPF.Services;
 
 public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
 {
     [Obsolete]
-    public virtual UserControl? Create(Type viewType, params object?[]? args)  // TODO: Migrate to Create<T>().
+    public virtual UserControl? Create(Type viewType, params object?[]? args) // TODO: Migrate to Create<T>().
     {
         if (viewType == typeof(JogView))
         {
@@ -100,8 +100,13 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             var jogView = args.Length > 3 ? (UserControl)args[3]! : null;
             var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
             var dialogService = serviceProvider.GetRequiredService<IDialogService>();
-            var viewModel =
-                new TeachingJogViewModel(actorName, positionItemPath, location, actorRegistry, dialogService);
+            var viewModel = new TeachingJogViewModel(
+                actorName,
+                positionItemPath,
+                location,
+                actorRegistry,
+                dialogService
+            );
             if (jogView == null)
             {
                 var jogViewModel = new JogViewModel(actorName, actorRegistry);
@@ -149,9 +154,21 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             var variableItemPath = (string)args![2]!;
             var variableSubItem = args.Length > 3 ? (object[]?)args[3] : null;
             var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
-            var digitalInputViewModel = new DigitalInputViewModel(actorRegistry, actorName, digitalInputItemPath);
-            var variableViewModel = new VariableViewModel(actorRegistry, actorName, variableItemPath, variableSubItem);
-            var view = new DigitalInputVariableBoolRectView(digitalInputViewModel, variableViewModel);
+            var digitalInputViewModel = new DigitalInputViewModel(
+                actorRegistry,
+                actorName,
+                digitalInputItemPath
+            );
+            var variableViewModel = new VariableViewModel(
+                actorRegistry,
+                actorName,
+                variableItemPath,
+                variableSubItem
+            );
+            var view = new DigitalInputVariableBoolRectView(
+                digitalInputViewModel,
+                variableViewModel
+            );
             return view;
         }
 
@@ -168,7 +185,8 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
         return null;
     }
 
-    public virtual T? Create<T>(params object?[]? args) where T : class
+    public virtual T? Create<T>(params object?[]? args)
+        where T : class
     {
         if (typeof(T) == typeof(NumpadView))
         {
