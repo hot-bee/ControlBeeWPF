@@ -10,13 +10,22 @@
     d:DataContext="{d:DesignInstance Type=viewModels:ActorMonitorViewModel}"
     mc:Ignorable="d">
     <Grid>
-        <DataGrid
-            CanUserAddRows="False"
-            CanUserDeleteRows="False"
-            CanUserReorderColumns="False"
-            CanUserSortColumns="False"
-            IsReadOnly="True"
-            ItemsSource="{Binding Data}">
+        <DataGrid ItemsSource="{Binding Data}"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  CanUserReorderColumns="False"
+                  CanUserSortColumns="False"
+                  IsReadOnly="True"
+
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling"
+                  VirtualizingPanel.ScrollUnit="Pixel"
+                  VirtualizingPanel.CacheLength="200"
+                  VirtualizingPanel.CacheLengthUnit="Pixel"
+
+                  ScrollViewer.CanContentScroll="True"
+                  ScrollViewer.IsDeferredScrollingEnabled="False">
+
             <DataGrid.Resources>
                 <Style TargetType="DataGridRow">
                     <EventSetter Event="MouseDoubleClick" Handler="Row_DoubleClick" />
