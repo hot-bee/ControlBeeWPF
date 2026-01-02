@@ -182,6 +182,15 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             return view;
         }
 
+        if (viewType == typeof(InitializationView))
+        {
+            var excludedActors = args!.Cast<string>();
+            var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
+            var viewModel = new InitializationViewModel(actorRegistry, excludedActors);
+            var view = new InitializationView(actorRegistry, viewModel);
+            return view;
+        }
+
         return null;
     }
 

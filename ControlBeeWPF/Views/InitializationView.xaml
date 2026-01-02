@@ -1,0 +1,90 @@
+﻿<UserControl x:Class="ControlBeeWPF.Views.InitializationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:ControlBeeWPF.ViewModels"
+             xmlns:components="clr-namespace:ControlBeeWPF.Components"
+             d:DataContext="{d:DesignInstance Type=viewModels:InitializationViewModel}"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             mc:Ignorable="d">
+
+    <Border BorderBrush="Silver" BorderThickness="1">
+        <Grid>
+            <Grid.Resources>
+                <Style BasedOn="{StaticResource ExtrudedButtonStyle}" TargetType="Button" />
+                <Style BasedOn="{StaticResource ExtrudedButtonStyle}" TargetType="components:ToggleImageButton" />
+            </Grid.Resources>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+                <RowDefinition Height="100" />
+            </Grid.RowDefinitions>
+            <Border
+                Grid.Row="0"
+                Background="Khaki"
+                BorderBrush="Silver"
+                BorderThickness="0,0,0,1">
+                <Label
+                    HorizontalAlignment="Center"
+                    Content="Unit Origin"
+                    FontWeight="Bold"
+                    Foreground="DarkRed" />
+            </Border>
+            <Border
+                Grid.Row="1"
+                BorderBrush="Silver"
+                BorderThickness="0,0,0,1">
+                <WrapPanel Name="WrapPanel1" Margin="10" />
+            </Border>
+            <Border
+                Grid.Row="2"
+                BorderBrush="Silver"
+                BorderThickness="0,0,0,0">
+                <Grid DockPanel.Dock="Bottom">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Button
+                                Name="SelectAllButton"
+                                Grid.Column="0"
+                                MaxWidth="150"
+                                MaxHeight="60"
+                                Click="SelectAllButton_OnClick"
+                                Content="All Select"
+                                FontWeight="Bold"
+                                Foreground="DarkBlue" />
+                            <Button
+                                Name="DeselectAllButton"
+                                Grid.Column="1"
+                                MaxWidth="150"
+                                MaxHeight="60"
+                                Click="DeselectAllButton_OnClick"
+                                Content="All Cancel"
+                                FontWeight="Bold"
+                                Foreground="DarkBlue" />
+                        </Grid>
+                    </Grid>
+                    <Button
+                        Name="InitializeAllButton"
+                        Grid.Column="2"
+                        MaxWidth="150"
+                        MaxHeight="60"
+                        Command="{Binding InitializeCommand}"
+                        Content="Unit Origin"
+                        FontWeight="Bold"
+                        Foreground="DarkRed" />
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>
