@@ -1,5 +1,4 @@
-﻿using System.Drawing.Printing;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ControlBee.Constants;
 using ControlBee.Interfaces;
@@ -13,13 +12,13 @@ public partial class InitializationViewModel : ObservableObject, IDisposable
     private readonly Dictionary<string, bool> _isInitializationChecked = new();
     private readonly IUiActor _ui;
     public Dictionary<string, InitializationStatus> InitializationStatus = new();
-    private readonly HashSet<string> _excludedActors;
+    private readonly List<string> _excludedActors;
 
-    public InitializationViewModel(IActorRegistry actorRegistry, IEnumerable<string> excludedActors)
+    public InitializationViewModel(IActorRegistry actorRegistry, List<string>? excludedActors)
     {
         _actorRegistry = actorRegistry;
         _ui = (IUiActor)actorRegistry.Get("Ui")!;
-        _excludedActors = new HashSet<string>(excludedActors);
+        _excludedActors = excludedActors ?? new List<string>();
         foreach (var (actorName, _) in GetActorTitles())
             SetInitialization(actorName, false);
         _ui.MessageArrived += UiOnMessageArrived;
