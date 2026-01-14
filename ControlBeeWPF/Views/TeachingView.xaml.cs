@@ -74,8 +74,7 @@ public partial class TeachingView : UserControl, IDisposable
             }
 
             DataContent.Content = view;
-
-            _viewFactory.Create(typeof(TeachingJogView), _actorName, itemPath, location); // TODO: risk of memory leak
+            JogContent.Content = _viewFactory.Create(typeof(TeachingJogView), _actorName, itemPath, location); // TODO: risk of memory leak
         }
         catch (ArgumentOutOfRangeException exception)
         {
