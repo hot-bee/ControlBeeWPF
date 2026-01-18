@@ -108,34 +108,22 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
             return;
 
         var sourceNode = _actorItemTreeViewModel.ActorItemTreeCollection.Root;
-        var targetNode = _actorItemTreeViewModel.FilteredTreeCollection.Root;
         var pathNames = itemPath.Trim('/').Split("/");
-        var targetName = string.Empty;
         for (var idx = 0; idx < pathNames.Length; idx++)
         {
-            targetName = pathNames[idx];
-            sourceNode = sourceNode.FindNode(targetName);
+            var targetName = pathNames[idx];
+            sourceNode = sourceNode?.FindNode(targetName);
             if (sourceNode == null)
                 return;
 
-            if (targetNode?.FindNode(targetName) == null)
+            if (sourceNode.FindNode(targetName) == null)
                 break;
 
             if (idx < pathNames.Length - 1)
-                targetNode = targetNode.FindNode(targetName);
+                sourceNode = sourceNode.FindNode(targetName);
         }
 
-        sourceNode.Data.Visible = visible;
-
-        if (visible)
-        {
-            var sourceIndex = sourceNode.Parent.Children.IndexOf(sourceNode);
-            targetNode?.InsertChild(sourceIndex, sourceNode.Data);
-        }
-        else
-        {
-            targetNode?.RemoveChild(targetName);
-        }
+        if (sourceNode != null) sourceNode.Data.Visible = visible;
     }
 
     private void BuildTree()
@@ -170,7 +158,7 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
             node.Data.Scope = variableItem?.Scope;
         }
 
-        _actorItemTreeViewModel.UpdateFilter();
+        _actorItemTreeViewModel.ApplyFilter();
         _buildDone = true;
     }
 }

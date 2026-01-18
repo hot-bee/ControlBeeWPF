@@ -7,7 +7,6 @@ namespace ControlBeeWPF.ViewModels;
 public class ActorItemTreeNode(ActorItemViewModel data) : ObservableObject
 {
     private ObservableCollection<ActorItemTreeNode> _children = [];
-
     public ActorItemViewModel Data { get; set; } = data;
 
     public ObservableCollection<ActorItemTreeNode> Children
@@ -25,19 +24,15 @@ public class ActorItemTreeNode(ActorItemViewModel data) : ObservableObject
         return child;
     }
 
-    public void InsertChild(int index, ActorItemViewModel data)
+    public bool ApplyFilter(string filter)
     {
-        var child = new ActorItemTreeNode(data) { Parent = this };
-        _children.Insert(index, child);
-    }
+        var selfMatch =
+            string.IsNullOrWhiteSpace(filter) ||
+            Data.Name.Contains(filter, StringComparison.OrdinalIgnoreCase);
 
-    public void RemoveChild(string name)
-    {
-        var foundNode = FindNode(name);
-        if (foundNode == null)
-            return;
-
-        Children.Remove(foundNode);
+        var childMatch = Children.Aggregate(false, (current, child) => current | child.ApplyFilter(filter));
+        Data.Visible = selfMatch || childMatch;
+        return selfMatch || childMatch;
     }
 
     public ActorItemTreeNode? FindNode(string name)

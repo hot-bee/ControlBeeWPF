@@ -1,10 +1,11 @@
-﻿using ControlBee.Variables;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using ControlBee.Variables;
 
 namespace ControlBeeWPF.ViewModels;
 
-public class ActorItemViewModel
+public partial class ActorItemViewModel : ObservableObject
 {
-    public bool Visible { get; set; } = true;
+    [ObservableProperty] private bool _visible = true;
     public string Name { get; set; } = string.Empty;
     public string ItemPath { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;

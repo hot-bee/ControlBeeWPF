@@ -1,14 +1,13 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Windows;
+using System.Windows.Media;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace ControlBeeWPF.ViewModels;
 
 public partial class ActorItemTreeViewModel : ObservableObject
 {
-    private readonly ActorItemTreeFilter _filter = new();
     private ActorItemTree _actorItemTreeCollection = new(new ActorItemViewModel { Name = "root" });
-    private ActorItemTree _filteredTree = new(new ActorItemViewModel { Name = "root" });
-
-    [ObservableProperty] private string _filterText = string.Empty;
+    private string _filterText = string.Empty;
 
     public ActorItemTree ActorItemTreeCollection
     {
@@ -16,25 +15,24 @@ public partial class ActorItemTreeViewModel : ObservableObject
         set
         {
             SetProperty(ref _actorItemTreeCollection, value);
-            UpdateFilter();
+            ApplyFilter();
         }
     }
 
-    public ActorItemTree FilteredTreeCollection
+    public string FilterText
     {
-        get => _filteredTree;
-        set => SetProperty(ref _filteredTree, value);
+        get => _filterText;
+        set
+        {
+            if (SetProperty(ref _filterText, value))
+                ApplyFilter();
+        }
     }
 
-    public void UpdateFilter()
+    public void ApplyFilter()
     {
-        var newRoot = _filter.Filter(ActorItemTreeCollection.Root, FilterText);
-        if (newRoot != null)
-            FilteredTreeCollection = new ActorItemTree(newRoot.Data) { Root = newRoot };
+        foreach (var child in ActorItemTreeCollection.Root.Children)
+            child.ApplyFilter(FilterText);
     }
 
-    partial void OnFilterTextChanged(string value)
-    {
-        UpdateFilter();
-    }
 }

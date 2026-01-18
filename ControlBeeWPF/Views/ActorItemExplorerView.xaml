@@ -22,15 +22,22 @@
                          Text="{Binding ActorItemTreeViewModel.FilterText, UpdateSourceTrigger=PropertyChanged}" />
                 <TreeView Grid.Row="1"
                           DataContext="{Binding ActorItemTreeViewModel}"
-                          ItemsSource="{Binding FilteredTreeCollection.Root.Children}"
+                          ItemsSource="{Binding ActorItemTreeCollection.Root.Children}"
                           SelectedItemChanged="TreeView_OnSelectedItemChanged"
                           Margin="5">
                     <TreeView.Resources>
+                        <BooleanToVisibilityConverter x:Key="BoolToVis" />
                         <HierarchicalDataTemplate DataType="{x:Type viewModels:ActorItemTreeNode}"
                                                   ItemsSource="{Binding Children}">
                             <TextBlock Text="{Binding Data.Title}" />
                         </HierarchicalDataTemplate>
                     </TreeView.Resources>
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="TreeViewItem">
+                            <Setter Property="Visibility"
+                                    Value="{Binding Data.Visible, Converter={StaticResource BoolToVis}}"/>
+                        </Style>
+                    </TreeView.ItemContainerStyle>
                 </TreeView>
             </Grid>
         </GroupBox>
