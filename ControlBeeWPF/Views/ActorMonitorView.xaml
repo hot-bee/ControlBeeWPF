@@ -10,21 +10,20 @@
     d:DataContext="{d:DesignInstance Type=viewModels:ActorMonitorViewModel}"
     mc:Ignorable="d">
     <Grid>
-        <DataGrid ItemsSource="{Binding Data}"
-                  CanUserAddRows="False"
-                  CanUserDeleteRows="False"
-                  CanUserReorderColumns="False"
-                  CanUserSortColumns="False"
-                  IsReadOnly="True"
-
-                  VirtualizingPanel.IsVirtualizing="True"
-                  VirtualizingPanel.VirtualizationMode="Recycling"
-                  VirtualizingPanel.ScrollUnit="Pixel"
-                  VirtualizingPanel.CacheLength="200"
-                  VirtualizingPanel.CacheLengthUnit="Pixel"
-
-                  ScrollViewer.CanContentScroll="True"
-                  ScrollViewer.IsDeferredScrollingEnabled="False">
+        <DataGrid
+            CanUserAddRows="False"
+            CanUserDeleteRows="False"
+            CanUserReorderColumns="False"
+            CanUserSortColumns="False"
+            IsReadOnly="True"
+            ItemsSource="{Binding Data}"
+            ScrollViewer.CanContentScroll="True"
+            ScrollViewer.IsDeferredScrollingEnabled="False"
+            VirtualizingPanel.CacheLength="200"
+            VirtualizingPanel.CacheLengthUnit="Pixel"
+            VirtualizingPanel.IsVirtualizing="True"
+            VirtualizingPanel.ScrollUnit="Pixel"
+            VirtualizingPanel.VirtualizationMode="Recycling">
 
             <DataGrid.Resources>
                 <Style TargetType="DataGridRow">

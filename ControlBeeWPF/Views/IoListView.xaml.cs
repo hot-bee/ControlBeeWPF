@@ -15,12 +15,11 @@ public partial class IoListView
     private readonly int _pageSize;
 
     private readonly IViewFactory _viewFactory;
-    private readonly IActor _actor;
     private readonly string _actorName;
     private readonly int _columns;
 
-    private readonly List<string> _inputPaths = new();
-    private readonly List<string> _outputPaths = new();
+    private readonly List<string> _inputPaths = [];
+    private readonly List<string> _outputPaths = [];
 
     private int _inputPageIndex;
     private int _outputPageIndex;
@@ -37,11 +36,11 @@ public partial class IoListView
         _columns = columns;
         _pageSize = pageSize ?? 32;
         _viewFactory = viewFactory;
-        _actor = actorRegistry.Get(actorName)!;
+        var actor = actorRegistry.Get(actorName)!;
 
         InitializeComponent();
 
-        foreach (var (itemPath, type) in _actor.GetItems())
+        foreach (var (itemPath, type) in actor.GetItems())
         {
             if (type.IsAssignableTo(typeof(IDigitalInput)))
                 _inputPaths.Add(itemPath);
@@ -69,7 +68,7 @@ public partial class IoListView
 
     private void GoToInputPage(int pageIndex)
     {
-        int total = GetTotalPages(_inputPaths.Count);
+        var total = GetTotalPages(_inputPaths.Count);
         _inputPageIndex = ClampPage(pageIndex, total);
 
         RenderPage(InputGrid, _inputPaths, _inputPageIndex, typeof(DigitalInputStatusBarView));
@@ -78,7 +77,7 @@ public partial class IoListView
 
     private void GoToOutputPage(int pageIndex)
     {
-        int total = GetTotalPages(_outputPaths.Count);
+        var total = GetTotalPages(_outputPaths.Count);
         _outputPageIndex = ClampPage(pageIndex, total);
 
         RenderPage(OutputGrid, _outputPaths, _outputPageIndex, typeof(DigitalOutputStatusBarView));
@@ -98,7 +97,7 @@ public partial class IoListView
 
     private void RefreshInputPagerUi()
     {
-        int total = GetTotalPages(_inputPaths.Count);
+        var total = GetTotalPages(_inputPaths.Count);
 
         InputFirstButton.IsEnabled = _inputPageIndex > 0;
         InputPrevButton.IsEnabled = _inputPageIndex > 0;
@@ -110,7 +109,7 @@ public partial class IoListView
 
     private void RefreshOutputPagerUi()
     {
-        int total = GetTotalPages(_outputPaths.Count);
+        var total = GetTotalPages(_outputPaths.Count);
 
         OutputFirstButton.IsEnabled = _outputPageIndex > 0;
         OutputPrevButton.IsEnabled = _outputPageIndex > 0;
@@ -130,9 +129,9 @@ public partial class IoListView
         pagerHost.Children.Clear();
         totalPages = Math.Max(1, totalPages);
 
-        for (int pageIndex = 0; pageIndex < totalPages; pageIndex++)
+        for (var pageIndex = 0; pageIndex < totalPages; pageIndex++)
         {
-            bool isActive = pageIndex == currentPageIndex;
+            var isActive = pageIndex == currentPageIndex;
 
             var style =
                 (Style?)TryFindResource(isActive ? "PagerButtonActiveStyle" : "PagerButtonStyle")
@@ -160,22 +159,22 @@ public partial class IoListView
         grid.RowDefinitions.Clear();
         grid.ColumnDefinitions.Clear();
 
-        for (int column = 0; column < _columns; column++)
+        for (var column = 0; column < _columns; column++)
             grid.ColumnDefinitions.Add(new ColumnDefinition());
 
-        int numberOfRows = (int)Math.Ceiling(pageItems.Count / (double)_columns);
+        var numberOfRows = (int)Math.Ceiling(pageItems.Count / (double)_columns);
 
-        for (int row = 0; row < numberOfRows; row++)
+        for (var row = 0; row < numberOfRows; row++)
         {
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
-            for (int column = 0; column < _columns; column++)
+            for (var column = 0; column < _columns; column++)
             {
-                int index = row * _columns + column;
+                var index = row * _columns + column;
                 if (index >= pageItems.Count)
                     continue;
 
-                string itemPath = pageItems[index];
+                var itemPath = pageItems[index];
                 var view = _viewFactory.Create(viewType, _actorName, itemPath);
                 if (view is null)
                     continue;
