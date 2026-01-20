@@ -42,4 +42,4 @@ git tag $tagName
 git push
 git push origin tag $tagName
 
-dotnet nuget push "ControlBeeWPF/bin/Release/ControlBeeWPF.$versionString.nupkg" --source "github"
+dotnet nuget push "ControlBeeWPF/bin/Release/ControlBeeWPF.$versionString.nupkg" --source "Hotbee"
