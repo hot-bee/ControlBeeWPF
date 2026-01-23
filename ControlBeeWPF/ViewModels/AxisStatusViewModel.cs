@@ -35,6 +35,9 @@ public partial class AxisStatusViewModel : ObservableObject, IDisposable
     private bool _isInitializing;
 
     [ObservableProperty]
+    private bool _isInitialized;
+
+    [ObservableProperty]
     private bool _isMoving;
 
     [ObservableProperty]
@@ -78,6 +81,7 @@ public partial class AxisStatusViewModel : ObservableObject, IDisposable
         IsAlarmed = (bool)e[nameof(IsAlarmed)]!;
         IsEnabled = (bool)e[nameof(IsEnabled)]!;
         IsInitializing = (bool)e[nameof(IsInitializing)]!;
+        IsInitialized = (bool)e[nameof(IsInitialized)]!;
         IsHomeDet = (bool)e[nameof(IsHomeDet)]!;
         IsNegativeLimitDet = (bool)e[nameof(IsNegativeLimitDet)]!;
         IsPositiveLimitDet = (bool)e[nameof(IsPositiveLimitDet)]!;
