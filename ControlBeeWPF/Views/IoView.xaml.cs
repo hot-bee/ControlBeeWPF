@@ -8,9 +8,9 @@ using HorizontalAlignment = System.Windows.HorizontalAlignment;
 namespace ControlBeeWPF.Views;
 
 /// <summary>
-///     Interaction logic for IoListView.xaml
+///     Interaction logic for IoView.xaml
 /// </summary>
-public partial class IoListView
+public partial class IoView
 {
     private readonly int _pageSize;
 
@@ -24,7 +24,7 @@ public partial class IoListView
     private int _inputPageIndex;
     private int _outputPageIndex;
 
-    public IoListView(
+    public IoView(
         string actorName,
         int columns,
         IActorRegistry actorRegistry,
