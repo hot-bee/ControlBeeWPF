@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using ControlBee.Constants;
 using ControlBee.Interfaces;
+using ControlBeeWPF.Services;
 using Message = ControlBee.Models.Message;
 
 namespace ControlBeeWPF.ViewModels;
@@ -12,13 +13,16 @@ public partial class InitializationViewModel : ObservableObject, IDisposable
     private readonly Dictionary<string, bool> _isInitializationChecked = new();
     private readonly IUiActor _ui;
     public Dictionary<string, InitializationStatus> InitializationStatus = new();
-    private readonly List<string> _excludedActors;
+    private IReadOnlyList<string> ExcludedActors { get; }
 
-    public InitializationViewModel(IActorRegistry actorRegistry, List<string>? excludedActors)
+    public InitializationViewModel(
+        IActorRegistry actorRegistry,
+        InitializationExcludedActors excludedActors
+    )
     {
         _actorRegistry = actorRegistry;
         _ui = (IUiActor)actorRegistry.Get("Ui")!;
-        _excludedActors = excludedActors ?? new List<string>();
+        ExcludedActors = excludedActors.Value;
         foreach (var (actorName, _) in GetActorTitles())
             SetInitialization(actorName, false);
         _ui.MessageArrived += UiOnMessageArrived;
@@ -32,8 +36,9 @@ public partial class InitializationViewModel : ObservableObject, IDisposable
     }
 
     public (string actorName, string actorTitle)[] GetActorTitles() =>
-        _actorRegistry.GetActorNames()
-            .Where(actor => !_excludedActors.Contains(actor))
+        _actorRegistry
+            .GetActorNames()
+            .Where(actor => !ExcludedActors.Contains(actor))
             .Select(actor => (actor, _actorRegistry.Get(actor)!.Title))
             .ToArray();
 
