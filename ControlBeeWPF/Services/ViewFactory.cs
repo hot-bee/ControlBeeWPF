@@ -225,6 +225,12 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             return (view as T)!;
         }
 
+        if (typeof(T) == typeof(IViewFactory))
+        {
+            var view = serviceProvider.GetRequiredService<IViewFactory>();
+            return (view as T)!;
+        }
+
         return null;
     }
 }
