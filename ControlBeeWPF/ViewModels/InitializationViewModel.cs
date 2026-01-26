@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using ControlBee.Constants;
 using ControlBee.Interfaces;
-using ControlBeeWPF.Services;
 using Message = ControlBee.Models.Message;
 
 namespace ControlBeeWPF.ViewModels;
@@ -13,19 +12,31 @@ public partial class InitializationViewModel : ObservableObject, IDisposable
     private readonly Dictionary<string, bool> _isInitializationChecked = new();
     private readonly IUiActor _ui;
     public Dictionary<string, InitializationStatus> InitializationStatus = new();
-    private IReadOnlyList<string> ExcludedActors { get; }
+    private bool _initialized;
+    private readonly HashSet<string> _excludedActors = [];
 
-    public InitializationViewModel(
-        IActorRegistry actorRegistry,
-        InitializationExcludedActors excludedActors
-    )
+    public InitializationViewModel(IActorRegistry actorRegistry)
     {
         _actorRegistry = actorRegistry;
         _ui = (IUiActor)actorRegistry.Get("Ui")!;
-        ExcludedActors = excludedActors.Value;
+        _ui.MessageArrived += UiOnMessageArrived;
+    }
+
+    public void EnsureInitialized(IEnumerable<string>? excludedActors)
+    {
+        if (_initialized)
+            return;
+
+        excludedActors ??= [];
+
+        _excludedActors.Clear();
+        foreach (var excludedActor in excludedActors)
+            _excludedActors.Add(excludedActor);
+
         foreach (var (actorName, _) in GetActorTitles())
             SetInitialization(actorName, false);
-        _ui.MessageArrived += UiOnMessageArrived;
+
+        _initialized = true;
     }
 
     public bool InitializationAll { get; private set; }
@@ -38,7 +49,7 @@ public partial class InitializationViewModel : ObservableObject, IDisposable
     public (string actorName, string actorTitle)[] GetActorTitles() =>
         _actorRegistry
             .GetActorNames()
-            .Where(actor => !ExcludedActors.Contains(actor))
+            .Where(actor => !_excludedActors.Contains(actor))
             .Select(actor => (actor, _actorRegistry.Get(actor)!.Title))
             .ToArray();
 
