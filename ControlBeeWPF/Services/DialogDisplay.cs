@@ -25,8 +25,8 @@ public class DialogDisplay
                 var context = (IDialogContext)e.Payload!;
                 if (_onContexts.Contains(context))
                     return;
-                var dialog = _viewFactory.Create<IDialogView>()!;
-                dialog.Show(context, e);
+                var dialog = _viewFactory.Create<IDialogView>(context, e)!;
+                dialog.ShowView();
                 _onContexts.Add(context);
                 dialog.DialogClosed += (o, args) =>
                 {

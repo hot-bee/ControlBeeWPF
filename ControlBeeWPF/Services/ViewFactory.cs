@@ -172,16 +172,6 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             return view;
         }
 
-        if (viewType == typeof(IoView))
-        {
-            var actorName = (string)args![0]!;
-            var columns = (int)args![1]!;
-            var pageSize = args.Length > 2 ? (int?)args[2]! : null;
-            var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
-            var view = new IoView(actorName, columns, actorRegistry, this, pageSize);
-            return view;
-        }
-
         if (viewType == typeof(InitializationView))
         {
             var excludedActors = args!.Length > 0 ? (List<string>)args[0]! : null;
@@ -225,9 +215,13 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             return (view as T)!;
         }
 
-        if (typeof(T) == typeof(IViewFactory))
+        if (typeof(T) == typeof(IoView))
         {
-            var view = serviceProvider.GetRequiredService<IViewFactory>();
+            var actorName = (string)args![0]!;
+            var columns = (int)args![1]!;
+            var pageSize = args.Length > 2 ? (int?)args[2]! : null;
+            var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
+            var view = new IoView(actorName, columns, actorRegistry, this, pageSize);
             return (view as T)!;
         }
 
