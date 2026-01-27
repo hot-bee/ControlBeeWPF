@@ -1,7 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
 using ControlBeeWPF.ViewModels;
 using Brushes = System.Windows.Media.Brushes;
 using UserControl = System.Windows.Controls.UserControl;
@@ -29,6 +27,7 @@ public partial class DigitalInputStatusBarView : UserControl, IDisposable
         DataContext = viewModel;
         InitializeComponent();
         viewModel.PropertyChanged += DigitalInputViewModelOnPropertyChanged;
+        UpdateView();
     }
 
     public GridLength NameColumnWidth
@@ -43,6 +42,11 @@ public partial class DigitalInputStatusBarView : UserControl, IDisposable
     }
 
     private void DigitalInputViewModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        UpdateView();
+    }
+
+    private void UpdateView()
     {
         NameLabel.Content = _viewModel.Name;
         ValueRect.Fill = _viewModel.Value is true ? Brushes.OrangeRed : Brushes.WhiteSmoke;
