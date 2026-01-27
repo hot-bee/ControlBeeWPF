@@ -72,7 +72,15 @@ public partial class InitializationViewModel : ObservableObject, IDisposable
             var initializingActor = _actorRegistry.Get(actorName)!;
             initializingActors.Add(initializingActor);
         }
+        syncer.Send(new Message(_ui, "_resetError", initializingActors));
         syncer.Send(new Message(_ui, "_initialize", initializingActors));
+    }
+
+    [RelayCommand]
+    private void Stop()
+    {
+        var syncer = _actorRegistry.Get("Syncer")!;
+        syncer.Send(new Message(_ui, "_abort"));
     }
 
     public void SetInitialization(string actorName, bool check)
