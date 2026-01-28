@@ -1,8 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using ControlBeeWPF.ViewModels;
 using Brushes = System.Windows.Media.Brushes;
 using UserControl = System.Windows.Controls.UserControl;
@@ -26,6 +24,7 @@ public partial class DigitalOutputStatusBarView : UserControl, IDisposable
         InitializeComponent();
         _viewModel = viewModel;
         _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
+        UpdateView();
     }
 
     public GridLength NameColumnWidth
@@ -40,6 +39,11 @@ public partial class DigitalOutputStatusBarView : UserControl, IDisposable
     }
 
     private void ViewModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        UpdateView();
+    }
+
+    private void UpdateView()
     {
         NameLabel.Content = _viewModel.Name;
         ToolTip = _viewModel.ToolTip;
