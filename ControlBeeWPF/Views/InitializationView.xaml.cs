@@ -43,14 +43,14 @@ public partial class InitializationView
         switch (message.Name)
         {
             case "initializeProgress":
-                {
-                    var actorName = message.ActorName;
-                    var value = (int)message.Payload!;
+            {
+                var actorName = message.ActorName;
+                var value = (int)message.Payload!;
 
-                    UpdateInitializeProgress(actorName, value);
+                UpdateInitializeProgress(actorName, value);
 
-                    break;
-                }
+                break;
+            }
         }
     }
 
@@ -147,10 +147,10 @@ public partial class InitializationView
         switch (e.PropertyName)
         {
             case nameof(_viewModel.InitializationStatus):
-                {
-                    UpdateButtonColor();
-                    break;
-                }
+            {
+                UpdateButtonColor();
+                break;
+            }
         }
     }
 
@@ -158,6 +158,8 @@ public partial class InitializationView
     {
         foreach (var (actorName, initialized) in _viewModel.InitializationStatus)
         {
+            if (!_buttonMap.ContainsKey(actorName))
+                continue;
             switch (initialized)
             {
                 case InitializationStatus.Uninitialized:
