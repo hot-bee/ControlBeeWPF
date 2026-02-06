@@ -1,4 +1,5 @@
-﻿using ControlBee.Constants;
+﻿using System;
+using ControlBee.Constants;
 using ControlBee.Interfaces;
 using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.ViewModels;
@@ -222,6 +223,75 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             var pageSize = args.Length > 2 ? (int?)args[2]! : null;
             var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
             var view = new IoView(actorName, columns, actorRegistry, this, pageSize);
+            return (view as T)!;
+        }
+
+        if (typeof(T) == typeof(VariableItemView))
+        {
+            var variableViewModel = (VariableViewModel)args![0]!;
+            var viewFactory = serviceProvider.GetRequiredService<IViewFactory>();
+            var view = new VariableItemView(viewFactory, variableViewModel);
+            return (view as T)!;
+        }
+
+        if (typeof(T) == typeof(VariableGridView))
+        {
+            var rowCount = (int)args![0]!;
+            var colCount = (int)args![1]!;
+            var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
+            var viewFactory = serviceProvider.GetRequiredService<IViewFactory>();
+            var variableGridViewModel = new VariableGridViewModel(actorRegistry);
+            var view = new VariableGridView(viewFactory, variableGridViewModel, rowCount, colCount);
+            return (view as T)!;
+        }
+
+        if (typeof(T) == typeof(PositionVariableListView))
+        {
+            var axisLabels = (string[])args!.ElementAtOrDefault(0)!;
+            var tolerance = (double?)args!.ElementAtOrDefault(1);
+            var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
+            var viewFactory = serviceProvider.GetRequiredService<IViewFactory>();
+            var positionVariableListViewModel = new PositionVariableListViewModel(actorRegistry);
+            var view = new PositionVariableListView(
+                viewFactory,
+                positionVariableListViewModel,
+                axisLabels,
+                tolerance
+            );
+            return (view as T)!;
+        }
+
+        if (typeof(T) == typeof(InPositionIndicatorView))
+        {
+            var axisStatusViewModels = (IEnumerable<AxisStatusViewModel>)args![0]!;
+            var variableViewModels = (IEnumerable<VariableViewModel>)args![1]!;
+            var tolerance = (double)args![2]!;
+            var viewModel = new InPositionIndicatorViewModel(
+                axisStatusViewModels.ToArray(),
+                variableViewModels.ToArray(),
+                tolerance
+            );
+            var view = new InPositionIndicatorView(viewModel);
+            return (view as T)!;
+        }
+
+        if (typeof(T) == typeof(DigitalOutputGridView))
+        {
+            var rowCount = (int)args![0]!;
+            var colCount = (int)args![1]!;
+            var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
+            var viewModel = new DigitalOutputGridViewModel(actorRegistry);
+            var view = new DigitalOutputGridView(viewModel, rowCount, colCount);
+            return (view as T)!;
+        }
+
+        if (typeof(T) == typeof(DigitalInputGridView))
+        {
+            var rowCount = (int)args![0]!;
+            var colCount = (int)args![1]!;
+            var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
+            var viewModel = new DigitalInputGridViewModel(actorRegistry);
+            var view = new DigitalInputGridView(viewModel, rowCount, colCount);
             return (view as T)!;
         }
 
