@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="User Management"
     Width="1100"
-    Height="600"
+    Height="700"
     mc:Ignorable="d">
 
     <Window.Resources>
@@ -181,7 +181,7 @@
                         </DataGridTextColumn>
 
                         <DataGridTextColumn
-                            Width="130"
+                            Width="150"
                             Binding="{Binding LevelName}"
                             Header="Level Name"
                             IsReadOnly="True">
