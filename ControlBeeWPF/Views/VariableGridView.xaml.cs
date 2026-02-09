@@ -27,7 +27,7 @@ public partial class VariableGridView
             nameof(HeaderColumnWidth),
             typeof(double),
             typeof(VariableGridView),
-            new PropertyMetadata(120.0)
+            new PropertyMetadata(double.NaN)
         );
 
     public static readonly DependencyProperty FooterColumnWidthProperty =
@@ -35,7 +35,7 @@ public partial class VariableGridView
             nameof(FooterColumnWidth),
             typeof(double),
             typeof(VariableGridView),
-            new PropertyMetadata(70.0)
+            new PropertyMetadata(double.NaN)
         );
 
     public double ItemWidth
@@ -64,10 +64,14 @@ public partial class VariableGridView
     private readonly string[]? _headerColumns;
     private readonly string[]? _headerRows;
     private readonly string[]? _footerColumns;
+    private readonly string[]? _footerRows;
     private bool _rendered;
 
     private bool IsTableMode =>
-        _headerColumns != null || _headerRows != null || _footerColumns != null;
+        _headerColumns != null
+        || _headerRows != null
+        || _footerColumns != null
+        || _footerRows != null;
 
     public VariableGridView(
         IViewFactory viewFactory,
@@ -77,7 +81,8 @@ public partial class VariableGridView
         bool useCellName = true,
         string[]? headerColumns = null,
         string[]? headerRows = null,
-        string[]? footerColumns = null
+        string[]? footerColumns = null,
+        string[]? footerRows = null
     )
     {
         InitializeComponent();
@@ -90,6 +95,7 @@ public partial class VariableGridView
         _headerColumns = headerColumns;
         _headerRows = headerRows;
         _footerColumns = footerColumns;
+        _footerRows = footerRows;
 
         Loaded += OnLoaded;
     }
@@ -115,7 +121,7 @@ public partial class VariableGridView
     {
         var colOffset = _headerColumns != null ? 1 : 0;
         var rowOffset = _headerRows != null ? 1 : 0;
-        _totalRows = rowOffset + _rowCount;
+        _totalRows = rowOffset + _rowCount + (_footerRows != null ? 1 : 0);
         _totalCols = colOffset + _colCount + (_footerColumns != null ? 1 : 0);
 
         for (var row = 0; row < _totalRows; row++)
@@ -134,6 +140,7 @@ public partial class VariableGridView
         RenderHeaderColumns(rowOffset);
         RenderCells(rowOffset, colOffset);
         RenderFooterColumns(rowOffset, colOffset);
+        RenderFooterRows(rowOffset, colOffset);
     }
 
     private Thickness GetTableMargin(int gridRow, int gridCol)
@@ -213,6 +220,31 @@ public partial class VariableGridView
                 Grid.SetColumn(view, colOffset + cell.Col);
                 CellGrid.Children.Add(view);
             }
+        }
+    }
+
+    private void RenderFooterRows(int rowOffset, int colOffset)
+    {
+        if (_footerRows == null)
+            return;
+
+        var footerRowIndex = rowOffset + _rowCount;
+        var lastCol = _totalCols - 1;
+        for (var i = 0; i < _footerRows.Length && i < _totalCols; i++)
+        {
+            var isHeaderCol = _headerColumns != null && i == 0;
+            var isFooterCol = _footerColumns != null && i == lastCol;
+            Label label;
+            if (isHeaderCol)
+                label = CreateHeaderColumnLabel(_footerRows[i]);
+            else if (isFooterCol)
+                label = CreateFooterColumnLabel(_footerRows[i]);
+            else
+                label = CreateHeaderLabel(_footerRows[i]);
+            label.Margin = GetTableMargin(footerRowIndex, i);
+            Grid.SetRow(label, footerRowIndex);
+            Grid.SetColumn(label, i);
+            CellGrid.Children.Add(label);
         }
     }
 
