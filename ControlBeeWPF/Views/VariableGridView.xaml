@@ -51,6 +51,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Label">
                         <Border
+                            Padding="5"
                             Background="WhiteSmoke"
                             BorderBrush="Silver"
                             BorderThickness="1">
