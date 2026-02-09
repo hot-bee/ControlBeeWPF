@@ -3,7 +3,6 @@ using System.Windows.Controls;
 using ControlBee.Interfaces;
 using ControlBeeWPF.Interfaces;
 using Button = System.Windows.Controls.Button;
-using HorizontalAlignment = System.Windows.HorizontalAlignment;
 
 namespace ControlBeeWPF.Views;
 
@@ -12,14 +11,14 @@ namespace ControlBeeWPF.Views;
 /// </summary>
 public partial class IoView
 {
-    private readonly int _pageSize;
-
-    private readonly IViewFactory _viewFactory;
     private readonly string _actorName;
     private readonly int _columns;
 
     private readonly List<string> _inputPaths = [];
     private readonly List<string> _outputPaths = [];
+    private readonly int _pageSize;
+    private readonly int _maxVisiblePages;
+    private readonly IViewFactory _viewFactory;
 
     private int _inputPageIndex;
     private int _outputPageIndex;
@@ -29,12 +28,14 @@ public partial class IoView
         int columns,
         IActorRegistry actorRegistry,
         IViewFactory viewFactory,
-        int? pageSize = 32
+        int? pageSize = 32,
+        int? maxVisiblePages = 5
     )
     {
         _actorName = actorName;
         _columns = columns;
         _pageSize = pageSize ?? 32;
+        _maxVisiblePages = maxVisiblePages ?? 5;
         _viewFactory = viewFactory;
         var actor = actorRegistry.Get(actorName)!;
 
@@ -63,39 +64,31 @@ public partial class IoView
         GoToOutputPage(0);
     }
 
-    private int GetTotalPages(int totalCount) =>
-        Math.Max(1, (int)Math.Ceiling(totalCount / (double)_pageSize));
-
-    private void GoToInputPage(int pageIndex)
+    private int GetTotalPages(int count)
     {
-        var total = GetTotalPages(_inputPaths.Count);
-        _inputPageIndex = ClampPage(pageIndex, total);
+        return Math.Max(1, (int)Math.Ceiling(count / (double)_pageSize));
+    }
 
+    private void GoToInputPage(int page)
+    {
+        _inputPageIndex = ClampPage(page, GetTotalPages(_inputPaths.Count));
         RenderPage(InputGrid, _inputPaths, _inputPageIndex, typeof(DigitalInputStatusBarView));
-        RefreshInputPagerUi();
+        RefreshInputPager();
     }
 
-    private void GoToOutputPage(int pageIndex)
+    private void GoToOutputPage(int page)
     {
-        var total = GetTotalPages(_outputPaths.Count);
-        _outputPageIndex = ClampPage(pageIndex, total);
-
+        _outputPageIndex = ClampPage(page, GetTotalPages(_outputPaths.Count));
         RenderPage(OutputGrid, _outputPaths, _outputPageIndex, typeof(DigitalOutputStatusBarView));
-        RefreshOutputPagerUi();
+        RefreshOutputPager();
     }
 
-    private static int ClampPage(int pageIndex, int totalPages)
+    private static int ClampPage(int page, int total)
     {
-        if (totalPages <= 0)
-            return 0;
-        if (pageIndex < 0)
-            return 0;
-        if (pageIndex > totalPages - 1)
-            return totalPages - 1;
-        return pageIndex;
+        return Math.Max(0, Math.Min(page, total - 1));
     }
 
-    private void RefreshInputPagerUi()
+    private void RefreshInputPager()
     {
         var total = GetTotalPages(_inputPaths.Count);
 
@@ -104,10 +97,10 @@ public partial class IoView
         InputNextButton.IsEnabled = _inputPageIndex < total - 1;
         InputLastButton.IsEnabled = _inputPageIndex < total - 1;
 
-        BuildPagerSimple(InputPager, total, _inputPageIndex, GoToInputPage);
+        BuildPagerWindowed(InputPager, total, _inputPageIndex, GoToInputPage);
     }
 
-    private void RefreshOutputPagerUi()
+    private void RefreshOutputPager()
     {
         var total = GetTotalPages(_outputPaths.Count);
 
@@ -116,44 +109,81 @@ public partial class IoView
         OutputNextButton.IsEnabled = _outputPageIndex < total - 1;
         OutputLastButton.IsEnabled = _outputPageIndex < total - 1;
 
-        BuildPagerSimple(OutputPager, total, _outputPageIndex, GoToOutputPage);
+        BuildPagerWindowed(OutputPager, total, _outputPageIndex, GoToOutputPage);
     }
 
-    private void BuildPagerSimple(
-        WrapPanel pagerHost,
+    private void BuildPagerWindowed(
+        WrapPanel host,
         int totalPages,
-        int currentPageIndex,
-        Action<int> onPageClicked
+        int current,
+        Action<int> onClick
     )
     {
-        pagerHost.Children.Clear();
+        host.Children.Clear();
         totalPages = Math.Max(1, totalPages);
 
-        for (var pageIndex = 0; pageIndex < totalPages; pageIndex++)
+        if (totalPages <= _maxVisiblePages)
         {
-            var isActive = pageIndex == currentPageIndex;
+            for (var i = 0; i < totalPages; i++)
+                AddPage(i, i == current);
+            return;
+        }
 
-            var style =
-                (Style?)TryFindResource(isActive ? "PagerButtonActiveStyle" : "PagerButtonStyle")
-                ?? (Style?)TryFindResource("PagerButtonStyle");
+        AddPage(0, current == 0);
+
+        if (current <= 2)
+        {
+            AddPage(1, current == 1);
+            AddPage(2, current == 2);
+            AddDots();
+        }
+        else if (current >= totalPages - 3)
+        {
+            AddDots();
+            AddPage(totalPages - 3, current == totalPages - 3);
+            AddPage(totalPages - 2, current == totalPages - 2);
+        }
+        else
+        {
+            AddDots();
+            AddPage(current, true);
+            AddDots();
+        }
+
+        AddPage(totalPages - 1, current == totalPages - 1);
+        return;
+
+        void AddDots()
+        {
+            host.Children.Add(
+                new Button
+                {
+                    Content = "...",
+                    IsEnabled = false,
+                    Style = (Style)FindResource("PagerButtonStyle"),
+                }
+            );
+        }
+
+        void AddPage(int index, bool active)
+        {
+            var style = (Style)FindResource(active ? "PagerButtonActiveStyle" : "PagerButtonStyle");
 
             var button = new Button
             {
-                Content = (pageIndex + 1).ToString(),
+                Content = (index + 1).ToString(),
                 Style = style,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
+                IsEnabled = !active,
             };
 
-            int index = pageIndex;
-            button.Click += (_, __) => onPageClicked(index);
-
-            pagerHost.Children.Add(button);
+            button.Click += (_, __) => onClick(index);
+            host.Children.Add(button);
         }
     }
 
-    private void RenderPage(Grid grid, List<string> allPaths, int pageIndex, Type viewType)
+    private void RenderPage(Grid grid, List<string> paths, int pageIndex, Type viewType)
     {
-        var pageItems = allPaths.Skip(pageIndex * _pageSize).Take(_pageSize).ToList();
+        var items = paths.Skip(pageIndex * _pageSize).Take(_pageSize).ToList();
 
         grid.Children.Clear();
         grid.RowDefinitions.Clear();
@@ -162,21 +192,20 @@ public partial class IoView
         for (var column = 0; column < _columns; column++)
             grid.ColumnDefinitions.Add(new ColumnDefinition());
 
-        var numberOfRows = (int)Math.Ceiling(pageItems.Count / (double)_columns);
+        var rows = (int)Math.Ceiling(items.Count / (double)_columns);
 
-        for (var row = 0; row < numberOfRows; row++)
+        for (var row = 0; row < rows; row++)
         {
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
             for (var column = 0; column < _columns; column++)
             {
                 var index = row * _columns + column;
-                if (index >= pageItems.Count)
+                if (index >= items.Count)
                     continue;
 
-                var itemPath = pageItems[index];
-                var view = _viewFactory.Create(viewType, _actorName, itemPath);
-                if (view is null)
+                var view = _viewFactory.Create(viewType, _actorName, items[index]);
+                if (view == null)
                     continue;
 
                 Grid.SetRow(view, row);
