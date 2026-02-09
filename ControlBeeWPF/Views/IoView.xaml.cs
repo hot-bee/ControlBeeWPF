@@ -17,6 +17,7 @@ public partial class IoView
     private readonly List<string> _inputPaths = [];
     private readonly List<string> _outputPaths = [];
     private readonly int _pageSize;
+    private readonly int _maxVisiblePages;
     private readonly IViewFactory _viewFactory;
 
     private int _inputPageIndex;
@@ -27,12 +28,14 @@ public partial class IoView
         int columns,
         IActorRegistry actorRegistry,
         IViewFactory viewFactory,
-        int? pageSize = 32
+        int? pageSize = 32,
+        int? maxVisiblePages = 5
     )
     {
         _actorName = actorName;
         _columns = columns;
         _pageSize = pageSize ?? 32;
+        _maxVisiblePages = maxVisiblePages ?? 5;
         _viewFactory = viewFactory;
         var actor = actorRegistry.Get(actorName)!;
 
@@ -119,7 +122,7 @@ public partial class IoView
         host.Children.Clear();
         totalPages = Math.Max(1, totalPages);
 
-        if (totalPages <= 5)
+        if (totalPages <= _maxVisiblePages)
         {
             for (var i = 0; i < totalPages; i++)
                 AddPage(i, i == current);
