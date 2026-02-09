@@ -303,6 +303,14 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             return (view as T)!;
         }
 
+        if (typeof(T) == typeof(OperationBlockOverlayView))
+        {
+            var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
+            var viewFactory = serviceProvider.GetRequiredService<IViewFactory>();
+            var view = new OperationBlockOverlayView(actorRegistry, viewFactory, (Dict)args![0]!);
+            return (view as T)!;
+        }
+
         return null;
     }
 }
