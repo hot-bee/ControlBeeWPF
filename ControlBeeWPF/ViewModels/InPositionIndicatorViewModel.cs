@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Brush = System.Windows.Media.Brush;
+using Brushes = System.Windows.Media.Brushes;
 
 namespace ControlBeeWPF.ViewModels;
 
@@ -43,6 +45,9 @@ public sealed class InPositionIndicatorViewModel : INotifyPropertyChanged
 
             _axisStatusViewModels[axisStatusViewModel] = i;
             _variableViewModels[variableViewModel] = i;
+
+            _positions[i].current = axisStatusViewModel.CommandPosition;
+            _positions[i].target = (double)variableViewModel.Value!;
 
             axisStatusViewModel.PropertyChanged += AxisStatusViewModelOnPropertyChanged;
             variableViewModel.PropertyChanged += VariableViewModelOnPropertyChanged;
