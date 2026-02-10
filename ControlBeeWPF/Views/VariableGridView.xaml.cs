@@ -159,8 +159,9 @@ public partial class VariableGridView
         if (_headerColumns != null)
             CellGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
+        var columnWidth = IsTableMode ? GridLength.Auto : new GridLength(1, GridUnitType.Star);
         for (var col = 0; col < _colCount; col++)
-            CellGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            CellGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = columnWidth });
 
         if (_footerColumns != null)
             CellGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
