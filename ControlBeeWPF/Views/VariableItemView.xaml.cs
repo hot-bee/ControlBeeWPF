@@ -43,6 +43,13 @@ public partial class VariableItemView
         new PropertyMetadata(90.0)
     );
 
+    public static readonly DependencyProperty ItemFontSizeProperty = DependencyProperty.Register(
+        nameof(ItemFontSize),
+        typeof(double),
+        typeof(VariableItemView),
+        new PropertyMetadata(14.0)
+    );
+
     public CornerRadius CornerRadius
     {
         get => (CornerRadius)GetValue(CornerRadiusProperty);
@@ -65,6 +72,12 @@ public partial class VariableItemView
     {
         get => (double)GetValue(ItemWidthProperty);
         set => SetValue(ItemWidthProperty, value);
+    }
+
+    public double ItemFontSize
+    {
+        get => (double)GetValue(ItemFontSizeProperty);
+        set => SetValue(ItemFontSizeProperty, value);
     }
 
     private static readonly ILog Logger = LogManager.GetLogger(nameof(VariableItemView));
