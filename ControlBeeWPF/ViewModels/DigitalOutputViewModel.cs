@@ -11,6 +11,7 @@ public class DigitalOutputViewModel : IDisposable, INotifyPropertyChanged
     private readonly ActorItemBinder _binder;
     private readonly string _itemPath;
     private readonly IActor _uiActor;
+    private int _channel = -1;
     private string _name = "";
     private string _toolTip = "";
     private bool? _value;
@@ -23,6 +24,12 @@ public class DigitalOutputViewModel : IDisposable, INotifyPropertyChanged
         _binder = new ActorItemBinder(actorRegistry, actorName, itemPath);
         _binder.MetaDataChanged += BinderOnMetaDataChanged;
         _binder.DataChanged += Binder_DataChanged;
+    }
+
+    public int Channel
+    {
+        get => _channel;
+        set => SetField(ref _channel, value);
     }
 
     public string Name
@@ -56,6 +63,8 @@ public class DigitalOutputViewModel : IDisposable, INotifyPropertyChanged
     {
         Name = (string)e["Name"]!;
         ToolTip = (string)e["Desc"]!;
+        if (e.TryGetValue("Channel", out var channelObj))
+            Channel = (int)channelObj!;
     }
 
     private void Binder_DataChanged(object? sender, Dictionary<string, object?> e)
