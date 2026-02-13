@@ -95,6 +95,10 @@ public partial class VariableItemView
 
     public string? OverrideText { get; set; }
     public Dict? OverrideTextByValue { get; set; }
+    public Func<double, double>? DisplayConverter { get; set; }
+    public Func<double, double>? InputConverter { get; set; }
+
+    public void Refresh() => RefreshContent();
 
     private void ViewModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
@@ -116,8 +120,20 @@ public partial class VariableItemView
         else
         {
             string valueContent;
-            if (_viewModel.Value is double doubleValue)
-                valueContent = Math.Round(doubleValue, 3).ToString();
+            double? numericValue = _viewModel.Value switch
+            {
+                double doubleValue => doubleValue,
+                int intValue => (double)intValue,
+                _ => null,
+            };
+            if (numericValue != null && DisplayConverter != null)
+            {
+                var converted = DisplayConverter(numericValue.Value);
+                valueContent =
+                    _viewModel.Value is int
+                        ? ((int)Math.Round(converted)).ToString()
+                        : converted.ToString();
+            }
             else
                 valueContent = _viewModel.Value?.ToString() ?? "";
             Content =
@@ -149,7 +165,25 @@ public partial class VariableItemView
         }
         else
         {
-            var initialValue = _viewModel.Value.ToString() ?? "0";
+            double? numericValue = _viewModel.Value switch
+            {
+                double doubleValue => doubleValue,
+                int intValue => (double)intValue,
+                _ => null,
+            };
+
+            string initialValue;
+            if (DisplayConverter != null && numericValue != null)
+            {
+                var converted = DisplayConverter(numericValue.Value);
+                initialValue =
+                    _viewModel.Value is int
+                        ? ((int)Math.Round(converted)).ToString()
+                        : converted.ToString();
+            }
+            else
+                initialValue = _viewModel.Value?.ToString() ?? "0";
+
             var allowDecimal = _viewModel.Value is double;
             var inputBox = _viewFactory.Create<NumpadView>(initialValue, allowDecimal);
             if (inputBox!.ShowDialog() is not true)
@@ -158,6 +192,16 @@ public partial class VariableItemView
             newValue = newValue.Replace(",", "");
         }
 
-        _viewModel.ChangeValue(newValue);
+        if (InputConverter != null && double.TryParse(newValue, out var parsed))
+        {
+            var converted = InputConverter(parsed);
+            _viewModel.ChangeValue(
+                _viewModel.Value is int
+                    ? ((int)Math.Round(converted)).ToString()
+                    : converted.ToString()
+            );
+        }
+        else
+            _viewModel.ChangeValue(newValue);
     }
 }
