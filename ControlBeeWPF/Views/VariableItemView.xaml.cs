@@ -98,6 +98,8 @@ public partial class VariableItemView
     public Func<double, double>? DisplayConverter { get; set; }
     public Func<double, double>? InputConverter { get; set; }
 
+    public void Refresh() => RefreshContent();
+
     private void ViewModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         switch (e.PropertyName)
