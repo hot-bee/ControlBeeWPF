@@ -12,7 +12,7 @@
     Background="White"
     BorderBrush="Silver"
     BorderThickness="1"
-    FontSize="14"
+    FontSize="{Binding ItemFontSize, RelativeSource={RelativeSource Self}}"
     Foreground="Black"
     PreviewMouseLeftButtonDown="VariableItemView_OnPreviewMouseLeftButtonDown"
     mc:Ignorable="d">
