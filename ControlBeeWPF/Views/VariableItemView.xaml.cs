@@ -95,6 +95,8 @@ public partial class VariableItemView
 
     public string? OverrideText { get; set; }
     public Dict? OverrideTextByValue { get; set; }
+    public Func<double, double>? DisplayConverter { get; set; }
+    public Func<double, double>? InputConverter { get; set; }
 
     private void ViewModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
@@ -117,7 +119,10 @@ public partial class VariableItemView
         {
             string valueContent;
             if (_viewModel.Value is double doubleValue)
-                valueContent = Math.Round(doubleValue, 3).ToString();
+            {
+                var displayValue = DisplayConverter?.Invoke(doubleValue) ?? doubleValue;
+                valueContent = Math.Round(displayValue, 3).ToString();
+            }
             else
                 valueContent = _viewModel.Value?.ToString() ?? "";
             Content =
@@ -149,7 +154,10 @@ public partial class VariableItemView
         }
         else
         {
-            var initialValue = _viewModel.Value.ToString() ?? "0";
+            var initialValue =
+                (DisplayConverter != null && _viewModel.Value is double doubleValue)
+                    ? Math.Round(DisplayConverter(doubleValue), 3).ToString()
+                    : _viewModel.Value.ToString() ?? "0";
             var allowDecimal = _viewModel.Value is double;
             var inputBox = _viewFactory.Create<NumpadView>(initialValue, allowDecimal);
             if (inputBox!.ShowDialog() is not true)
@@ -158,6 +166,9 @@ public partial class VariableItemView
             newValue = newValue.Replace(",", "");
         }
 
-        _viewModel.ChangeValue(newValue);
+        if (InputConverter != null && double.TryParse(newValue, out var parsed))
+            _viewModel.ChangeValue(InputConverter(parsed).ToString());
+        else
+            _viewModel.ChangeValue(newValue);
     }
 }
