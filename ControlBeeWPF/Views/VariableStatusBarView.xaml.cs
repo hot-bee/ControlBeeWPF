@@ -47,6 +47,7 @@ public partial class VariableStatusBarView : UserControl, IDisposable
     private Action<VariableStatusBarView>? _clickAction;
     private string? _nameSuffix;
     private string? _overrideName;
+    private string? _overrideUnit;
 
     public VariableStatusBarView(IViewFactory viewFactory, VariableViewModel viewModel)
     {
@@ -117,6 +118,16 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         }
     }
 
+    public string? OverrideUnit
+    {
+        get => _overrideUnit;
+        set
+        {
+            _overrideUnit = value;
+            UpdateUnit();
+        }
+    }
+
     public bool ReadOnly { get; set; }
 
     public void Dispose()
@@ -137,6 +148,18 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         NameLabel.Content = name;
     }
 
+    private void UpdateUnit()
+    {
+        var unit = _overrideUnit ?? _viewModel.Unit;
+        if (string.IsNullOrEmpty(unit))
+        {
+            UnitColumn.Width = new GridLength(0);
+            return;
+        }
+
+        UnitLabel.Content = unit;
+    }
+
     private void ViewModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         switch (e.PropertyName)
@@ -145,13 +168,7 @@ public partial class VariableStatusBarView : UserControl, IDisposable
                 UpdateName();
                 break;
             case nameof(_viewModel.Unit):
-                if (string.IsNullOrEmpty(_viewModel.Unit))
-                {
-                    UnitColumn.Width = new GridLength(0);
-                    break;
-                }
-
-                UnitLabel.Content = _viewModel.Unit;
+                UpdateUnit();
                 break;
             case nameof(_viewModel.Value):
                 if (_viewModel.Value is bool)
