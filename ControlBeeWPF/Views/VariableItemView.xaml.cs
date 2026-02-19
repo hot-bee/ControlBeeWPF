@@ -95,8 +95,8 @@ public partial class VariableItemView
 
     public string? OverrideText { get; set; }
     public Dict? OverrideTextByValue { get; set; }
-    public Func<double, double>? DisplayConverter { get; set; }
-    public Func<double, double>? InputConverter { get; set; }
+    public Func<object?, object?>? DisplayConverter { get; set; }
+    public Func<object?, object?>? InputConverter { get; set; }
 
     public void Refresh() => RefreshContent();
 
@@ -120,19 +120,10 @@ public partial class VariableItemView
         else
         {
             string valueContent;
-            double? numericValue = _viewModel.Value switch
+            if (DisplayConverter != null)
             {
-                double doubleValue => doubleValue,
-                int intValue => (double)intValue,
-                _ => null,
-            };
-            if (numericValue != null && DisplayConverter != null)
-            {
-                var converted = DisplayConverter(numericValue.Value);
-                valueContent =
-                    _viewModel.Value is int
-                        ? ((int)Math.Round(converted)).ToString()
-                        : converted.ToString();
+                var converted = DisplayConverter(_viewModel.Value);
+                valueContent = converted?.ToString() ?? "";
             }
             else
                 valueContent = _viewModel.Value?.ToString() ?? "";
@@ -165,21 +156,11 @@ public partial class VariableItemView
         }
         else
         {
-            double? numericValue = _viewModel.Value switch
-            {
-                double doubleValue => doubleValue,
-                int intValue => (double)intValue,
-                _ => null,
-            };
-
             string initialValue;
-            if (DisplayConverter != null && numericValue != null)
+            if (DisplayConverter != null)
             {
-                var converted = DisplayConverter(numericValue.Value);
-                initialValue =
-                    _viewModel.Value is int
-                        ? ((int)Math.Round(converted)).ToString()
-                        : converted.ToString();
+                var converted = DisplayConverter(_viewModel.Value);
+                initialValue = converted?.ToString() ?? _viewModel.Value?.ToString() ?? "0";
             }
             else
                 initialValue = _viewModel.Value?.ToString() ?? "0";
@@ -192,14 +173,11 @@ public partial class VariableItemView
             newValue = newValue.Replace(",", "");
         }
 
-        if (InputConverter != null && double.TryParse(newValue, out var parsed))
+        if (InputConverter != null)
         {
-            var converted = InputConverter(parsed);
-            _viewModel.ChangeValue(
-                _viewModel.Value is int
-                    ? ((int)Math.Round(converted)).ToString()
-                    : converted.ToString()
-            );
+            var inputValue = double.TryParse(newValue, out var parsed) ? (object?)parsed : newValue;
+            var converted = InputConverter(inputValue);
+            _viewModel.ChangeValue(converted?.ToString() ?? newValue);
         }
         else
             _viewModel.ChangeValue(newValue);
