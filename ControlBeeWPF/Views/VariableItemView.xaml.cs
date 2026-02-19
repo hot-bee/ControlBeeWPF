@@ -95,6 +95,10 @@ public partial class VariableItemView
 
     public string? OverrideText { get; set; }
     public Dict? OverrideTextByValue { get; set; }
+    public Func<object?, object?>? DisplayConverter { get; set; }
+    public Func<object?, object?>? InputConverter { get; set; }
+
+    public void Refresh() => RefreshContent();
 
     private void ViewModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
@@ -116,8 +120,11 @@ public partial class VariableItemView
         else
         {
             string valueContent;
-            if (_viewModel.Value is double doubleValue)
-                valueContent = Math.Round(doubleValue, 3).ToString();
+            if (DisplayConverter != null)
+            {
+                var converted = DisplayConverter(_viewModel.Value);
+                valueContent = converted?.ToString() ?? "";
+            }
             else
                 valueContent = _viewModel.Value?.ToString() ?? "";
             Content =
@@ -149,7 +156,15 @@ public partial class VariableItemView
         }
         else
         {
-            var initialValue = _viewModel.Value.ToString() ?? "0";
+            string initialValue;
+            if (DisplayConverter != null)
+            {
+                var converted = DisplayConverter(_viewModel.Value);
+                initialValue = converted?.ToString() ?? _viewModel.Value?.ToString() ?? "0";
+            }
+            else
+                initialValue = _viewModel.Value?.ToString() ?? "0";
+
             var allowDecimal = _viewModel.Value is double;
             var inputBox = _viewFactory.Create<NumpadView>(initialValue, allowDecimal);
             if (inputBox!.ShowDialog() is not true)
@@ -158,6 +173,13 @@ public partial class VariableItemView
             newValue = newValue.Replace(",", "");
         }
 
-        _viewModel.ChangeValue(newValue);
+        if (InputConverter != null)
+        {
+            var inputValue = double.TryParse(newValue, out var parsed) ? (object?)parsed : newValue;
+            var converted = InputConverter(inputValue);
+            _viewModel.ChangeValue(converted?.ToString() ?? newValue);
+        }
+        else
+            _viewModel.ChangeValue(newValue);
     }
 }
