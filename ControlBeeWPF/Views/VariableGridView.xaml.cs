@@ -38,6 +38,13 @@ public partial class VariableGridView
             new PropertyMetadata(double.NaN)
         );
 
+    public static readonly DependencyProperty FooterRowHeightProperty = DependencyProperty.Register(
+        nameof(FooterRowHeight),
+        typeof(double),
+        typeof(VariableGridView),
+        new PropertyMetadata(double.NaN)
+    );
+
     public double ItemWidth
     {
         get => (double)GetValue(ItemWidthProperty);
@@ -56,24 +63,25 @@ public partial class VariableGridView
         set => SetValue(FooterColumnWidthProperty, value);
     }
 
+    public double FooterRowHeight
+    {
+        get => (double)GetValue(FooterRowHeightProperty);
+        set => SetValue(FooterRowHeightProperty, value);
+    }
+
     private readonly VariableGridViewModel _viewModel;
     private readonly IViewFactory _viewFactory;
     private readonly int _rowCount;
     private readonly int _colCount;
     private bool _useCellName = true;
-    private string? _title;
+    private string? _cornerLabel;
     private string[]? _headerColumns;
     private string[]? _headerRows;
     private string[]? _footerColumns;
     private string[]? _footerRows;
     private bool _rendered;
 
-    private bool IsTableMode =>
-        _title != null
-        || _headerColumns != null
-        || _headerRows != null
-        || _footerColumns != null
-        || _footerRows != null;
+    private bool IsTableMode => _headerColumns != null || _headerRows != null;
 
     public VariableGridView(
         IViewFactory viewFactory,
@@ -98,9 +106,9 @@ public partial class VariableGridView
         return this;
     }
 
-    public VariableGridView SetTitle(string title)
+    public VariableGridView SetCornerLabel(string text)
     {
-        _title = title;
+        _cornerLabel = text;
         return this;
     }
 
@@ -147,31 +155,39 @@ public partial class VariableGridView
 
     private void RenderTable()
     {
-        var titleOffset = _title != null ? 1 : 0;
-        var colOffset = _headerColumns != null ? 1 : 0;
-        var headerRowOffset = titleOffset + (_headerRows != null ? 1 : 0);
-        _totalRows = headerRowOffset + _rowCount + (_footerRows != null ? 1 : 0);
-        _totalCols = colOffset + _colCount + (_footerColumns != null ? 1 : 0);
-
-        for (var row = 0; row < _totalRows; row++)
-            CellGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+        var dataColOffset = _headerRows != null ? 1 : 0;
+        var dataRowOffset = _headerColumns != null ? 1 : 0;
+        _totalRows = dataRowOffset + _rowCount + (_footerColumns != null ? 1 : 0);
+        _totalCols = dataColOffset + _colCount + (_footerRows != null ? 1 : 0);
 
         if (_headerColumns != null)
-            CellGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            CellGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+        for (var row = 0; row < _rowCount; row++)
+            CellGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+        if (_footerColumns != null)
+            CellGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
+        if (_headerRows != null)
+            CellGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
         var columnWidth = IsTableMode ? GridLength.Auto : new GridLength(1, GridUnitType.Star);
         for (var col = 0; col < _colCount; col++)
             CellGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = columnWidth });
-
-        if (_footerColumns != null)
+        if (_footerRows != null)
             CellGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
-        RenderTitle();
-        RenderHeaderRows(titleOffset);
-        RenderHeaderColumns(headerRowOffset);
-        RenderCells(headerRowOffset, colOffset);
-        RenderFooterColumns(headerRowOffset, colOffset);
-        RenderFooterRows(headerRowOffset, colOffset);
+        RenderHeaderColumns();
+        RenderHeaderRows();
+        if (_headerColumns != null && _headerRows != null)
+            RenderCornerCell(0, 0, _cornerLabel ?? string.Empty);
+        if (_footerColumns != null && _headerRows != null)
+            RenderCornerCell(dataRowOffset + _rowCount, 0);
+        if (_headerColumns != null && _footerRows != null)
+            RenderCornerCell(dataRowOffset - 1, dataColOffset + _colCount);
+        if (_footerColumns != null && _footerRows != null)
+            RenderCornerCell(dataRowOffset + _rowCount, dataColOffset + _colCount);
+        RenderCells(dataRowOffset, dataColOffset);
+        RenderFooterRows();
+        RenderFooterColumns();
     }
 
     private Thickness GetTableMargin(int gridRow, int gridCol)
@@ -181,54 +197,56 @@ public partial class VariableGridView
         return new Thickness(0, 0, isLastCol ? 0 : -1, isLastRow ? 0 : -1);
     }
 
-    private void RenderTitle()
+    private void RenderCornerCell(int gridRow, int gridCol, string text = "")
     {
-        if (_title == null)
-            return;
-
-        var label = CreateHeaderLabel(_title);
-        label.Width = double.NaN;
-        label.HorizontalAlignment = HorizontalAlignment.Stretch;
-        label.Margin = GetTableMargin(0, _totalCols - 1);
-        Grid.SetRow(label, 0);
-        Grid.SetColumn(label, 0);
-        Grid.SetColumnSpan(label, _totalCols);
-        CellGrid.Children.Add(label);
+        var corner = CreateHeaderLabel(text);
+        corner.Margin = GetTableMargin(gridRow, gridCol);
+        Grid.SetRow(corner, gridRow);
+        Grid.SetColumn(corner, gridCol);
+        CellGrid.Children.Add(corner);
     }
 
-    private void RenderHeaderRows(int titleOffset)
-    {
-        if (_headerRows == null)
-            return;
-
-        var lastCol = _totalCols - 1;
-        for (var i = 0; i < _headerRows.Length && i < _totalCols; i++)
-        {
-            var isHeaderCol = _headerColumns != null && i == 0;
-            var isFooterCol = _footerColumns != null && i == lastCol;
-            Label label;
-            if (isHeaderCol)
-                label = CreateHeaderColumnLabel(_headerRows[i]);
-            else if (isFooterCol)
-                label = CreateFooterColumnLabel(_headerRows[i]);
-            else
-                label = CreateHeaderLabel(_headerRows[i]);
-            label.Margin = GetTableMargin(titleOffset, i);
-            Grid.SetRow(label, titleOffset);
-            Grid.SetColumn(label, i);
-            CellGrid.Children.Add(label);
-        }
-    }
-
-    private void RenderHeaderColumns(int rowOffset)
+    private void RenderHeaderColumns()
     {
         if (_headerColumns == null)
             return;
 
-        for (var i = 0; i < _headerColumns.Length && i < _rowCount; i++)
+        var colOffset = _headerRows != null ? 1 : 0;
+        var lastCol = _totalCols - 1;
+
+        for (var i = 0; i < _headerColumns.Length; i++)
+        {
+            var gridCol = colOffset + i;
+            if (gridCol >= _totalCols)
+                break;
+            var isFooterCol = _footerRows != null && gridCol == lastCol;
+            var label = isFooterCol
+                ? CreateFooterColumnLabel(_headerColumns[i])
+                : CreateHeaderLabel(_headerColumns[i]);
+            label.Margin = GetTableMargin(0, gridCol);
+            Grid.SetRow(label, 0);
+            Grid.SetColumn(label, gridCol);
+            CellGrid.Children.Add(label);
+        }
+    }
+
+    private void RenderHeaderRows()
+    {
+        if (_headerRows == null)
+            return;
+
+        var rowOffset = _headerColumns != null ? 1 : 0;
+        var lastRow = _totalRows - 1;
+
+        for (var i = 0; i < _headerRows.Length; i++)
         {
             var gridRow = rowOffset + i;
-            var label = CreateHeaderColumnLabel(_headerColumns[i]);
+            if (gridRow >= _totalRows)
+                break;
+            var isFooterRow = _footerColumns != null && gridRow == lastRow;
+            var label = isFooterRow
+                ? CreateFooterRowLabel(_headerRows[i])
+                : CreateHeaderColumnLabel(_headerRows[i]);
             label.Margin = GetTableMargin(gridRow, 0);
             Grid.SetRow(label, gridRow);
             Grid.SetColumn(label, 0);
@@ -269,41 +287,51 @@ public partial class VariableGridView
         }
     }
 
-    private void RenderFooterRows(int rowOffset, int colOffset)
-    {
-        if (_footerRows == null)
-            return;
-
-        var footerRowIndex = rowOffset + _rowCount;
-        var lastCol = _totalCols - 1;
-        for (var i = 0; i < _footerRows.Length && i < _totalCols; i++)
-        {
-            var isHeaderCol = _headerColumns != null && i == 0;
-            var isFooterCol = _footerColumns != null && i == lastCol;
-            Label label;
-            if (isHeaderCol)
-                label = CreateHeaderColumnLabel(_footerRows[i]);
-            else if (isFooterCol)
-                label = CreateFooterColumnLabel(_footerRows[i]);
-            else
-                label = CreateHeaderLabel(_footerRows[i]);
-            label.Margin = GetTableMargin(footerRowIndex, i);
-            Grid.SetRow(label, footerRowIndex);
-            Grid.SetColumn(label, i);
-            CellGrid.Children.Add(label);
-        }
-    }
-
-    private void RenderFooterColumns(int rowOffset, int colOffset)
+    private void RenderFooterColumns()
     {
         if (_footerColumns == null)
             return;
 
+        var rowOffset = _headerColumns != null ? 1 : 0;
+        var colOffset = _headerRows != null ? 1 : 0;
+        var footerRowIndex = rowOffset + _rowCount;
+        var lastCol = _totalCols - 1;
+
+        for (var i = 0; i < _footerColumns.Length; i++)
+        {
+            var gridCol = colOffset + i;
+            if (gridCol >= _totalCols)
+                break;
+            var isFooterCol = _footerRows != null && gridCol == lastCol;
+            var label = isFooterCol
+                ? CreateFooterColumnLabel(_footerColumns[i])
+                : CreateHeaderLabel(_footerColumns[i]);
+            label.Margin = GetTableMargin(footerRowIndex, gridCol);
+            Grid.SetRow(label, footerRowIndex);
+            Grid.SetColumn(label, gridCol);
+            CellGrid.Children.Add(label);
+        }
+    }
+
+    private void RenderFooterRows()
+    {
+        if (_footerRows == null)
+            return;
+
+        var rowOffset = _headerColumns != null ? 1 : 0;
+        var colOffset = _headerRows != null ? 1 : 0;
         var footerColIndex = colOffset + _colCount;
-        for (var i = 0; i < _footerColumns.Length && i < _rowCount; i++)
+        var lastRow = _totalRows - 1;
+
+        for (var i = 0; i < _footerRows.Length; i++)
         {
             var gridRow = rowOffset + i;
-            var label = CreateFooterColumnLabel(_footerColumns[i]);
+            if (gridRow >= _totalRows)
+                break;
+            var isFooterRow = _footerColumns != null && gridRow == lastRow;
+            var label = isFooterRow
+                ? CreateFooterRowLabel(_footerRows[i])
+                : CreateFooterColumnLabel(_footerRows[i]);
             label.Margin = GetTableMargin(gridRow, footerColIndex);
             Grid.SetRow(label, gridRow);
             Grid.SetColumn(label, footerColIndex);
@@ -367,6 +395,13 @@ public partial class VariableGridView
     {
         var label = new Label { Content = text, Style = (Style)FindResource("HeaderLabelStyle") };
         label.SetBinding(WidthProperty, new Binding(nameof(FooterColumnWidth)) { Source = this });
+        return label;
+    }
+
+    private Label CreateFooterRowLabel(string text)
+    {
+        var label = new Label { Content = text, Style = (Style)FindResource("HeaderLabelStyle") };
+        label.SetBinding(HeightProperty, new Binding(nameof(FooterRowHeight)) { Source = this });
         return label;
     }
 }
