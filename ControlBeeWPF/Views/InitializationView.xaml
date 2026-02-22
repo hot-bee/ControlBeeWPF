@@ -37,7 +37,24 @@
                 Grid.Row="1"
                 BorderBrush="Silver"
                 BorderThickness="0,0,0,1">
-                <WrapPanel Name="WrapPanel1" Margin="10" />
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="100" />
+                    </Grid.RowDefinitions>
+                    <WrapPanel
+                        Name="WrapPanel1"
+                        Grid.Row="0"
+                        Margin="10" />
+                    <ListBox
+                        Name="LogListBox"
+                        Grid.Row="1"
+                        MinHeight="80"
+                        Margin="10,0,10,10"
+                        FontFamily="Consolas"
+                        FontSize="12"
+                        VirtualizingPanel.ScrollUnit="Pixel" />
+                </Grid>
             </Border>
             <Border
                 Grid.Row="2"

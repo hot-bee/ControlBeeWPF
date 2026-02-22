@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -9,6 +10,7 @@ using ControlBee.Constants;
 using ControlBee.Interfaces;
 using ControlBeeAbstract.Exceptions;
 using ControlBeeWPF.Components;
+using log4net;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using InitializationViewModel = ControlBeeWPF.ViewModels.InitializationViewModel;
 using Message = ControlBee.Models.Message;
@@ -21,9 +23,50 @@ namespace ControlBeeWPF.Views;
 /// </summary>
 public partial class InitializationView
 {
+    private static readonly ILog Logger = LogManager.GetLogger(nameof(InitializationView));
+
+    public static readonly DependencyProperty ButtonWidthProperty = DependencyProperty.Register(
+        nameof(ButtonWidth),
+        typeof(double),
+        typeof(InitializationView),
+        new PropertyMetadata(150.0)
+    );
+
+    public static readonly DependencyProperty ButtonHeightProperty = DependencyProperty.Register(
+        nameof(ButtonHeight),
+        typeof(double),
+        typeof(InitializationView),
+        new PropertyMetadata(80.0)
+    );
+
+    public double ButtonWidth
+    {
+        get => (double)GetValue(ButtonWidthProperty);
+        set => SetValue(ButtonWidthProperty, value);
+    }
+
+    public double ButtonHeight
+    {
+        get => (double)GetValue(ButtonHeightProperty);
+        set => SetValue(ButtonHeightProperty, value);
+    }
+
     private readonly Dictionary<string, ToggleImageButton> _buttonMap = new();
     private readonly Dictionary<string, ProgressBar> _progressMap = new();
     private readonly InitializationViewModel _viewModel;
+    private FileSystemWatcher? _logWatcher;
+    private string _logFilePath = "log/Initialization.log";
+    private long _logReadPosition;
+
+    public string LogFilePath
+    {
+        get => _logFilePath;
+        set
+        {
+            _logFilePath = value;
+            SetupLogWatcher();
+        }
+    }
 
     public InitializationView(IActorRegistry actorRegistry, InitializationViewModel viewModel)
     {
@@ -36,6 +79,8 @@ public partial class InitializationView
 
         var uiActor = (IUiActor)actorRegistry.Get("Ui")!;
         uiActor.MessageArrived += UiActorOnMessageArrived;
+
+        SetupLogWatcher();
     }
 
     private void UiActorOnMessageArrived(object? sender, Message message)
@@ -85,6 +130,66 @@ public partial class InitializationView
         _viewModel.PropertyChanged -= _viewModel_PropertyChanged;
         foreach (var (_, button) in _buttonMap)
             button.PropertyChanged -= CheckButton_PropertyChanged;
+        _logWatcher?.Dispose();
+    }
+
+    private void SetupLogWatcher()
+    {
+        _logWatcher?.Dispose();
+        _logWatcher = null;
+
+        var fullPath = Path.GetFullPath(_logFilePath);
+        var dir = Path.GetDirectoryName(fullPath)!;
+        var fileName = Path.GetFileName(fullPath);
+
+        if (!Directory.Exists(dir))
+            Directory.CreateDirectory(dir);
+
+        _logWatcher = new FileSystemWatcher(dir, fileName)
+        {
+            NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size,
+            EnableRaisingEvents = true,
+        };
+        _logWatcher.Changed += OnLogFileChanged;
+        _logWatcher.Created += OnLogFileChanged;
+
+        _logReadPosition = File.Exists(_logFilePath) ? new FileInfo(_logFilePath).Length : 0;
+    }
+
+    private void OnLogFileChanged(object sender, FileSystemEventArgs e)
+    {
+        Dispatcher.BeginInvoke(LoadLogFile);
+    }
+
+    private void LoadLogFile()
+    {
+        if (!File.Exists(_logFilePath))
+            return;
+
+        try
+        {
+            using var stream = new FileStream(
+                _logFilePath,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.ReadWrite
+            );
+            stream.Seek(_logReadPosition, SeekOrigin.Begin);
+            using var reader = new StreamReader(stream);
+            var newContent = reader.ReadToEnd();
+            _logReadPosition = stream.Position;
+
+            var lines = newContent.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+            foreach (var line in lines)
+                LogListBox.Items.Add(line.TrimEnd('\r'));
+
+            if (LogListBox.Items.Count > 0)
+                LogListBox.ScrollIntoView(LogListBox.Items[^1]);
+        }
+        catch (IOException e)
+        {
+            Logger.Warn($"Failed to read log file '{_logFilePath}'.", e);
+        }
     }
 
     private void MakeButtons()
@@ -101,24 +206,35 @@ public partial class InitializationView
                 actorTitle
             )
             {
-                Width = 150,
-                Height = 60,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
                 HorizontalContentAlignment = HorizontalAlignment.Left,
                 Padding = new Thickness(10, 0, 0, 0),
-                Margin = new Thickness(10),
             };
 
             var progressBar = new ProgressBar
             {
-                Width = 150,
-                Height = 15,
                 Margin = new Thickness(0, 5, 0, 0),
                 Minimum = 0,
                 Maximum = 100,
                 Value = 0,
             };
 
-            var container = new StackPanel { Margin = new Thickness(10) };
+            var container = new Grid
+            {
+                Width = ButtonWidth,
+                Height = ButtonHeight,
+                Margin = new Thickness(10),
+            };
+            container.RowDefinitions.Add(
+                new RowDefinition { Height = new GridLength(3, GridUnitType.Star) }
+            );
+            container.RowDefinitions.Add(
+                new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }
+            );
+
+            Grid.SetRow(checkButton, 0);
+            Grid.SetRow(progressBar, 1);
 
             container.Children.Add(checkButton);
             container.Children.Add(progressBar);
