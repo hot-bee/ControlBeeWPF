@@ -6,7 +6,7 @@ namespace ControlBeeWPF.Services;
 
 public class DialogDisplay
 {
-    private readonly HashSet<IDialogContext> _onContexts = [];
+    private readonly List<IDialogContext> _onContexts = [];
     private readonly IViewFactory _viewFactory;
 
     public DialogDisplay(IActorRegistry actorRegistry, IViewFactory viewFactory)
@@ -40,6 +40,12 @@ public class DialogDisplay
                 if (!_onContexts.Contains(context))
                     return;
                 context.Close();
+                break;
+            }
+            case "_closeLastDialog":
+            {
+                if (_onContexts.Count > 0)
+                    _onContexts[^1].Close();
                 break;
             }
         }
