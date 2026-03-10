@@ -222,6 +222,7 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             var columns = (int)args![1]!;
             var pageSize = (int?)args.ElementAtOrDefault(2);
             var maxVisiblePages = (int?)args.ElementAtOrDefault(3);
+            var filterByItemPath = (string[]?)args.ElementAtOrDefault(4);
             var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
             var view = new IoView(
                 actorName,
@@ -229,7 +230,8 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
                 actorRegistry,
                 this,
                 pageSize,
-                maxVisiblePages
+                maxVisiblePages,
+                filterByItemPath
             );
             return (view as T)!;
         }

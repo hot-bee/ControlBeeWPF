@@ -29,7 +29,8 @@ public partial class IoView
         IActorRegistry actorRegistry,
         IViewFactory viewFactory,
         int? pageSize = 32,
-        int? maxVisiblePages = 5
+        int? maxVisiblePages = 5,
+        string[]? filterByItemPath = null
     )
     {
         _actorName = actorName;
@@ -43,6 +44,12 @@ public partial class IoView
 
         foreach (var (itemPath, type) in actor.GetItems())
         {
+            if (
+                filterByItemPath != null
+                && !filterByItemPath.Any(filter => itemPath.StartsWith(filter))
+            )
+                continue;
+
             if (type.IsAssignableTo(typeof(IDigitalInput)))
                 _inputPaths.Add(itemPath);
 
