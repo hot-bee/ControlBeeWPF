@@ -1,7 +1,9 @@
-﻿using System.Windows;
+﻿using System.Reflection;
+using System.Windows;
 using System.Windows.Controls;
 using ControlBee.Interfaces;
 using ControlBeeWPF.Interfaces;
+using log4net;
 using Button = System.Windows.Controls.Button;
 
 namespace ControlBeeWPF.Views;
@@ -11,6 +13,8 @@ namespace ControlBeeWPF.Views;
 /// </summary>
 public partial class IoView
 {
+    private static readonly ILog Logger = LogManager.GetLogger("IoView");
+
     public static readonly DependencyProperty NameColumnWidthProperty = DependencyProperty.Register(
         nameof(NameColumnWidth),
         typeof(double),
@@ -238,6 +242,9 @@ public partial class IoView
                 switch (view)
                 {
                     case null:
+                        Logger.Warn(
+                            $"Failed to create view for item '{items[index]}' (viewType={viewType}, actor={_actorName})"
+                        );
                         continue;
                     case DigitalInputStatusBarView digitalInputStatusBarView:
                         digitalInputStatusBarView.NameColumnWidth = new GridLength(NameColumnWidth);
