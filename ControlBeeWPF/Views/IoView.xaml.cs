@@ -1,7 +1,9 @@
-﻿using System.Windows;
+﻿using System.Reflection;
+using System.Windows;
 using System.Windows.Controls;
 using ControlBee.Interfaces;
 using ControlBeeWPF.Interfaces;
+using log4net;
 using Button = System.Windows.Controls.Button;
 
 namespace ControlBeeWPF.Views;
@@ -11,6 +13,31 @@ namespace ControlBeeWPF.Views;
 /// </summary>
 public partial class IoView
 {
+    private static readonly ILog Logger = LogManager.GetLogger("IoView");
+
+    public static readonly DependencyProperty NameColumnWidthProperty = DependencyProperty.Register(
+        nameof(NameColumnWidth),
+        typeof(double),
+        typeof(IoView),
+        new PropertyMetadata(200.0, OnNameColumnWidthChanged)
+    );
+
+    private static void OnNameColumnWidthChanged(
+        DependencyObject dependencyObject,
+        DependencyPropertyChangedEventArgs e
+    )
+    {
+        var view = (IoView)dependencyObject;
+        view.GoToInputPage(view._inputPageIndex);
+        view.GoToOutputPage(view._outputPageIndex);
+    }
+
+    public double NameColumnWidth
+    {
+        get => (double)GetValue(NameColumnWidthProperty);
+        set => SetValue(NameColumnWidthProperty, value);
+    }
+
     private readonly string _actorName;
     private readonly int _columns;
 
@@ -212,8 +239,22 @@ public partial class IoView
                     continue;
 
                 var view = _viewFactory.Create(viewType, _actorName, items[index]);
-                if (view == null)
-                    continue;
+                switch (view)
+                {
+                    case null:
+                        Logger.Warn(
+                            $"Failed to create view for item '{items[index]}' (viewType={viewType}, actor={_actorName})"
+                        );
+                        continue;
+                    case DigitalInputStatusBarView digitalInputStatusBarView:
+                        digitalInputStatusBarView.NameColumnWidth = new GridLength(NameColumnWidth);
+                        break;
+                    case DigitalOutputStatusBarView digitalOutputStatusBarView:
+                        digitalOutputStatusBarView.NameColumnWidth = new GridLength(
+                            NameColumnWidth
+                        );
+                        break;
+                }
 
                 Grid.SetRow(view, row);
                 Grid.SetColumn(view, column);
