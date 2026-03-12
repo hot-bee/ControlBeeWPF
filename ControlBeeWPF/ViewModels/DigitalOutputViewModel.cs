@@ -63,6 +63,8 @@ public class DigitalOutputViewModel : IDisposable, INotifyPropertyChanged
     {
         Name = (string)e["Name"]!;
         ToolTip = (string)e["Desc"]!;
+        if (string.IsNullOrEmpty(ToolTip))
+            ToolTip = Name;
         if (e.TryGetValue("Channel", out var channelObj))
             Channel = (int)channelObj!;
     }

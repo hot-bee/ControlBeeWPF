@@ -119,7 +119,7 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
         if (!string.IsNullOrEmpty(name))
             Name = name;
         Unit = unit ?? "";
-        ToolTip = desc ?? "";
+        ToolTip = desc ?? Name;
         MinValue = min ?? null;
         MaxValue = max ?? null;
     }
