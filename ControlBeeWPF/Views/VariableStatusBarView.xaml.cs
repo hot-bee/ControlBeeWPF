@@ -145,6 +145,11 @@ public partial class VariableStatusBarView : UserControl, IDisposable
     {
         var name = OverrideName ?? _viewModel.Name;
         name += NameSuffix ?? "";
+        if (string.IsNullOrEmpty(name))
+        {
+            NameColumn.Width = new GridLength(0);
+            return;
+        }
         NameLabel.Content = name;
     }
 
