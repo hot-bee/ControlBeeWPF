@@ -30,15 +30,15 @@ public partial class TeachingJogView : UserControl, IDisposable
 
     private static void TranslateHeader(HeaderedContentControl control, string key)
     {
-        var text = LocalizationManager.Instance.Translate(key);
-        if (!string.IsNullOrEmpty(text))
+        var text = LocalizationManager.Instance.GetValue(key);
+        if (text != null)
             control.Header = text;
     }
 
     private static void TranslateContent(ContentControl control, string key)
     {
-        var text = LocalizationManager.Instance.Translate(key);
-        if (!string.IsNullOrEmpty(text))
+        var text = LocalizationManager.Instance.GetValue(key);
+        if (text != null)
             control.Content = text;
     }
 

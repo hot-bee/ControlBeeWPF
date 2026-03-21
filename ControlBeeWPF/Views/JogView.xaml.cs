@@ -77,10 +77,10 @@ public partial class JogView : UserControl, IDisposable
         {
             if (DiscreteStepOptions.Children.Count > 0)
                 DiscreteStepOptions.Children.Add(new Rectangle { Width = 60 });
-            var translatedStep = LocalizationManager.Instance.Translate($"JogView.StepSize.{step}");
+            var translatedStep = LocalizationManager.Instance.GetValue($"JogView.StepSize.{step}");
             var radioButton = new RadioButton
             {
-                Content = !string.IsNullOrEmpty(translatedStep) ? translatedStep : step,
+                Content = translatedStep ?? step,
                 VerticalContentAlignment = VerticalAlignment.Center,
             };
             radioButton.Checked += RadioButtonOnChecked;
@@ -109,16 +109,16 @@ public partial class JogView : UserControl, IDisposable
         var stackPanel = new StackPanel { HorizontalAlignment = HorizontalAlignment.Center };
         foreach (var itemPath in _viewModel.AxisItemPaths)
         {
-            var negContent = LocalizationManager.Instance.Translate("JogView.Neg");
+            var negContent = LocalizationManager.Instance.GetValue("JogView.Neg");
             var negButton = new Button
             {
-                Content = !string.IsNullOrEmpty(negContent) ? negContent : "- Neg",
+                Content = negContent ?? "- Neg",
                 Margin = new Thickness(10),
             };
-            var posContent = LocalizationManager.Instance.Translate("JogView.Pos");
+            var posContent = LocalizationManager.Instance.GetValue("JogView.Pos");
             var posButton = new Button
             {
-                Content = !string.IsNullOrEmpty(posContent) ? posContent : "Pos +",
+                Content = posContent ?? "Pos +",
                 Margin = new Thickness(10),
             };
             var label = new Label
@@ -231,15 +231,15 @@ public partial class JogView : UserControl, IDisposable
 
     private static void TranslateHeader(HeaderedContentControl control, string key)
     {
-        var text = LocalizationManager.Instance.Translate(key);
-        if (!string.IsNullOrEmpty(text))
+        var text = LocalizationManager.Instance.GetValue(key);
+        if (text != null)
             control.Header = text;
     }
 
     private static void TranslateContent(ContentControl control, string key)
     {
-        var text = LocalizationManager.Instance.Translate(key);
-        if (!string.IsNullOrEmpty(text))
+        var text = LocalizationManager.Instance.GetValue(key);
+        if (text != null)
             control.Content = text;
     }
 
