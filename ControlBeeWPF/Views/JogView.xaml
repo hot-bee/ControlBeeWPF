@@ -17,13 +17,17 @@
             </Style>
         </Grid.Resources>
         <TabControl Margin="5">
-            <TabItem Padding="10" Header="Continuous">
+            <TabItem
+                x:Name="ContinuousTab"
+                Padding="10"
+                Header="Continuous">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition />
                     </Grid.RowDefinitions>
                     <GroupBox
+                        x:Name="SpeedGroup"
                         Grid.Row="0"
                         Margin="5"
                         Header="Speed">
@@ -49,20 +53,27 @@
                         </StackPanel>
                     </GroupBox>
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                        <GroupBox Margin="5,0,5,5" Header="Axes">
+                        <GroupBox
+                            x:Name="ContinuousAxesGroup"
+                            Margin="5,0,5,5"
+                            Header="Axes">
                             <ContentControl Name="ContinuousAxesContent" />
                         </GroupBox>
 
                     </ScrollViewer>
                 </Grid>
             </TabItem>
-            <TabItem Padding="10" Header="Step">
+            <TabItem
+                x:Name="StepTab"
+                Padding="10"
+                Header="Step">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition />
                     </Grid.RowDefinitions>
                     <GroupBox
+                        x:Name="StepDistanceGroup"
                         Grid.Row="0"
                         Margin="5"
                         Header="Step Distance">
@@ -79,7 +90,10 @@
                         </StackPanel>
                     </GroupBox>
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                        <GroupBox Margin="5,0,5,5" Header="Axes">
+                        <GroupBox
+                            x:Name="DiscreteAxesGroup"
+                            Margin="5,0,5,5"
+                            Header="Axes">
                             <ContentControl Name="DiscreteAxesContent" />
                         </GroupBox>
                     </ScrollViewer>

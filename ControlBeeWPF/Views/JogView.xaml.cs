@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using ControlBee.Constants;
+using ControlBee.Services;
 using ControlBeeAbstract.Constants;
 using ControlBeeAbstract.Exceptions;
 using ControlBeeWPF.ViewModels;
@@ -34,6 +35,16 @@ public partial class JogView : UserControl, IDisposable
         _viewModel = viewModel;
         DataContext = viewModel;
         InitializeComponent();
+
+        TranslateHeader(ContinuousTab, "JogView.Continuous");
+        TranslateHeader(SpeedGroup, "JogView.Speed");
+        TranslateContent(SpeedLowRadio, "JogView.SpeedLow");
+        TranslateContent(SpeedMidRadio, "JogView.SpeedMid");
+        TranslateContent(SpeedHighRadio, "JogView.SpeedHigh");
+        TranslateHeader(ContinuousAxesGroup, "JogView.Axes");
+        TranslateHeader(StepTab, "JogView.Step");
+        TranslateHeader(StepDistanceGroup, "JogView.StepDistance");
+        TranslateHeader(DiscreteAxesGroup, "JogView.Axes");
 
         viewModel.Loaded += ViewModelOnLoaded;
     }
@@ -66,9 +77,10 @@ public partial class JogView : UserControl, IDisposable
         {
             if (DiscreteStepOptions.Children.Count > 0)
                 DiscreteStepOptions.Children.Add(new Rectangle { Width = 60 });
+            var translatedStep = LocalizationManager.Instance.Translate($"JogView.StepSize.{step}");
             var radioButton = new RadioButton
             {
-                Content = $"{step}",
+                Content = !string.IsNullOrEmpty(translatedStep) ? translatedStep : step,
                 VerticalContentAlignment = VerticalAlignment.Center,
             };
             radioButton.Checked += RadioButtonOnChecked;
@@ -97,8 +109,18 @@ public partial class JogView : UserControl, IDisposable
         var stackPanel = new StackPanel { HorizontalAlignment = HorizontalAlignment.Center };
         foreach (var itemPath in _viewModel.AxisItemPaths)
         {
-            var negButton = new Button { Content = "- Neg", Margin = new Thickness(10) };
-            var posButton = new Button { Content = "Pos +", Margin = new Thickness(10) };
+            var negContent = LocalizationManager.Instance.Translate("JogView.Neg");
+            var negButton = new Button
+            {
+                Content = !string.IsNullOrEmpty(negContent) ? negContent : "- Neg",
+                Margin = new Thickness(10),
+            };
+            var posContent = LocalizationManager.Instance.Translate("JogView.Pos");
+            var posButton = new Button
+            {
+                Content = !string.IsNullOrEmpty(posContent) ? posContent : "Pos +",
+                Margin = new Thickness(10),
+            };
             var label = new Label
             {
                 Content = itemPath,
@@ -205,6 +227,20 @@ public partial class JogView : UserControl, IDisposable
         if (_stepRadios[2].IsChecked is true)
             return JogStep.Large;
         throw new ValueError();
+    }
+
+    private static void TranslateHeader(HeaderedContentControl control, string key)
+    {
+        var text = LocalizationManager.Instance.Translate(key);
+        if (!string.IsNullOrEmpty(text))
+            control.Header = text;
+    }
+
+    private static void TranslateContent(ContentControl control, string key)
+    {
+        var text = LocalizationManager.Instance.Translate(key);
+        if (!string.IsNullOrEmpty(text))
+            control.Content = text;
     }
 
     private enum JogMode

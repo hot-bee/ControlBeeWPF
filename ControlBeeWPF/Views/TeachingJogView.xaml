@@ -21,36 +21,45 @@
             <RowDefinition />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <GroupBox Grid.Row="0" Header="Move to Position">
+        <GroupBox
+            x:Name="MoveToPositionGroup"
+            Grid.Row="0"
+            Header="Move to Position">
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                 <Button
+                    x:Name="MoveToHomeButton"
                     Margin="10"
                     Command="{Binding MoveToHomePosCommand}"
                     Content="Move to Home" />
                 <Rectangle Width="60" />
                 <Button
+                    x:Name="MoveToSavedPosButton"
                     Margin="10"
                     Command="{Binding MoveToSavedPosCommand}"
                     Content="Move to Saved &#x0a;Position" />
             </StackPanel>
         </GroupBox>
         <GroupBox
+            x:Name="JogControlGroup"
             Grid.Row="1"
             Margin="0,5,0,0"
             Header="Jog Control">
             <ContentControl Name="JogControlArea" />
         </GroupBox>
         <GroupBox
+            x:Name="PositionSavingGroup"
             Grid.Row="2"
             Margin="0,5,0,0"
             Header="Position Saving">
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                 <Button
+                    x:Name="SetPosButton"
                     Margin="10"
                     Command="{Binding SetPosCommand}"
                     Content="Set" />
                 <Rectangle Width="80" />
                 <Button
+                    x:Name="RestoreButton"
                     Margin="10"
                     Content="Restore"
                     IsEnabled="False" />
