@@ -7,7 +7,6 @@ using Button = System.Windows.Controls.Button;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using Label = System.Windows.Controls.Label;
 using MessageBox = System.Windows.MessageBox;
-using Orientation = System.Windows.Controls.Orientation;
 
 namespace ControlBeeWPF.Views;
 
@@ -57,36 +56,50 @@ public partial class PositionVariableListView
         _viewModel.AddVariable(rowName, positionVariableItemKeys);
     }
 
+    private Grid CreateRowGrid()
+    {
+        var grid = new Grid();
+        grid.ColumnDefinitions.Add(
+            new ColumnDefinition { Width = GridLength.Auto, SharedSizeGroup = "Indicator" }
+        );
+        grid.ColumnDefinitions.Add(
+            new ColumnDefinition { Width = GridLength.Auto, SharedSizeGroup = "Name" }
+        );
+        for (var i = 0; i < _axisLabels.Length; i++)
+            grid.ColumnDefinitions.Add(
+                new ColumnDefinition { Width = GridLength.Auto, SharedSizeGroup = $"Axis_{i}" }
+            );
+        grid.ColumnDefinitions.Add(
+            new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+        );
+        grid.ColumnDefinitions.Add(
+            new ColumnDefinition { Width = GridLength.Auto, SharedSizeGroup = "SetButton" }
+        );
+        return grid;
+    }
+
+    private int AxisColumnOffset => 2;
+    private int SetButtonColumn => 2 + _axisLabels.Length + 1;
+
     private void RenderHeader()
     {
         if (_axisLabels.Length == 0)
             return;
 
-        var grid = new Grid { Margin = new Thickness(0, 0, 0, 5) };
+        var grid = CreateRowGrid();
+        grid.Margin = new Thickness(0, 0, 0, 5);
 
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(35) });
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(175) });
-        grid.ColumnDefinitions.Add(
-            new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
-        );
-
-        var headerPanel = new StackPanel { Orientation = Orientation.Horizontal };
-
-        foreach (var axis in _axisLabels)
+        for (var i = 0; i < _axisLabels.Length; i++)
         {
-            headerPanel.Children.Add(
-                new Label
-                {
-                    Content = axis,
-                    Style = (Style)FindResource("MainLabelStyle"),
-                    HorizontalContentAlignment = HorizontalAlignment.Center,
-                    Width = 86,
-                }
-            );
+            var headerLabel = new Label
+            {
+                Content = _axisLabels[i],
+                Style = (Style)FindResource("MainLabelStyle"),
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+            };
+            Grid.SetColumn(headerLabel, AxisColumnOffset + i);
+            grid.Children.Add(headerLabel);
         }
-
-        Grid.SetColumn(headerPanel, 2);
-        grid.Children.Add(headerPanel);
 
         RowsControl.Items.Add(grid);
     }
@@ -95,13 +108,8 @@ public partial class PositionVariableListView
     {
         foreach (var row in _viewModel.Rows)
         {
-            var grid = new Grid { Margin = new Thickness(0, 0, 0, 10) };
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(35) });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(175) });
-            grid.ColumnDefinitions.Add(
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
-            );
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            var grid = CreateRowGrid();
+            grid.Margin = new Thickness(0, 0, 0, 10);
 
             var inPositionView = _viewFactory.Create<InPositionIndicatorView>(
                 row.AxisStatusViewModels,
@@ -120,26 +128,24 @@ public partial class PositionVariableListView
             Grid.SetColumn(label, 1);
             grid.Children.Add(label);
 
-            var panel = new StackPanel { Orientation = Orientation.Horizontal };
-            Grid.SetColumn(panel, 2);
             var map = row
                 .AxisItemPaths.Zip(
                     row.VariableViewModels,
                     (axisPath, variableViewModel) => (axisPath, variableViewModel)
                 )
                 .ToDictionary(x => x.axisPath, x => x.variableViewModel);
-            foreach (var axisLabel in _axisLabels)
+            for (var i = 0; i < _axisLabels.Length; i++)
             {
-                if (!map.TryGetValue(axisLabel, out var variableViewModel))
-                {
-                    panel.Children.Add(new Border { Width = 90, Margin = new Thickness(2) });
+                if (!map.TryGetValue(_axisLabels[i], out var variableViewModel))
                     continue;
-                }
 
-                var view = _viewFactory.Create<VariableItemView>(variableViewModel);
-                panel.Children.Add(new ContentControl { Content = view });
+                var view = _viewFactory.Create<VariableItemView>(variableViewModel)!;
+                view.DisplayConverter = valueObject =>
+                    valueObject is double doubleValue ? doubleValue.ToString("F3") : valueObject;
+                view.Refresh();
+                Grid.SetColumn(view, AxisColumnOffset + i);
+                grid.Children.Add(view);
             }
-            grid.Children.Add(panel);
 
             var button = new Button
             {
@@ -147,7 +153,7 @@ public partial class PositionVariableListView
                 Style = (Style)FindResource("RoundButtonStyle"),
             };
             button.Click += (_, _) => SetPosition(row);
-            Grid.SetColumn(button, 3);
+            Grid.SetColumn(button, SetButtonColumn);
             grid.Children.Add(button);
 
             RowsControl.Items.Add(grid);
