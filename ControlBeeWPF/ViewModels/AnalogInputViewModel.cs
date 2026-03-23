@@ -10,7 +10,7 @@ public class AnalogInputViewModel : IDisposable, INotifyPropertyChanged
     private readonly ActorItemBinder _binder;
     private string _name = "";
     private string _toolTip = "";
-    private long? _value;
+    private object? _value;
 
     public AnalogInputViewModel(IActorRegistry actorRegistry, string actorName, string itemPath)
     {
@@ -19,7 +19,7 @@ public class AnalogInputViewModel : IDisposable, INotifyPropertyChanged
         _binder.DataChanged += Binder_DataChanged;
     }
 
-    public long? Value
+    public object? Value
     {
         get => _value;
         set => SetField(ref _value, value);
@@ -54,7 +54,7 @@ public class AnalogInputViewModel : IDisposable, INotifyPropertyChanged
 
     private void Binder_DataChanged(object? sender, Dictionary<string, object?> e)
     {
-        Value = (long)e["Data"]!;
+        Value = e["Data"]!;
     }
 
     protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
