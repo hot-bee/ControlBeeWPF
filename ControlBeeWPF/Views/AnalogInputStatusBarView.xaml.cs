@@ -36,6 +36,8 @@ public partial class AnalogInputStatusBarView : UserControl, IDisposable
         set => NameLabel.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
     }
 
+    public Func<object?, object?>? ValueConverter { get; set; }
+
     public void Dispose()
     {
         _viewModel.Dispose();
@@ -44,6 +46,7 @@ public partial class AnalogInputStatusBarView : UserControl, IDisposable
     private void DigitalInputViewModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         NameLabel.Content = _viewModel.Name;
-        ValueLabel.Content = _viewModel.Value;
+        var value = _viewModel.Value;
+        ValueLabel.Content = ValueConverter != null ? ValueConverter(value) : value;
     }
 }

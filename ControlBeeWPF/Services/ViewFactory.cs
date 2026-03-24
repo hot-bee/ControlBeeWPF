@@ -48,9 +48,16 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
         {
             var actorName = (string)args![0]!;
             var itemPath = (string)args![1]!;
+            var properties = args.Length > 2 ? (Dict?)args[2] : null;
             var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
             var viewModel = new AnalogInputViewModel(actorRegistry, actorName, itemPath);
             var view = new AnalogInputStatusBarView(viewModel);
+            foreach (var (propertyName, value) in properties ?? [])
+            {
+                var property = view.GetType().GetProperty(propertyName);
+                property?.SetValue(view, value);
+            }
+
             return view;
         }
 
