@@ -1,10 +1,10 @@
-﻿using System.Reflection;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using ControlBee.Interfaces;
 using ControlBeeWPF.Interfaces;
 using log4net;
 using Button = System.Windows.Controls.Button;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace ControlBeeWPF.Views;
 
@@ -22,6 +22,23 @@ public partial class IoView
         new PropertyMetadata(200.0, OnNameColumnWidthChanged)
     );
 
+    public static readonly DependencyProperty RowHeightProperty = DependencyProperty.Register(
+        nameof(RowHeight),
+        typeof(double),
+        typeof(IoView),
+        new PropertyMetadata(30.0, OnRowHeightChanged)
+    );
+
+    private static void OnRowHeightChanged(
+        DependencyObject dependencyObject,
+        DependencyPropertyChangedEventArgs e
+    )
+    {
+        var view = (IoView)dependencyObject;
+        view.GoToInputPage(view._inputPageIndex);
+        view.GoToOutputPage(view._outputPageIndex);
+    }
+
     private static void OnNameColumnWidthChanged(
         DependencyObject dependencyObject,
         DependencyPropertyChangedEventArgs e
@@ -36,6 +53,12 @@ public partial class IoView
     {
         get => (double)GetValue(NameColumnWidthProperty);
         set => SetValue(NameColumnWidthProperty, value);
+    }
+
+    public double RowHeight
+    {
+        get => (double)GetValue(RowHeightProperty);
+        set => SetValue(RowHeightProperty, value);
     }
 
     private readonly string _actorName;
@@ -106,14 +129,14 @@ public partial class IoView
     private void GoToInputPage(int page)
     {
         _inputPageIndex = ClampPage(page, GetTotalPages(_inputPaths.Count));
-        RenderPage(InputGrid, _inputPaths, _inputPageIndex, typeof(DigitalInputStatusBarView));
+        RenderPage<DigitalInputStatusBarViewV2>(InputGrid, _inputPaths, _inputPageIndex);
         RefreshInputPager();
     }
 
     private void GoToOutputPage(int page)
     {
         _outputPageIndex = ClampPage(page, GetTotalPages(_outputPaths.Count));
-        RenderPage(OutputGrid, _outputPaths, _outputPageIndex, typeof(DigitalOutputStatusBarView));
+        RenderPage<DigitalOutputStatusBarViewV2>(OutputGrid, _outputPaths, _outputPageIndex);
         RefreshOutputPager();
     }
 
@@ -215,7 +238,8 @@ public partial class IoView
         }
     }
 
-    private void RenderPage(Grid grid, List<string> paths, int pageIndex, Type viewType)
+    private void RenderPage<T>(Grid grid, List<string> paths, int pageIndex)
+        where T : UserControl
     {
         var items = paths.Skip(pageIndex * _pageSize).Take(_pageSize).ToList();
 
@@ -238,21 +262,25 @@ public partial class IoView
                 if (index >= items.Count)
                     continue;
 
-                var view = _viewFactory.Create(viewType, _actorName, items[index]);
+                var view = _viewFactory.Create<T>(_actorName, items[index]);
                 switch (view)
                 {
                     case null:
                         Logger.Warn(
-                            $"Failed to create view for item '{items[index]}' (viewType={viewType}, actor={_actorName})"
+                            $"Failed to create view for item '{items[index]}' (viewType={typeof(T).Name}, actor={_actorName})"
                         );
                         continue;
-                    case DigitalInputStatusBarView digitalInputStatusBarView:
-                        digitalInputStatusBarView.NameColumnWidth = new GridLength(NameColumnWidth);
-                        break;
-                    case DigitalOutputStatusBarView digitalOutputStatusBarView:
-                        digitalOutputStatusBarView.NameColumnWidth = new GridLength(
+                    case DigitalInputStatusBarViewV2 digitalInputStatusBarViewV2:
+                        digitalInputStatusBarViewV2.NameColumnWidth = new GridLength(
                             NameColumnWidth
                         );
+                        digitalInputStatusBarViewV2.RowHeight = RowHeight;
+                        break;
+                    case DigitalOutputStatusBarViewV2 digitalOutputStatusBarViewV2:
+                        digitalOutputStatusBarViewV2.NameColumnWidth = new GridLength(
+                            NameColumnWidth
+                        );
+                        digitalOutputStatusBarViewV2.RowHeight = RowHeight;
                         break;
                 }
 
