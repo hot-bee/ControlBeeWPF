@@ -750,6 +750,7 @@ public partial class AxisControlView
         };
     }
 
+    // TODO: Change to perform motion repeat via message
     private void StartRepeatButton_OnClick(object sender, RoutedEventArgs e)
     {
         if (_viewModel.SelectedAxis is null)
