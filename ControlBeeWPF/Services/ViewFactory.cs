@@ -340,6 +340,28 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             return (view as T)!;
         }
 
+        if (typeof(T) == typeof(AxisControlView))
+        {
+            var positionUnit = (string)args![0]!;
+            var velocityUnit = (string)args![1]!;
+            var accelDecelUnit = (string)args![2]!;
+            var jerkUnit = (string?)args.ElementAtOrDefault(3);
+            var useJerkRatio = (bool)args.ElementAtOrDefault(4)!;
+            var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
+            var viewModel = new AxisControlViewModel();
+            var view = new AxisControlView(
+                actorRegistry,
+                this,
+                viewModel,
+                positionUnit,
+                velocityUnit,
+                accelDecelUnit,
+                jerkUnit,
+                useJerkRatio
+            );
+            return (view as T)!;
+        }
+
         return null;
     }
 }
