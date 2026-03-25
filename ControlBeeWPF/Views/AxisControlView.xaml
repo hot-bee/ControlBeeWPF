@@ -1,0 +1,1090 @@
+﻿<UserControl
+    x:Class="ControlBeeWPF.Views.AxisControlView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:ControlBeeWPF.ViewModels"
+    xmlns:views="clr-namespace:ControlBeeWPF.Views"
+    d:DataContext="{d:DesignInstance Type=viewModels:AxisControlViewModel}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <Style TargetType="views:VariableItemView">
+            <Setter Property="ItemHeight" Value="24" />
+            <Setter Property="ItemWidth" Value="70" />
+            <Setter Property="CornerRadius" Value="6 0 0 6" />
+            <Setter Property="Margin" Value="3,0,-2,0" />
+        </Style>
+
+        <Style x:Key="BaseBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="Silver" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="Padding" Value="5" />
+        </Style>
+
+        <Style
+            x:Key="RoundBorderStyle"
+            BasedOn="{StaticResource BaseBorderStyle}"
+            TargetType="Border">
+            <Setter Property="CornerRadius" Value="6" />
+        </Style>
+
+        <Style TargetType="{x:Type GroupBox}">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="Silver" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="10" />
+            <Setter Property="Margin" Value="5" />
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GroupBox">
+                        <Border
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="12">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Border
+                                    Grid.Row="0"
+                                    Padding="5"
+                                    Background="#F5F5F5"
+                                    CornerRadius="15,15,0,0">
+                                    <Label
+                                        Height="26"
+                                        HorizontalContentAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        FontSize="13"
+                                        FontWeight="SemiBold">
+                                        <ContentPresenter ContentSource="Header" />
+                                    </Label>
+                                </Border>
+                                <Border Grid.Row="1" Padding="{TemplateBinding Padding}">
+                                    <ContentPresenter />
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BorderLabelStyle" TargetType="Label">
+            <Setter Property="Margin" Value="3" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="Gray" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Label">
+                        <Border
+                            Padding="3"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="6">
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                ContentSource="Content" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style
+            x:Key="FrontBorderLabelStyle"
+            BasedOn="{StaticResource BorderLabelStyle}"
+            TargetType="Label">
+            <Setter Property="Margin" Value="3,3,-1,3" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Label">
+                        <Border
+                            Padding="3"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="6 0 0 6">
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                ContentSource="Content" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style
+            x:Key="CenterBorderLabelStyle"
+            BasedOn="{StaticResource BorderLabelStyle}"
+            TargetType="Label">
+            <Setter Property="Margin" Value="0,3" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Label">
+                        <Border
+                            Padding="3"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="0">
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                ContentSource="Content" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style
+            x:Key="UnitLabelStyle"
+            BasedOn="{StaticResource BorderLabelStyle}"
+            TargetType="Label">
+            <Setter Property="Margin" Value="-1,3,3,3" />
+            <Setter Property="Height" Value="24" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Label">
+                        <Border
+                            Padding="3"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="0 6 6 0">
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                ContentSource="Content" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style
+            x:Key="AxisStatusLabelStyle"
+            BasedOn="{StaticResource BorderLabelStyle}"
+            TargetType="Label">
+            <Setter Property="Background" Value="Gainsboro" />
+
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding}" Value="True">
+                    <Setter Property="Background" Value="LawnGreen" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="Rectangle">
+            <Setter Property="Margin" Value="0,10" />
+            <Setter Property="Height" Value="1" />
+            <Setter Property="Fill" Value="Silver" />
+        </Style>
+
+        <Style TargetType="RadioButton">
+            <Setter Property="Margin" Value="3" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="BaseButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="3" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="BorderBrush" Value="Silver" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            x:Name="Root"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="10">
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                RecognizesAccessKey="True" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Root" Property="Margin" Value="0,5,0,0" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style
+            x:Key="JogButtonStyle"
+            BasedOn="{StaticResource BaseButtonStyle}"
+            TargetType="Button">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Margin" Value="7" />
+        </Style>
+
+        <Style x:Key="SpeedProfileStyle" TargetType="ContentControl">
+            <Setter Property="Height" Value="28" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        </Style>
+
+        <Style x:Key="CenterTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="10" />
+        </Style>
+
+        <Style x:Key="JogStepCustomStyle" TargetType="Label">
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="Silver" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Label">
+                        <Border
+                            Height="24"
+                            Margin="2,2,-1,2"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="6 0 0 6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Margin" Value="1,3,3,3" />
+            <Setter Property="IsEditable" Value="True" />
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="ComboBoxItem">
+                        <Setter Property="Height" Value="30" />
+                        <Setter Property="FontSize" Value="12" />
+                        <Setter Property="BorderBrush" Value="Silver" />
+                        <Setter Property="BorderThickness" Value="1" />
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Image">
+            <Setter Property="Margin" Value="10" />
+        </Style>
+
+        <Style
+            x:Key="SetButtonStyle"
+            BasedOn="{StaticResource BaseButtonStyle}"
+            TargetType="Button">
+            <Setter Property="Content" Value="SET" />
+            <Setter Property="Margin" Value="3,3,-1,3" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Width" Value="40" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            x:Name="Root"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="7">
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                RecognizesAccessKey="True" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Root" Property="Margin" Value="0,5,0,0" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Border Margin="5,15,5,5" Style="{StaticResource RoundBorderStyle}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="260" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Border
+                Grid.Row="0"
+                Grid.Column="0"
+                Style="{StaticResource RoundBorderStyle}">
+
+                <DataGrid
+                    AutoGenerateColumns="False"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    CanUserAddRows="False"
+                    CanUserDeleteRows="False"
+                    FontSize="14"
+                    HeadersVisibility="Column"
+                    HorizontalGridLinesBrush="Silver"
+                    IsReadOnly="True"
+                    ItemsSource="{Binding Axes}"
+                    RowHeaderWidth="20"
+                    RowHeight="40"
+                    ScrollViewer.CanContentScroll="False"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    SelectedItem="{Binding SelectedAxis, Mode=TwoWay}"
+                    SelectionMode="Single"
+                    SelectionUnit="FullRow"
+                    VerticalGridLinesBrush="Silver">
+
+                    <DataGrid.Resources>
+                        <Style TargetType="ScrollBar">
+                            <Style.Triggers>
+                                <Trigger Property="Orientation" Value="Vertical">
+                                    <Setter Property="Width" Value="30" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.Resources>
+
+                    <DataGrid.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Style.Triggers>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsSelected" Value="True" />
+                                        <Condition Property="Selector.IsSelectionActive" Value="True" />
+                                    </MultiTrigger.Conditions>
+                                    <Setter Property="Background" Value="#FFFFEB86" />
+                                    <Setter Property="Foreground" Value="Black" />
+                                </MultiTrigger>
+
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsSelected" Value="True" />
+                                        <Condition Property="Selector.IsSelectionActive" Value="False" />
+                                    </MultiTrigger.Conditions>
+                                    <Setter Property="Background" Value="#FFFFEB86" />
+                                    <Setter Property="Foreground" Value="Black" />
+                                </MultiTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.CellStyle>
+
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Style.Triggers>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsMouseOver" Value="True" />
+                                        <Condition Property="IsSelected" Value="False" />
+                                    </MultiTrigger.Conditions>
+                                    <Setter Property="Background" Value="#FFFFEB86" />
+                                    <Setter Property="Foreground" Value="Black" />
+                                </MultiTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            Width="2*"
+                            Binding="{Binding Index}"
+                            ElementStyle="{StaticResource CenterTextBlockStyle}"
+                            Header="No" />
+                        <DataGridTextColumn
+                            Width="8*"
+                            Binding="{Binding AxisName}"
+                            ElementStyle="{StaticResource CenterTextBlockStyle}"
+                            Header="Axis Name" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+
+            <Grid Grid.Row="0" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <GroupBox Grid.Column="0" Header="Motor Status">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="6*" />
+                            <ColumnDefinition Width="4*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Grid.Row="0" Grid.Column="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="5*" />
+                                <ColumnDefinition Width="4.5*" />
+                                <ColumnDefinition Width="1.5*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Content="Command Pos"
+                                Style="{StaticResource FrontBorderLabelStyle}" />
+                            <Label
+                                Name="CommandPosLabel"
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Content="{Binding SelectedAxis.CommandPos, StringFormat={}{0:F3}}"
+                                Style="{StaticResource CenterBorderLabelStyle}" />
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="2"
+                                Content="{Binding PositionUnit}"
+                                Style="{StaticResource UnitLabelStyle}" />
+
+                            <Label
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Content="Actual Pos"
+                                Style="{StaticResource FrontBorderLabelStyle}" />
+                            <Label
+                                Name="ActualPosLabel"
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Content="{Binding SelectedAxis.ActualPos, StringFormat={}{0:F3}}"
+                                Style="{StaticResource CenterBorderLabelStyle}" />
+                            <Label
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                Content="{Binding PositionUnit}"
+                                Style="{StaticResource UnitLabelStyle}" />
+                        </Grid>
+
+                        <Grid Grid.Row="0" Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+
+                            <Label
+                                Name="IsNegativePosLabel"
+                                Grid.Column="0"
+                                Content="- Limit"
+                                DataContext="{Binding SelectedAxis.IsNegativePosition}"
+                                Style="{StaticResource AxisStatusLabelStyle}" />
+                            <Label
+                                Name="IsHomeDetLabel"
+                                Grid.Column="1"
+                                Content="Home"
+                                DataContext="{Binding SelectedAxis.IsHomeDet}"
+                                Style="{StaticResource AxisStatusLabelStyle}" />
+                            <Label
+                                Name="IsPositivePosLabel"
+                                Grid.Column="2"
+                                Content="+ Limit"
+                                DataContext="{Binding SelectedAxis.IsPositivePosition}"
+                                Style="{StaticResource AxisStatusLabelStyle}" />
+                        </Grid>
+
+                        <Rectangle
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2" />
+
+                        <Grid
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                Height="30"
+                                Margin="5"
+                                Content="Jog Type"
+                                Style="{StaticResource BorderLabelStyle}" />
+                            <RadioButton
+                                Name="StepRadioButton"
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Checked="JogRadioButton_OnChecked"
+                                Content="Step"
+                                GroupName="JogType"
+                                Tag="Step" />
+                            <RadioButton
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Checked="JogRadioButton_OnChecked"
+                                Content="Continuous"
+                                GroupName="JogType"
+                                Tag="Continuous" />
+                        </Grid>
+
+                        <Rectangle
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2" />
+
+                        <Grid
+                            Grid.Row="4"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2">
+                            <StackPanel Name="StepJogPanel">
+                                <Grid Height="200">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="6*" />
+                                        <ColumnDefinition Width="4*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label
+                                        Grid.Row="0"
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Height="30"
+                                        Content="Jog Step"
+                                        Style="{StaticResource BorderLabelStyle}" />
+
+                                    <RadioButton
+                                        Name="SmallRadioButton"
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        Checked="JogStepButton_OnChecked"
+                                        Content="Small"
+                                        GroupName="JogStep"
+                                        Tag="Small" />
+                                    <ContentControl
+                                        Name="JogStepSmallArea"
+                                        Grid.Row="1"
+                                        Grid.Column="1" />
+                                    <Label
+                                        Grid.Row="1"
+                                        Grid.Column="2"
+                                        Content="{Binding PositionUnit}"
+                                        Style="{StaticResource UnitLabelStyle}" />
+
+                                    <RadioButton
+                                        Grid.Row="2"
+                                        Grid.Column="0"
+                                        Checked="JogStepButton_OnChecked"
+                                        Content="Medium"
+                                        GroupName="JogStep"
+                                        Tag="Medium" />
+                                    <ContentControl
+                                        Name="JogStepMediumArea"
+                                        Grid.Row="2"
+                                        Grid.Column="1" />
+                                    <Label
+                                        Grid.Row="2"
+                                        Grid.Column="2"
+                                        Content="{Binding PositionUnit}"
+                                        Style="{StaticResource UnitLabelStyle}" />
+
+                                    <RadioButton
+                                        Grid.Row="3"
+                                        Grid.Column="0"
+                                        Checked="JogStepButton_OnChecked"
+                                        Content="Large"
+                                        GroupName="JogStep"
+                                        Tag="Large" />
+                                    <ContentControl
+                                        Name="JogStepLargeArea"
+                                        Grid.Row="3"
+                                        Grid.Column="1" />
+                                    <Label
+                                        Grid.Row="3"
+                                        Grid.Column="2"
+                                        Content="{Binding PositionUnit}"
+                                        Style="{StaticResource UnitLabelStyle}" />
+
+                                    <RadioButton
+                                        Grid.Row="4"
+                                        Grid.Column="0"
+                                        Checked="JogStepButton_OnChecked"
+                                        Content="Custom"
+                                        GroupName="JogStep"
+                                        Tag="Custom" />
+                                    <Label
+                                        Name="JogStepCustomArea"
+                                        Grid.Row="4"
+                                        Grid.Column="1"
+                                        MouseLeftButtonDown="JogStepCustomArea_OnMouseLeftButtonDown"
+                                        Style="{StaticResource JogStepCustomStyle}" />
+                                    <Label
+                                        Grid.Row="4"
+                                        Grid.Column="2"
+                                        Content="{Binding PositionUnit}"
+                                        Style="{StaticResource UnitLabelStyle}" />
+                                </Grid>
+                            </StackPanel>
+
+                            <StackPanel Name="ContinuousJogPanel">
+                                <Grid Height="200">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="6*" />
+                                        <ColumnDefinition Width="4*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label
+                                        Grid.Row="0"
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Height="30"
+                                        Content="Jog Speed"
+                                        Style="{StaticResource BorderLabelStyle}" />
+
+                                    <RadioButton
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        Checked="JogSpeedButton_OnChecked"
+                                        Content="Slow"
+                                        GroupName="JogSpeed"
+                                        Tag="Slow" />
+                                    <ContentControl
+                                        Name="JogSpeedSlowArea"
+                                        Grid.Row="1"
+                                        Grid.Column="1" />
+                                    <Label
+                                        Grid.Row="1"
+                                        Grid.Column="2"
+                                        Content="{Binding VelocityUnit}"
+                                        Style="{StaticResource UnitLabelStyle}" />
+
+                                    <RadioButton
+                                        Grid.Row="2"
+                                        Grid.Column="0"
+                                        Checked="JogSpeedButton_OnChecked"
+                                        Content="Medium"
+                                        GroupName="JogSpeed"
+                                        Tag="Medium" />
+                                    <ContentControl
+                                        Name="JogSpeedMediumArea"
+                                        Grid.Row="2"
+                                        Grid.Column="1" />
+                                    <Label
+                                        Grid.Row="2"
+                                        Grid.Column="2"
+                                        Content="{Binding VelocityUnit}"
+                                        Style="{StaticResource UnitLabelStyle}" />
+
+                                    <RadioButton
+                                        Grid.Row="3"
+                                        Grid.Column="0"
+                                        Checked="JogSpeedButton_OnChecked"
+                                        Content="Fast"
+                                        GroupName="JogSpeed"
+                                        Tag="Fast" />
+                                    <ContentControl
+                                        Name="JogSpeedFastArea"
+                                        Grid.Row="3"
+                                        Grid.Column="1" />
+                                    <Label
+                                        Grid.Row="3"
+                                        Grid.Column="2"
+                                        Content="{Binding VelocityUnit}"
+                                        Style="{StaticResource UnitLabelStyle}" />
+                                </Grid>
+                            </StackPanel>
+                        </Grid>
+
+                        <Rectangle
+                            Grid.Row="5"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2" />
+
+                        <Grid
+                            Grid.Row="6"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+
+                            <Button
+                                Name="UpButton"
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                PreviewMouseLeftButtonDown="JogButton_OnMouseLeftButtonDown"
+                                PreviewMouseRightButtonDown="JogButton_OnMouseRightButtonDown"
+                                PreviewMouseUp="JogButton_OnMouseUp"
+                                Style="{StaticResource JogButtonStyle}">
+                                <Image Source="/Images/Direction.png" />
+                            </Button>
+                            <Button
+                                Name="LeftButton"
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                PreviewMouseLeftButtonDown="JogButton_OnMouseLeftButtonDown"
+                                PreviewMouseRightButtonDown="JogButton_OnMouseRightButtonDown"
+                                PreviewMouseUp="JogButton_OnMouseUp"
+                                Style="{StaticResource JogButtonStyle}">
+                                <Image RenderTransformOrigin="0.5,0.5" Source="/Images/Direction.png">
+                                    <Image.RenderTransform>
+                                        <RotateTransform Angle="-90" />
+                                    </Image.RenderTransform>
+                                </Image>
+                            </Button>
+                            <Button
+                                Name="DownButton"
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                PreviewMouseLeftButtonDown="JogButton_OnMouseLeftButtonDown"
+                                PreviewMouseRightButtonDown="JogButton_OnMouseRightButtonDown"
+                                PreviewMouseUp="JogButton_OnMouseUp"
+                                Style="{StaticResource JogButtonStyle}">
+                                <Image RenderTransformOrigin="0.5,0.5" Source="/Images/Direction.png">
+                                    <Image.RenderTransform>
+                                        <RotateTransform Angle="180" />
+                                    </Image.RenderTransform>
+                                </Image>
+                            </Button>
+                            <Button
+                                Name="RightButton"
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                PreviewMouseLeftButtonDown="JogButton_OnMouseLeftButtonDown"
+                                PreviewMouseRightButtonDown="JogButton_OnMouseRightButtonDown"
+                                PreviewMouseUp="JogButton_OnMouseUp"
+                                Style="{StaticResource JogButtonStyle}">
+                                <Image RenderTransformOrigin="0.5,0.5" Source="/Images/Direction.png">
+                                    <Image.RenderTransform>
+                                        <RotateTransform Angle="90" />
+                                    </Image.RenderTransform>
+                                </Image>
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </GroupBox>
+
+                <GroupBox Grid.Column="1" Header="Motor Parameter">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Height="30"
+                            Content="Speed Profile"
+                            Style="{StaticResource BorderLabelStyle}" />
+
+                        <Grid Grid.Row="1" Margin="0,5,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+
+                            <RadioButton
+                                Name="InitRadioButton"
+                                Grid.Column="0"
+                                Checked="SpeedProfileRadioButton_OnChecked"
+                                Content="Init"
+                                GroupName="SpeedProfile"
+                                Tag="Init" />
+                            <RadioButton
+                                Grid.Column="1"
+                                Checked="SpeedProfileRadioButton_OnChecked"
+                                Content="Jog"
+                                GroupName="SpeedProfile"
+                                Tag="Jog" />
+                            <RadioButton
+                                Grid.Column="2"
+                                Checked="SpeedProfileRadioButton_OnChecked"
+                                Content="Normal"
+                                GroupName="SpeedProfile"
+                                Tag="Normal" />
+                        </Grid>
+
+                        <Grid Grid.Row="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="5*" />
+                                <ColumnDefinition Width="5*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Content="Velocity"
+                                Style="{StaticResource FrontBorderLabelStyle}" />
+                            <ContentControl
+                                Name="VelocityArea"
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Style="{StaticResource SpeedProfileStyle}" />
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="2"
+                                Content="{Binding VelocityUnit}"
+                                Style="{StaticResource UnitLabelStyle}" />
+
+                            <Label
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Content="Accel/Decel"
+                                Style="{StaticResource FrontBorderLabelStyle}" />
+                            <ContentControl
+                                Name="AccelDecelArea"
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Style="{StaticResource SpeedProfileStyle}" />
+                            <Label
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                Content="{Binding AccelDecelUnit}"
+                                Style="{StaticResource UnitLabelStyle}" />
+
+                            <Label
+                                Name="JerkLabel"
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Style="{StaticResource FrontBorderLabelStyle}" />
+                            <ContentControl
+                                Name="JerkArea"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Style="{StaticResource SpeedProfileStyle}" />
+                            <Label
+                                Grid.Row="2"
+                                Grid.Column="2"
+                                Content="{Binding JerkUnit}"
+                                Style="{StaticResource UnitLabelStyle}" />
+                        </Grid>
+
+                        <Rectangle Grid.Row="3" Grid.Column="0" />
+
+                        <Label
+                            Grid.Row="4"
+                            Grid.Column="0"
+                            Height="30"
+                            Content="Motor Repeat"
+                            Style="{StaticResource BorderLabelStyle}" />
+
+                        <Grid Grid.Row="5" Margin="0,5,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="5*" />
+                                <ColumnDefinition Width="5*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Content="Repeat Count"
+                                Style="{StaticResource FrontBorderLabelStyle}" />
+                            <ContentControl
+                                Name="RepeatCountArea"
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Grid.ColumnSpan="2"
+                                Style="{StaticResource SpeedProfileStyle}" />
+
+                            <Label
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Content="Delay Time"
+                                Style="{StaticResource FrontBorderLabelStyle}" />
+                            <ContentControl
+                                Name="DelayTimeArea"
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Style="{StaticResource SpeedProfileStyle}" />
+                            <Label
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                Content="ms"
+                                Style="{StaticResource UnitLabelStyle}" />
+
+                            <Label
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Content="Start Pos"
+                                Style="{StaticResource FrontBorderLabelStyle}" />
+                            <ContentControl
+                                Name="RepeatStartPositionArea"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Style="{StaticResource SpeedProfileStyle}" />
+                            <Label
+                                Grid.Row="2"
+                                Grid.Column="2"
+                                Content="{Binding PositionUnit}"
+                                Style="{StaticResource UnitLabelStyle}" />
+                            <Button
+                                Name="SetStartPosButton"
+                                Grid.Row="2"
+                                Grid.Column="3"
+                                Click="SetButton_OnClick"
+                                Style="{StaticResource SetButtonStyle}" />
+
+                            <Label
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Content="Target Pos"
+                                Style="{StaticResource FrontBorderLabelStyle}" />
+                            <ContentControl
+                                Name="RepeatTargetPositionArea"
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                Style="{StaticResource SpeedProfileStyle}" />
+                            <Label
+                                Grid.Row="3"
+                                Grid.Column="2"
+                                Content="{Binding PositionUnit}"
+                                Style="{StaticResource UnitLabelStyle}" />
+                            <Button
+                                Name="SetTargetPosButton"
+                                Grid.Row="3"
+                                Grid.Column="3"
+                                Click="SetButton_OnClick"
+                                Style="{StaticResource SetButtonStyle}" />
+
+                            <Label
+                                Grid.Row="4"
+                                Grid.Column="0"
+                                Content="Speed Profile"
+                                Style="{StaticResource FrontBorderLabelStyle}" />
+
+                            <ComboBox
+                                Name="RepeatSpeedProfileComboBox"
+                                Grid.Row="4"
+                                Grid.Column="1"
+                                Grid.ColumnSpan="2"
+                                SelectedIndex="0"
+                                SelectionChanged="RepeatSpeedProfileComboBox_OnSelectionChanged">
+                                <ComboBoxItem Content="Init" />
+                                <ComboBoxItem Content="Jog" />
+                                <ComboBoxItem Content="Normal" />
+                            </ComboBox>
+
+                            <Grid
+                                Grid.Row="5"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="4"
+                                Margin="0,5,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+
+                                <Button
+                                    Name="StartRepeatButton"
+                                    Grid.Column="0"
+                                    Height="30"
+                                    Background="Honeydew"
+                                    Click="StartRepeatButton_OnClick"
+                                    Content="Start"
+                                    FontWeight="SemiBold"
+                                    Style="{StaticResource BaseButtonStyle}" />
+                                <Button
+                                    Name="StopRepeatButton"
+                                    Grid.Column="1"
+                                    Height="30"
+                                    Background="LavenderBlush"
+                                    Click="StopRepeatButton_OnClick"
+                                    Content="Stop"
+                                    FontWeight="SemiBold"
+                                    Style="{StaticResource BaseButtonStyle}" />
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>
