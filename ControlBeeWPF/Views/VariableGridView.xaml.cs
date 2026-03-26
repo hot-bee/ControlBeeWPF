@@ -45,6 +45,20 @@ public partial class VariableGridView
         new PropertyMetadata(double.NaN)
     );
 
+    public static readonly DependencyProperty LabelWidthProperty = DependencyProperty.Register(
+        nameof(LabelWidth),
+        typeof(double),
+        typeof(VariableGridView),
+        new PropertyMetadata(double.NaN)
+    );
+
+    public static readonly DependencyProperty LabelFontSizeProperty = DependencyProperty.Register(
+        nameof(LabelFontSize),
+        typeof(double),
+        typeof(VariableGridView),
+        new PropertyMetadata(14.0)
+    );
+
     public double ItemWidth
     {
         get => (double)GetValue(ItemWidthProperty);
@@ -67,6 +81,18 @@ public partial class VariableGridView
     {
         get => (double)GetValue(FooterRowHeightProperty);
         set => SetValue(FooterRowHeightProperty, value);
+    }
+
+    public double LabelWidth
+    {
+        get => (double)GetValue(LabelWidthProperty);
+        set => SetValue(LabelWidthProperty, value);
+    }
+
+    public double LabelFontSize
+    {
+        get => (double)GetValue(LabelFontSizeProperty);
+        set => SetValue(LabelFontSizeProperty, value);
     }
 
     private readonly VariableGridViewModel _viewModel;
@@ -355,8 +381,9 @@ public partial class VariableGridView
         {
             Content = cell.CellName,
             Style = (Style)FindResource("MainLabelStyle"),
-            MinWidth = 120,
         };
+        label.SetBinding(WidthProperty, new Binding(nameof(LabelWidth)) { Source = this });
+        label.SetBinding(FontSizeProperty, new Binding(nameof(LabelFontSize)) { Source = this });
         label.SetBinding(
             ContentProperty,
             new Binding(nameof(VariableGridViewModel.Cell.CellName))
@@ -373,6 +400,10 @@ public partial class VariableGridView
             return container;
         view.CornerRadius = new CornerRadius(0, 12, 12, 0);
         view.BorderMargin = new Thickness(0);
+        view.SetBinding(
+            VariableItemView.ItemWidthProperty,
+            new Binding(nameof(ItemWidth)) { Source = this }
+        );
         Grid.SetColumn(view, 1);
         container.Children.Add(view);
 
