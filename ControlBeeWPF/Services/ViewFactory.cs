@@ -320,6 +320,23 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             return (view as T)!;
         }
 
+        if (typeof(T) == typeof(IoMonitorView))
+        {
+            var columns = (int?)args!.ElementAtOrDefault(0);
+            var initialActor = (string?)args!.ElementAtOrDefault(1);
+            var buttonRenames = (Dictionary<string, string>?)args!.ElementAtOrDefault(2);
+            var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
+            var viewFactory = serviceProvider.GetRequiredService<IViewFactory>();
+            var view = new IoMonitorView(
+                viewFactory,
+                actorRegistry,
+                columns,
+                initialActor,
+                buttonRenames
+            );
+            return (view as T)!;
+        }
+
         if (typeof(T) == typeof(DigitalInputStatusBarViewV2))
         {
             var actorName = (string)args![0]!;

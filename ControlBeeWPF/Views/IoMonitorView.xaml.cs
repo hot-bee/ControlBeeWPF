@@ -12,16 +12,82 @@ namespace ControlBeeWPF.Views;
 /// </summary>
 public partial class IoMonitorView
 {
+    public static readonly DependencyProperty NameColumnWidthProperty = DependencyProperty.Register(
+        nameof(NameColumnWidth),
+        typeof(double),
+        typeof(IoMonitorView),
+        new PropertyMetadata(350.0, OnNameColumnWidthChanged)
+    );
+
+    public static readonly DependencyProperty RowHeightProperty = DependencyProperty.Register(
+        nameof(RowHeight),
+        typeof(double),
+        typeof(IoMonitorView),
+        new PropertyMetadata(30.0, OnRowHeightChanged)
+    );
+
+    private static void OnNameColumnWidthChanged(
+        DependencyObject dependencyObject,
+        DependencyPropertyChangedEventArgs e
+    )
+    {
+        if (dependencyObject is not IoMonitorView view)
+            return;
+        foreach (var (_, (_, ioListView)) in view._buttons)
+        {
+            if (ioListView is IoView ioView)
+                ioView.NameColumnWidth = (double)e.NewValue;
+        }
+    }
+
+    private static void OnRowHeightChanged(
+        DependencyObject dependencyObject,
+        DependencyPropertyChangedEventArgs e
+    )
+    {
+        if (dependencyObject is not IoMonitorView view)
+            return;
+        foreach (var (_, (_, ioListView)) in view._buttons)
+        {
+            if (ioListView is IoView ioView)
+                ioView.RowHeight = (double)e.NewValue;
+        }
+    }
+
+    public double NameColumnWidth
+    {
+        get => (double)GetValue(NameColumnWidthProperty);
+        set => SetValue(NameColumnWidthProperty, value);
+    }
+
+    public double RowHeight
+    {
+        get => (double)GetValue(RowHeightProperty);
+        set => SetValue(RowHeightProperty, value);
+    }
+
     private readonly IViewFactory _viewFactory;
     private readonly IActorRegistry _actorRegistry;
+    private readonly int _columns;
+    private readonly string _initialActor;
+    private readonly Dictionary<string, string>? _buttonRenames;
     private readonly Dictionary<string, (Button button, UserControl ioListView)> _buttons = [];
 
-    public IoMonitorView(IViewFactory viewFactory, IActorRegistry actorRegistry)
+    public IoMonitorView(
+        IViewFactory viewFactory,
+        IActorRegistry actorRegistry,
+        int? columns,
+        string? initialActor,
+        Dictionary<string, string>? buttonRenames
+    )
     {
         InitializeComponent();
 
         _viewFactory = viewFactory;
         _actorRegistry = actorRegistry;
+        _columns = columns ?? 2;
+        _initialActor = initialActor ?? "Auxiliary";
+        _buttonRenames = buttonRenames;
 
         BuildActorButtons();
         SelectInitialButton();
@@ -51,20 +117,32 @@ public partial class IoMonitorView
         };
         button.Click += ActorButton_Click;
 
-        var ioView = _viewFactory.Create<IoView>(button.Tag, 2)!;
-        ioView.NameColumnWidth = 350;
-        ioView.RowHeight = 30;
+        var ioView = _viewFactory.Create<IoView>(button.Tag, _columns)!;
+        ioView.NameColumnWidth = NameColumnWidth;
+        ioView.RowHeight = RowHeight;
 
         _buttons[actorName] = (button, ioView)!;
         ActorButtonsPanel.Children.Add(button);
     }
 
+    private void ApplyButtonRenames()
+    {
+        if (_buttonRenames == null)
+            return;
+        foreach (var (actorName, displayName) in _buttonRenames)
+        {
+            if (_buttons.TryGetValue(actorName, out var item))
+                item.button.Content = displayName;
+        }
+    }
+
     private void SelectInitialButton()
     {
-        if (!_buttons.TryGetValue("Auxiliary", out var actorItem))
+        ApplyButtonRenames();
+
+        if (!_buttons.TryGetValue(_initialActor, out var actorItem))
             return;
 
-        _buttons["Auxiliary"].button.Content = "All";
         UpdateButtonColors(actorItem.button);
         IoListArea.Content = actorItem.ioListView;
     }
