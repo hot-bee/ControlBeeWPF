@@ -304,6 +304,10 @@ public partial class VariableGridView
                     view.CornerRadius = new CornerRadius(0);
                     view.BorderMargin = new Thickness(0);
                     view.Margin = GetTableMargin(gridRow, gridCol);
+                    view.SetBinding(
+                        VariableItemView.ItemWidthProperty,
+                        new Binding(nameof(ItemWidth)) { Source = this }
+                    );
                 }
 
                 Grid.SetRow(view, rowOffset + cell.Row);
