@@ -107,7 +107,7 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public event EventHandler<string>? WriteFailed;
+    public event EventHandler<Dict>? WriteFailed;
 
     private void BinderOnMetaDataChanged(object? sender, Dict e)
     {
@@ -145,10 +145,7 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
 
     private void BinderOnErrorOccurred(object? sender, Dict e)
     {
-        if (
-            e.TryGetValue("ErrorMessage", out var errorObject) && errorObject is string errorMessage
-        )
-            WriteFailed?.Invoke(this, errorMessage);
+        WriteFailed?.Invoke(this, e);
     }
 
     private object? GetValue(object[] location, object newValue)

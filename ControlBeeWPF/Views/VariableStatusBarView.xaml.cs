@@ -2,12 +2,14 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using ControlBee.Services;
 using ControlBeeWPF.Components;
 using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.ViewModels;
 using log4net;
 using Brush = System.Windows.Media.Brush;
 using Brushes = System.Windows.Media.Brushes;
+using Dict = System.Collections.Generic.Dictionary<string, object?>;
 using MessageBox = System.Windows.MessageBox;
 using UserControl = System.Windows.Controls.UserControl;
 
@@ -295,14 +297,26 @@ public partial class VariableStatusBarView : UserControl, IDisposable
         _viewModel.ChangeValue(newValue);
     }
 
-    private void ViewModelOnWriteFailed(object? sender, string errorMessage)
+    private void ViewModelOnWriteFailed(object? sender, Dict e)
     {
-        MessageBox.Show(
-            errorMessage,
-            "Value Out of Range",
-            MessageBoxButton.OK,
-            MessageBoxImage.Warning
-        );
+        var newValue = e["NewValue"];
+        var minValue = e["MinValue"];
+        var maxValue = e["MaxValue"];
+        var args = new Dictionary<string, string>
+        {
+            { "newValue", newValue?.ToString() ?? "?" },
+            { "minValue", minValue?.ToString() ?? "?" },
+            { "maxValue", maxValue?.ToString() ?? "?" },
+        };
+        var title =
+            LocalizationManager.Instance.GetValue("VariableStatusBarView.OutOfRangeError.Title")
+            ?? "Out of Range";
+        var description =
+            LocalizationManager.Instance.GetValue(
+                "VariableStatusBarView.OutOfRangeError.Description",
+                args
+            ) ?? $"Value {newValue} is out of range. (Min: {minValue}, Max: {maxValue})";
+        MessageBox.Show(description, title, MessageBoxButton.OK, MessageBoxImage.Warning);
     }
 
     private void ApplyBindingFailedUi()
