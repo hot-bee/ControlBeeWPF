@@ -201,7 +201,14 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             var allowDecimal = args![1] is true;
             var minValue = args.Length > 2 ? (string?)args[2] : null;
             var maxValue = args.Length > 3 ? (string?)args[3] : null;
-            var viewModel = new NumpadViewModel(initialValue, allowDecimal, minValue!, maxValue!);
+            var isPasswordMode = args.Length > 4 && args[4] is true;
+            var viewModel = new NumpadViewModel(
+                initialValue,
+                allowDecimal,
+                minValue!,
+                maxValue!,
+                isPasswordMode
+            );
             var view = new NumpadView(viewModel);
             return (view as T)!;
         }

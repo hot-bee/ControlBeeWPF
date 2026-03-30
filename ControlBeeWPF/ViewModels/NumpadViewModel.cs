@@ -16,17 +16,21 @@ public partial class NumpadViewModel : ObservableObject
     private string? maxValue;
 
     private readonly bool allowDecimal;
+    private readonly bool _isPasswordMode;
     private bool _hasUserInteracted = false;
     public bool HasValueLimit => MinValue != null || MaxValue != null;
+    public string DisplayInput => _isPasswordMode ? new string('*', Input.Length) : Input;
 
     public NumpadViewModel(
         string initialValue = "0",
         bool allowDecimal = true,
         string? minValue = null,
-        string? maxValue = null
+        string? maxValue = null,
+        bool isPasswordMode = false
     )
     {
         this.allowDecimal = allowDecimal;
+        _isPasswordMode = isPasswordMode;
         Input = initialValue;
         MinValue = minValue;
         MaxValue = maxValue;
@@ -103,5 +107,6 @@ public partial class NumpadViewModel : ObservableObject
         InputDotCommand.NotifyCanExecuteChanged();
         BackspaceCommand.NotifyCanExecuteChanged();
         InvertSignCommand.NotifyCanExecuteChanged();
+        OnPropertyChanged(nameof(DisplayInput));
     }
 }
