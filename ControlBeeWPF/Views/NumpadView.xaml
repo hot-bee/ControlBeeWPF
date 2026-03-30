@@ -72,7 +72,7 @@
             Name="ValueText"
             Grid.Row="1"
             Margin="1"
-            Text="{Binding Input, Mode=OneWay}" />
+            Text="{Binding DisplayInput, Mode=OneWay}" />
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
