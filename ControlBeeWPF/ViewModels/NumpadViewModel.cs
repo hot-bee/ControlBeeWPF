@@ -18,6 +18,7 @@ public partial class NumpadViewModel : ObservableObject
     private readonly bool allowDecimal;
     private readonly bool _isPasswordMode;
     private bool _hasUserInteracted = false;
+    private string ClearValue => _isPasswordMode ? "" : "0";
     public bool HasValueLimit => MinValue != null || MaxValue != null;
     public string DisplayInput => _isPasswordMode ? new string('*', Input.Length) : Input;
 
@@ -44,7 +45,7 @@ public partial class NumpadViewModel : ObservableObject
             Input = digit;
             _hasUserInteracted = true;
         }
-        else if (Input == "0")
+        else if (Input == ClearValue)
         {
             Input = digit;
         }
@@ -68,7 +69,7 @@ public partial class NumpadViewModel : ObservableObject
         }
     }
 
-    private bool CanAddDot() => allowDecimal && !Input.Contains(".");
+    private bool CanAddDot() => !_isPasswordMode && allowDecimal && !Input.Contains(".");
 
     [RelayCommand(CanExecute = nameof(CanBackspace))]
     private void Backspace()
@@ -76,17 +77,17 @@ public partial class NumpadViewModel : ObservableObject
         if (Input.Length > 1)
             Input = Input[..^1];
         else
-            Input = "0";
+            Input = ClearValue;
 
         _hasUserInteracted = true;
     }
 
-    private bool CanBackspace() => !string.IsNullOrEmpty(Input) && Input != "0";
+    private bool CanBackspace() => !string.IsNullOrEmpty(Input) && Input != ClearValue;
 
     [RelayCommand]
     private void Clear()
     {
-        Input = "0";
+        Input = ClearValue;
         _hasUserInteracted = true;
     }
 
@@ -100,7 +101,8 @@ public partial class NumpadViewModel : ObservableObject
         }
     }
 
-    private bool CanInvertSign() => !string.IsNullOrWhiteSpace(Input) && Input != "0";
+    private bool CanInvertSign() =>
+        !_isPasswordMode && !string.IsNullOrWhiteSpace(Input) && Input != "0";
 
     partial void OnInputChanged(string value)
     {
