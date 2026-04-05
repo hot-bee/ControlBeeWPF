@@ -26,6 +26,8 @@
 
   <ItemGroup>
     <Resource Include="Images\Direction.png" />
+    <Resource Include="Images\326558_blank_check_box_icon.png" />
+    <Resource Include="Images\326561_box_check_icon.png" />
   </ItemGroup>
 
 </Project>

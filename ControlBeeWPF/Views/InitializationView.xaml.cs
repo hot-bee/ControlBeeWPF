@@ -198,10 +198,14 @@ public partial class InitializationView
         {
             var checkButton = new ToggleImageButton(
                 new BitmapImage(
-                    new Uri("/Images/326558_blank_check_box_icon.png", UriKind.RelativeOrAbsolute)
+                    new Uri(
+                        "pack://application:,,,/ControlBeeWPF;component/Images/326558_blank_check_box_icon.png"
+                    )
                 ),
                 new BitmapImage(
-                    new Uri("/Images/326561_box_check_icon.png", UriKind.RelativeOrAbsolute)
+                    new Uri(
+                        "pack://application:,,,/ControlBeeWPF;component/Images/326561_box_check_icon.png"
+                    )
                 ),
                 actorTitle
             )
