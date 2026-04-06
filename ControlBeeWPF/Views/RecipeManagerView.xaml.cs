@@ -30,6 +30,12 @@ public partial class RecipeManagerView : UserControl
         if (string.IsNullOrEmpty(recipeName))
             return;
         _variableManager.Load(recipeName);
+        MessageBox.Show(
+            $"Recipe \"{recipeName}\" has been loaded.",
+            "Open",
+            MessageBoxButton.OK,
+            MessageBoxImage.Information
+        );
     }
 
     private void SaveAsButton_OnClick(object sender, RoutedEventArgs e)
@@ -40,6 +46,16 @@ public partial class RecipeManagerView : UserControl
         var recipeName = inputBox.ResponseText;
         if (string.IsNullOrEmpty(recipeName))
             return;
+        if (_variableManager.LocalNames.Contains(recipeName))
+        {
+            MessageBox.Show(
+                $"Recipe \"{recipeName}\" already exists.",
+                "Save As",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning
+            );
+            return;
+        }
         _variableManager.Save(recipeName);
     }
 
@@ -48,6 +64,16 @@ public partial class RecipeManagerView : UserControl
         var recipeName = RecipeListBox.SelectedItem as string;
         if (string.IsNullOrEmpty(recipeName))
             return;
+        if (recipeName == _variableManager.LocalName)
+        {
+            MessageBox.Show(
+                "Cannot delete the currently loaded recipe.",
+                "Delete",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning
+            );
+            return;
+        }
         if (
             MessageBox.Show(
                 $"Are you sure to DELETE \"{recipeName}\"?",
