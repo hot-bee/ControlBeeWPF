@@ -30,9 +30,7 @@ public partial class ActorItemExplorerViewModel : ObservableObject, IDisposable
 
         foreach (var (itemPath, type) in _actor.GetItems())
         {
-            var metaId = _actor.Send(
-                new ActorItemMessage(_uiActor, itemPath, "_itemMetaDataChangedRead")
-            );
+            var metaId = _actor.Send(new ActorItemMessage(_uiActor, itemPath, "_itemMetaDataRead"));
             _metaIds[metaId] = itemPath;
 
             if (type.IsAssignableTo(typeof(IVariable)))

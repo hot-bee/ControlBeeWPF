@@ -24,7 +24,7 @@ public class TeachingViewModel : ObservableObject, IDisposable
             if (type.IsAssignableTo(typeof(IVariable)))
             {
                 var metaId = actor.Send(
-                    new ActorItemMessage(_uiActor, itemPath, "_itemMetaDataChangedRead")
+                    new ActorItemMessage(_uiActor, itemPath, "_itemMetaDataRead")
                 );
                 _metaIds[metaId] = itemPath;
 
