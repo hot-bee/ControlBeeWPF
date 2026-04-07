@@ -1,6 +1,5 @@
 ﻿using System.Windows.Markup;
 using ControlBee.Services;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ControlBeeWPF.Extensions;
 
@@ -10,6 +9,11 @@ public class TranslateExtension(string key) : MarkupExtension
 
     public override object ProvideValue(IServiceProvider serviceProvider)
     {
-        return LocalizationManager.Instance.Translate(Key);
+        var binding = new System.Windows.Data.Binding($"[{Key}]")
+        {
+            Source = LocalizationManager.Instance,
+            Mode = System.Windows.Data.BindingMode.OneWay,
+        };
+        return binding.ProvideValue(serviceProvider);
     }
 }
