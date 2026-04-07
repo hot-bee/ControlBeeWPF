@@ -24,7 +24,7 @@ public class TeachingViewModel : ObservableObject, IDisposable
             if (type.IsAssignableTo(typeof(IVariable)))
             {
                 var metaId = actor.Send(
-                    new ActorItemMessage(_uiActor, itemPath, "_itemMetaDataRead")
+                    new ActorItemMessage(_uiActor, itemPath, "_itemMetaDataChangedRead")
                 );
                 _metaIds[metaId] = itemPath;
 
@@ -46,7 +46,7 @@ public class TeachingViewModel : ObservableObject, IDisposable
     {
         switch (e.Name)
         {
-            case "_itemMetaData":
+            case "_itemMetaDataChanged":
                 if (_metaIds.ContainsKey(e.RequestId))
                 {
                     var actorItemMessage = (ActorItemMessage)e;
