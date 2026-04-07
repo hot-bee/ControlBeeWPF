@@ -44,6 +44,10 @@ public class DigitalInputViewModel : IDisposable, INotifyPropertyChanged
         set => SetField(ref _toolTip, value);
     }
 
+    public void RequestMetaData() => _binder.RequestMetaData();
+
+    public void RequestData() => _binder.RequestData();
+
     public void Dispose()
     {
         _binder.MetaDataChanged -= BinderOnMetaDataChanged;

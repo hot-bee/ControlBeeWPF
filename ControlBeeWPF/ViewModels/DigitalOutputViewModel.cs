@@ -50,6 +50,10 @@ public class DigitalOutputViewModel : IDisposable, INotifyPropertyChanged
         set => SetField(ref _value, value);
     }
 
+    public void RequestMetaData() => _binder.RequestMetaData();
+
+    public void RequestData() => _binder.RequestData();
+
     public void Dispose()
     {
         _binder.MetaDataChanged -= BinderOnMetaDataChanged;

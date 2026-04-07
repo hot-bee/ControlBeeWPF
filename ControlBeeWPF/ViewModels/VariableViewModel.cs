@@ -98,6 +98,10 @@ public class VariableViewModel : INotifyPropertyChanged, IDisposable
 
     public bool HasBindingFailed { get; private set; }
 
+    public void RequestMetaData() => _binder.RequestMetaData();
+
+    public void RequestData() => _binder.RequestData();
+
     public void Dispose()
     {
         _binder.MetaDataChanged -= BinderOnMetaDataChanged;
