@@ -61,6 +61,23 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             return view;
         }
 
+        if (viewType == typeof(AnalogOutputStatusBarView))
+        {
+            var actorName = (string)args![0]!;
+            var itemPath = (string)args![1]!;
+            var properties = args.Length > 2 ? (Dict?)args[2] : null;
+            var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
+            var viewModel = new AnalogOutputViewModel(actorRegistry, actorName, itemPath);
+            var view = new AnalogOutputStatusBarView(viewModel, this);
+            foreach (var (propertyName, value) in properties ?? [])
+            {
+                var property = view.GetType().GetProperty(propertyName);
+                property?.SetValue(view, value);
+            }
+
+            return view;
+        }
+
         if (viewType == typeof(VariableStatusBarView))
         {
             var actorName = (string)args![0]!;
