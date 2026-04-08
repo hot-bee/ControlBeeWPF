@@ -8,6 +8,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using ControlBee.Constants;
 using ControlBee.Interfaces;
+using ControlBee.Services;
 using ControlBeeAbstract.Exceptions;
 using ControlBeeWPF.Components;
 using log4net;
@@ -51,6 +52,7 @@ public partial class InitializationView
         set => SetValue(ButtonHeightProperty, value);
     }
 
+    private readonly IActorRegistry _actorRegistry;
     private readonly Dictionary<string, ToggleImageButton> _buttonMap = new();
     private readonly Dictionary<string, ProgressBar> _progressMap = new();
     private readonly InitializationViewModel _viewModel;
@@ -71,6 +73,7 @@ public partial class InitializationView
     public InitializationView(IActorRegistry actorRegistry, InitializationViewModel viewModel)
     {
         _viewModel = viewModel;
+        _actorRegistry = actorRegistry;
         DataContext = viewModel;
         InitializeComponent();
         MakeButtons();
@@ -79,6 +82,8 @@ public partial class InitializationView
 
         var uiActor = (IUiActor)actorRegistry.Get("Ui")!;
         uiActor.MessageArrived += UiActorOnMessageArrived;
+
+        LocalizationManager.Instance.PropertyChanged += OnLanguageChanged;
 
         SetupLogWatcher();
     }
@@ -125,8 +130,21 @@ public partial class InitializationView
         ApplyProgress();
     }
 
+    private void OnLanguageChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        Dispatcher.Invoke(() =>
+        {
+            foreach (var (actorName, actorTitle) in _viewModel.GetActorTitles())
+            {
+                if (_buttonMap.TryGetValue(actorName, out var button))
+                    button.Text = actorTitle;
+            }
+        });
+    }
+
     public void Dispose()
     {
+        LocalizationManager.Instance.PropertyChanged -= OnLanguageChanged;
         _viewModel.PropertyChanged -= _viewModel_PropertyChanged;
         foreach (var (_, button) in _buttonMap)
             button.PropertyChanged -= CheckButton_PropertyChanged;

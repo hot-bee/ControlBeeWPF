@@ -13,10 +13,37 @@ public class ToggleImageButton : Button, INotifyPropertyChanged
 {
     private readonly StackPanel _offContent;
     private readonly StackPanel _onContent;
+    private readonly TextBlock _offTextBlock;
+    private readonly TextBlock _onTextBlock;
     private bool _isChecked;
+
+    public string Text
+    {
+        get => _offTextBlock.Text;
+        set
+        {
+            _offTextBlock.Text = value;
+            _onTextBlock.Text = value;
+        }
+    }
 
     public ToggleImageButton(BitmapImage offImage, BitmapImage onImage, string text)
     {
+        _offTextBlock = new TextBlock
+        {
+            Text = text,
+            VerticalAlignment = VerticalAlignment.Center,
+            TextWrapping = TextWrapping.Wrap,
+            Margin = new Thickness(5, 0, 0, 0),
+        };
+        _onTextBlock = new TextBlock
+        {
+            Text = text,
+            VerticalAlignment = VerticalAlignment.Center,
+            TextWrapping = TextWrapping.Wrap,
+            Margin = new Thickness(5, 0, 0, 0),
+        };
+
         _offContent = new StackPanel { Orientation = Orientation.Horizontal };
         _offContent.Children.Add(
             new Image
@@ -26,15 +53,7 @@ public class ToggleImageButton : Button, INotifyPropertyChanged
                 Height = 16,
             }
         );
-        _offContent.Children.Add(
-            new TextBlock
-            {
-                Text = text,
-                VerticalAlignment = VerticalAlignment.Center,
-                TextWrapping = TextWrapping.Wrap,
-                Margin = new Thickness(5, 0, 0, 0),
-            }
-        );
+        _offContent.Children.Add(_offTextBlock);
 
         _onContent = new StackPanel { Orientation = Orientation.Horizontal };
         _onContent.Children.Add(
@@ -45,15 +64,7 @@ public class ToggleImageButton : Button, INotifyPropertyChanged
                 Height = 16,
             }
         );
-        _onContent.Children.Add(
-            new TextBlock
-            {
-                Text = text,
-                VerticalAlignment = VerticalAlignment.Center,
-                TextWrapping = TextWrapping.Wrap,
-                Margin = new Thickness(5, 0, 0, 0),
-            }
-        );
+        _onContent.Children.Add(_onTextBlock);
 
         Content = _offContent;
     }

@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:components="clr-namespace:ControlBeeWPF.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:extensions="clr-namespace:ControlBeeWPF.Extensions"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:ControlBeeWPF.ViewModels"
     d:DataContext="{d:DesignInstance Type=viewModels:InitializationViewModel}"
@@ -29,7 +30,7 @@
                 BorderThickness="0,0,0,1">
                 <Label
                     HorizontalAlignment="Center"
-                    Content="Unit Origin"
+                    Content="{extensions:Translate InitializationView.UnitOrigin}"
                     FontWeight="Bold"
                     Foreground="DarkRed" />
             </Border>
@@ -79,7 +80,7 @@
                                 MaxWidth="150"
                                 MaxHeight="60"
                                 Click="SelectAllButton_OnClick"
-                                Content="All Select"
+                                Content="{extensions:Translate InitializationView.AllSelect}"
                                 FontWeight="Bold"
                                 Foreground="DarkBlue" />
                             <Button
@@ -88,7 +89,7 @@
                                 MaxWidth="150"
                                 MaxHeight="60"
                                 Click="DeselectAllButton_OnClick"
-                                Content="All Cancel"
+                                Content="{extensions:Translate InitializationView.AllCancel}"
                                 FontWeight="Bold"
                                 Foreground="DarkBlue" />
                         </Grid>
@@ -99,7 +100,7 @@
                         MaxWidth="150"
                         MaxHeight="60"
                         Command="{Binding StopCommand}"
-                        Content="Stop"
+                        Content="{extensions:Translate InitializationView.Stop}"
                         FontWeight="Bold"
                         Foreground="DarkBlue" />
                     <Button
@@ -108,7 +109,7 @@
                         MaxWidth="150"
                         MaxHeight="60"
                         Command="{Binding InitializeCommand}"
-                        Content="Unit Origin"
+                        Content="{extensions:Translate InitializationView.UnitOrigin}"
                         FontWeight="Bold"
                         Foreground="DarkRed" />
                 </Grid>
