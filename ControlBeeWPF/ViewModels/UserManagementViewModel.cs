@@ -14,6 +14,8 @@ namespace ControlBeeWPF.ViewModels;
 
 public partial class UserManagementViewModel : ObservableObject
 {
+    private const int MinPasswordLength = 8;
+
     private readonly IAuthorityLevels _authorityLevels;
     private readonly IUserManager _userManager;
 
@@ -85,6 +87,17 @@ public partial class UserManagementViewModel : ObservableObject
             return;
         }
 
+        if (Password.Length < MinPasswordLength)
+        {
+            MessageBox.Show(
+                $"Password must be at least {MinPasswordLength} characters.",
+                "Notice",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning
+            );
+            return;
+        }
+
         var registerSucceeded = _userManager.Register(UserId, Password, Name, UserLevel);
         if (registerSucceeded)
             MessageBox.Show(
@@ -127,6 +140,17 @@ public partial class UserManagementViewModel : ObservableObject
                 ["Level"] = userRow.Level,
             })
             .ToList();
+
+        if (changes.Any(c => c["RawPassword"] is string pw && pw.Length < MinPasswordLength))
+        {
+            MessageBox.Show(
+                $"Password must be at least {MinPasswordLength} characters.",
+                "Notice",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning
+            );
+            return;
+        }
 
         if (changes.Count == 0)
         {
