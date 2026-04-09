@@ -381,6 +381,15 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             return (view as T)!;
         }
 
+        if (typeof(T) == typeof(LotoPasswordInputView))
+        {
+            const int defaultMinimumPasswordLength = 4;
+            var minimumPasswordLength =
+                args?.Length > 0 ? (int)args[0]! : defaultMinimumPasswordLength;
+            var view = new LotoPasswordInputView(this, minimumPasswordLength);
+            return (view as T)!;
+        }
+
         if (typeof(T) == typeof(AxisControlView))
         {
             var positionUnit = (string)args![0]!;

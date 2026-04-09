@@ -10,24 +10,31 @@ namespace ControlBeeWPF.Views;
 /// </summary>
 public partial class LotoPasswordInputView : Window
 {
+    private readonly int _minimumPasswordLength;
     private readonly IViewFactory _viewFactory;
 
     public string Password = string.Empty;
 
-    public LotoPasswordInputView(IViewFactory viewFactory)
+    public LotoPasswordInputView(IViewFactory viewFactory, int minimumPasswordLength)
     {
         _viewFactory = viewFactory;
+        _minimumPasswordLength = minimumPasswordLength;
         InitializeComponent();
+        MinimumPasswordLengthTextBlock.Text =
+            $"Minimum {_minimumPasswordLength} characters required";
     }
 
     private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
     {
         if (Equals(sender, OkButton))
         {
-            if (Math.Min(PasswordBox.Password.Length, ConfirmPasswordBox.Password.Length) < 4)
+            if (
+                Math.Min(PasswordBox.Password.Length, ConfirmPasswordBox.Password.Length)
+                < _minimumPasswordLength
+            )
             {
                 MessageBox.Show(
-                    "Password must be at least 4 characters.",
+                    $"Password must be at least {_minimumPasswordLength} characters.",
                     "Password Error",
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning
