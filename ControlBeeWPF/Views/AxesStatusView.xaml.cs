@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using ControlBee.Interfaces;
+using ControlBee.Services;
 using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.Services;
 using ControlBeeWPF.ViewModels;
@@ -15,6 +16,7 @@ public partial class AxesStatusView : UserControl
 {
     private readonly IViewFactory _viewFactory;
     private readonly List<AxisStatusView> _axisStatusViews = [];
+    private readonly Dictionary<string, Button> _actorButtons = new();
     private readonly AxesStatusViewModel _viewModel;
 
     public AxesStatusView(AxesStatusViewModel viewModel, IViewFactory viewFactory)
@@ -39,11 +41,24 @@ public partial class AxesStatusView : UserControl
             {
                 viewModel.SelectActor(name);
             };
+            _actorButtons[name] = button;
             ActorPanel.Children.Add(button);
         }
 
         viewModel.PropertyChanged += ViewModelOnPropertyChanged;
         viewModel.SelectActor("");
+        LocalizationManager.Instance.PropertyChanged += OnLanguageChanged;
+    }
+
+    private void OnLanguageChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        foreach (var (name, title) in _viewModel.GetActorNameTitlePairs())
+        {
+            if (_actorButtons.TryGetValue(name, out var button))
+                button.Content = title;
+        }
+
+        UpdateContent();
     }
 
     private void ViewModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)

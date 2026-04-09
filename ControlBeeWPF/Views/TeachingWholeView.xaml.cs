@@ -21,6 +21,7 @@ public partial class TeachingWholeView : UserControl, IDisposable
     private readonly TeachingViewFactory _teachingViewFactory;
 
     private readonly Dictionary<string, UserControl> _views = new();
+    private string? _selectedActorName;
 
     public TeachingWholeView(
         IActorRegistry actorRegistry,
@@ -71,6 +72,14 @@ public partial class TeachingWholeView : UserControl, IDisposable
             if (_buttons.TryGetValue(name, out var button))
                 button.Content = title;
         }
+
+        foreach (var view in _views.Values)
+            if (view is IDisposable disposable)
+                disposable.Dispose();
+        _views.Clear();
+
+        if (_selectedActorName != null)
+            UpdateContent(_selectedActorName);
     }
 
     public void ClearButtonColor()
@@ -91,6 +100,7 @@ public partial class TeachingWholeView : UserControl, IDisposable
 
     public void SelectActor(string actorName)
     {
+        _selectedActorName = actorName;
         ClearButtonColor();
         _buttons[actorName].Background = Brushes.LightSkyBlue;
         UpdateContent(actorName);
