@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using ControlBee.Interfaces;
+using ControlBee.Services;
 using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.Services;
 using Brushes = System.Windows.Media.Brushes;
@@ -17,6 +19,7 @@ public partial class ActorItemExplorerWholeView : UserControl, IDisposable
     private readonly IViewFactory _viewFactory;
 
     private readonly Dictionary<string, UserControl> _views = new();
+    private string? _selectedActorName;
 
     public ActorItemExplorerWholeView(
         IViewFactory viewFactory,
@@ -48,13 +51,33 @@ public partial class ActorItemExplorerWholeView : UserControl, IDisposable
         }
 
         SelectActor(nameTitleParis[0].name);
+
+        LocalizationManager.Instance.PropertyChanged += OnLanguageChanged;
     }
 
     public void Dispose()
     {
+        LocalizationManager.Instance.PropertyChanged -= OnLanguageChanged;
         foreach (var view in _views.Values)
             if (view is IDisposable disposable)
                 disposable.Dispose();
+    }
+
+    private void OnLanguageChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        foreach (var (name, title) in GetActorNameTitlePairs())
+        {
+            if (_buttons.TryGetValue(name, out var button))
+                button.Content = title;
+        }
+
+        foreach (var view in _views.Values)
+            if (view is IDisposable disposable)
+                disposable.Dispose();
+        _views.Clear();
+
+        if (_selectedActorName != null)
+            UpdateContent(_selectedActorName);
     }
 
     public void ClearButtonColor()
@@ -75,6 +98,7 @@ public partial class ActorItemExplorerWholeView : UserControl, IDisposable
 
     public void SelectActor(string actorName)
     {
+        _selectedActorName = actorName;
         ClearButtonColor();
         _buttons[actorName].Background = Brushes.LightSkyBlue;
         UpdateContent(actorName);

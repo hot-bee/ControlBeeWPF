@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.ComponentModel;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -28,6 +29,8 @@ public partial class JogView : UserControl, IDisposable
         MethodBase.GetCurrentMethod()!.DeclaringType!
     );
     private readonly Dictionary<Button, string> _jogButtons = new();
+    private readonly List<Button> _negButtons = [];
+    private readonly List<Button> _posButtons = [];
     private readonly JogViewModel _viewModel;
 
     public JogView(JogViewModel viewModel)
@@ -36,6 +39,14 @@ public partial class JogView : UserControl, IDisposable
         DataContext = viewModel;
         InitializeComponent();
 
+        UpdateTranslations();
+
+        viewModel.Loaded += ViewModelOnLoaded;
+        LocalizationManager.Instance.PropertyChanged += OnLanguageChanged;
+    }
+
+    private void UpdateTranslations()
+    {
         TranslateHeader(ContinuousTab, "JogView.Continuous");
         TranslateHeader(SpeedGroup, "JogView.Speed");
         TranslateContent(SpeedLowRadio, "JogView.SpeedLow");
@@ -46,7 +57,25 @@ public partial class JogView : UserControl, IDisposable
         TranslateHeader(StepDistanceGroup, "JogView.StepDistance");
         TranslateHeader(DiscreteAxesGroup, "JogView.Axes");
 
-        viewModel.Loaded += ViewModelOnLoaded;
+        foreach (var button in _negButtons)
+            TranslateContent(button, "JogView.Neg");
+        foreach (var button in _posButtons)
+            TranslateContent(button, "JogView.Pos");
+
+        var stepSizes = (string[])["Small", "Medium", "Large"];
+        for (var i = 0; i < _stepRadios.Count; i++)
+        {
+            var translated = LocalizationManager.Instance.GetValue(
+                $"JogView.StepSize.{stepSizes[i]}"
+            );
+            if (translated != null)
+                _stepRadios[i].Content = translated;
+        }
+    }
+
+    private void OnLanguageChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        UpdateTranslations();
     }
 
     private void ViewModelOnLoaded(object? sender, EventArgs e)
@@ -58,6 +87,7 @@ public partial class JogView : UserControl, IDisposable
 
     public void Dispose()
     {
+        LocalizationManager.Instance.PropertyChanged -= OnLanguageChanged;
         foreach (var button in _jogButtons.Keys)
         {
             button.MouseLeftButtonDown -= ContNegButtonOnMouseLeftButtonDown;
@@ -115,12 +145,14 @@ public partial class JogView : UserControl, IDisposable
                 Content = negContent ?? "- Neg",
                 Margin = new Thickness(10),
             };
+            _negButtons.Add(negButton);
             var posContent = LocalizationManager.Instance.GetValue("JogView.Pos");
             var posButton = new Button
             {
                 Content = posContent ?? "Pos +",
                 Margin = new Thickness(10),
             };
+            _posButtons.Add(posButton);
             var label = new Label
             {
                 Content = itemPath,

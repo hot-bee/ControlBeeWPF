@@ -132,14 +132,11 @@ public partial class InitializationView
 
     private void OnLanguageChanged(object? sender, PropertyChangedEventArgs e)
     {
-        Dispatcher.Invoke(() =>
+        foreach (var (actorName, actorTitle) in _viewModel.GetActorTitles())
         {
-            foreach (var (actorName, actorTitle) in _viewModel.GetActorTitles())
-            {
-                if (_buttonMap.TryGetValue(actorName, out var button))
-                    button.Text = actorTitle;
-            }
-        });
+            if (_buttonMap.TryGetValue(actorName, out var button))
+                button.Text = actorTitle;
+        }
     }
 
     public void Dispose()

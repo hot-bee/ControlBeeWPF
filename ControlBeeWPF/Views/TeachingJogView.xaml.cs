@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.ComponentModel;
+using System.Windows.Controls;
 using ControlBee.Services;
 using ControlBeeWPF.ViewModels;
 using log4net;
@@ -19,6 +20,13 @@ public partial class TeachingJogView : UserControl, IDisposable
         InitializeComponent();
         JogControlArea.Content = jogView;
 
+        UpdateTranslations();
+
+        LocalizationManager.Instance.PropertyChanged += OnLanguageChanged;
+    }
+
+    private void UpdateTranslations()
+    {
         TranslateHeader(MoveToPositionGroup, "TeachingJogView.MoveToPosition");
         TranslateContent(MoveToHomeButton, "TeachingJogView.MoveToHomePos");
         TranslateContent(MoveToSavedPosButton, "TeachingJogView.MoveToSavedPos");
@@ -42,8 +50,13 @@ public partial class TeachingJogView : UserControl, IDisposable
             control.Content = text;
     }
 
+    private void OnLanguageChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        UpdateTranslations();
+    }
+
     public void Dispose()
     {
-        // Empty
+        LocalizationManager.Instance.PropertyChanged -= OnLanguageChanged;
     }
 }

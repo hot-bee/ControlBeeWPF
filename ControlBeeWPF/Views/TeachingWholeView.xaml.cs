@@ -1,7 +1,9 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using ControlBee.Interfaces;
+using ControlBee.Services;
 using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.Services;
 using Brushes = System.Windows.Media.Brushes;
@@ -50,13 +52,25 @@ public partial class TeachingWholeView : UserControl, IDisposable
         }
 
         SelectActor(nameTitleParis[0].name);
+
+        LocalizationManager.Instance.PropertyChanged += OnLanguageChanged;
     }
 
     public void Dispose()
     {
+        LocalizationManager.Instance.PropertyChanged -= OnLanguageChanged;
         foreach (var view in _views.Values)
             if (view is IDisposable disposable)
                 disposable.Dispose();
+    }
+
+    private void OnLanguageChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        foreach (var (name, title) in GetActorNameTitlePairs())
+        {
+            if (_buttons.TryGetValue(name, out var button))
+                button.Content = title;
+        }
     }
 
     public void ClearButtonColor()
