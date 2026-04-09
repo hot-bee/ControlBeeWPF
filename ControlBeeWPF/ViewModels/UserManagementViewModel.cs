@@ -14,7 +14,8 @@ namespace ControlBeeWPF.ViewModels;
 
 public partial class UserManagementViewModel : ObservableObject
 {
-    private const int MinPasswordLength = 8;
+    private const int MinPasswordLength = 4;
+    private const int MaxPasswordLength = 8;
 
     private readonly IAuthorityLevels _authorityLevels;
     private readonly IUserManager _userManager;
@@ -87,10 +88,10 @@ public partial class UserManagementViewModel : ObservableObject
             return;
         }
 
-        if (Password.Length < MinPasswordLength)
+        if (Password.Length < MinPasswordLength || Password.Length > MaxPasswordLength)
         {
             MessageBox.Show(
-                $"Password must be at least {MinPasswordLength} characters.",
+                $"Password must be {MinPasswordLength} to {MaxPasswordLength} characters.",
                 "Notice",
                 MessageBoxButton.OK,
                 MessageBoxImage.Warning
@@ -141,10 +142,15 @@ public partial class UserManagementViewModel : ObservableObject
             })
             .ToList();
 
-        if (changes.Any(c => c["RawPassword"] is string pw && pw.Length < MinPasswordLength))
+        if (
+            changes.Any(c =>
+                c["RawPassword"] is string pw
+                && (pw.Length < MinPasswordLength || pw.Length > MaxPasswordLength)
+            )
+        )
         {
             MessageBox.Show(
-                $"Password must be at least {MinPasswordLength} characters.",
+                $"Password must be {MinPasswordLength} to {MaxPasswordLength} characters.",
                 "Notice",
                 MessageBoxButton.OK,
                 MessageBoxImage.Warning
