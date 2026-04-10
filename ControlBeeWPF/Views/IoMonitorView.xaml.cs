@@ -14,9 +14,9 @@ public partial class IoMonitorView
 {
     public static readonly DependencyProperty NameColumnWidthProperty = DependencyProperty.Register(
         nameof(NameColumnWidth),
-        typeof(double),
+        typeof(GridLength),
         typeof(IoMonitorView),
-        new PropertyMetadata(350.0, OnNameColumnWidthChanged)
+        new PropertyMetadata(new GridLength(7, GridUnitType.Star), OnNameColumnWidthChanged)
     );
 
     public static readonly DependencyProperty RowHeightProperty = DependencyProperty.Register(
@@ -36,7 +36,7 @@ public partial class IoMonitorView
         foreach (var (_, (_, ioListView)) in view._buttons)
         {
             if (ioListView is IoView ioView)
-                ioView.NameColumnWidth = (double)e.NewValue;
+                ioView.NameColumnWidth = (GridLength)e.NewValue;
         }
     }
 
@@ -54,9 +54,9 @@ public partial class IoMonitorView
         }
     }
 
-    public double NameColumnWidth
+    public GridLength NameColumnWidth
     {
-        get => (double)GetValue(NameColumnWidthProperty);
+        get => (GridLength)GetValue(NameColumnWidthProperty);
         set => SetValue(NameColumnWidthProperty, value);
     }
 
