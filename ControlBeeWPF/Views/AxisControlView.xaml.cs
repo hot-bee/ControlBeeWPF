@@ -700,6 +700,8 @@ public partial class AxisControlView
 
     private void JogButton_OnMouseUp(object sender, MouseButtonEventArgs e)
     {
+        if (_currentJogType == JogType.Step)
+            return;
         var selectedAxis = _viewModel.SelectedAxis!;
         var actor = _actorRegistry.Get(selectedAxis.ActorName!)!;
         actor.Send(new ActorItemMessage(_ui, selectedAxis.ItemPath, "_jogStop"));
