@@ -97,6 +97,7 @@ public partial class VariableItemView
     public Dict? OverrideTextByValue { get; set; }
     public Func<object?, object?>? DisplayConverter { get; set; }
     public Func<object?, object?>? InputConverter { get; set; }
+    public Func<object?, object?>? ClickValueProvider { get; set; }
 
     public void Refresh() => RefreshContent();
 
@@ -143,6 +144,13 @@ public partial class VariableItemView
         if (_viewModel.Value is bool boolValue)
         {
             _viewModel.ChangeValue(!boolValue);
+            return;
+        }
+
+        if (ClickValueProvider != null)
+        {
+            var newVal = ClickValueProvider(_viewModel.Value);
+            _viewModel.ChangeValue(newVal?.ToString() ?? "");
             return;
         }
 
