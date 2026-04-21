@@ -15,7 +15,7 @@ public partial class DigitalOutputStatusBarViewV2 : IDisposable
         nameof(NameColumnWidth),
         typeof(GridLength),
         typeof(DigitalOutputStatusBarViewV2),
-        new PropertyMetadata(new GridLength(90))
+        new PropertyMetadata(new GridLength(7, GridUnitType.Star))
     );
 
     public static readonly DependencyProperty RowHeightProperty = DependencyProperty.Register(

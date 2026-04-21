@@ -18,7 +18,7 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Name="NameColumn" Width="{Binding NameColumnWidth, RelativeSource={RelativeSource AncestorType=UserControl}}" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="3*" />
             </Grid.ColumnDefinitions>
             <Border
                 Grid.Column="0"

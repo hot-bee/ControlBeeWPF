@@ -17,9 +17,9 @@ public partial class IoView
 
     public static readonly DependencyProperty NameColumnWidthProperty = DependencyProperty.Register(
         nameof(NameColumnWidth),
-        typeof(double),
+        typeof(GridLength),
         typeof(IoView),
-        new PropertyMetadata(200.0, OnNameColumnWidthChanged)
+        new PropertyMetadata(new GridLength(7, GridUnitType.Star), OnNameColumnWidthChanged)
     );
 
     public static readonly DependencyProperty RowHeightProperty = DependencyProperty.Register(
@@ -49,9 +49,9 @@ public partial class IoView
         view.GoToOutputPage(view._outputPageIndex);
     }
 
-    public double NameColumnWidth
+    public GridLength NameColumnWidth
     {
-        get => (double)GetValue(NameColumnWidthProperty);
+        get => (GridLength)GetValue(NameColumnWidthProperty);
         set => SetValue(NameColumnWidthProperty, value);
     }
 
@@ -271,15 +271,11 @@ public partial class IoView
                         );
                         continue;
                     case DigitalInputStatusBarViewV2 digitalInputStatusBarViewV2:
-                        digitalInputStatusBarViewV2.NameColumnWidth = new GridLength(
-                            NameColumnWidth
-                        );
+                        digitalInputStatusBarViewV2.NameColumnWidth = NameColumnWidth;
                         digitalInputStatusBarViewV2.RowHeight = RowHeight;
                         break;
                     case DigitalOutputStatusBarViewV2 digitalOutputStatusBarViewV2:
-                        digitalOutputStatusBarViewV2.NameColumnWidth = new GridLength(
-                            NameColumnWidth
-                        );
+                        digitalOutputStatusBarViewV2.NameColumnWidth = NameColumnWidth;
                         digitalOutputStatusBarViewV2.RowHeight = RowHeight;
                         break;
                 }
