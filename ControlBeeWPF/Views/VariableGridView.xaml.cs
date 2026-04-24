@@ -19,7 +19,14 @@ public partial class VariableGridView
         nameof(ItemWidth),
         typeof(double),
         typeof(VariableGridView),
-        new PropertyMetadata(90.0)
+        new PropertyMetadata(double.NaN)
+    );
+
+    public static readonly DependencyProperty ItemHeightProperty = DependencyProperty.Register(
+        nameof(ItemHeight),
+        typeof(double),
+        typeof(VariableGridView),
+        new PropertyMetadata(double.NaN)
     );
 
     public static readonly DependencyProperty HeaderColumnWidthProperty =
@@ -63,6 +70,12 @@ public partial class VariableGridView
     {
         get => (double)GetValue(ItemWidthProperty);
         set => SetValue(ItemWidthProperty, value);
+    }
+
+    public double ItemHeight
+    {
+        get => (double)GetValue(ItemHeightProperty);
+        set => SetValue(ItemHeightProperty, value);
     }
 
     public double HeaderColumnWidth
@@ -308,6 +321,14 @@ public partial class VariableGridView
                         VariableItemView.ItemWidthProperty,
                         new Binding(nameof(ItemWidth)) { Source = this }
                     );
+                    view.SetBinding(
+                        VariableItemView.ItemHeightProperty,
+                        new Binding(nameof(ItemHeight)) { Source = this }
+                    );
+                    view.SetBinding(
+                        VariableItemView.ItemFontSizeProperty,
+                        new Binding(nameof(LabelFontSize)) { Source = this }
+                    );
                 }
 
                 Grid.SetRow(view, rowOffset + cell.Row);
@@ -416,13 +437,16 @@ public partial class VariableGridView
 
     private Label CreateHeaderLabel(string text)
     {
-        return new Label { Content = text, Style = (Style)FindResource("HeaderLabelStyle") };
+        var label = new Label { Content = text, Style = (Style)FindResource("HeaderLabelStyle") };
+        label.SetBinding(FontSizeProperty, new Binding(nameof(LabelFontSize)) { Source = this });
+        return label;
     }
 
     private Label CreateHeaderColumnLabel(string text)
     {
         var label = new Label { Content = text, Style = (Style)FindResource("HeaderLabelStyle") };
         label.SetBinding(WidthProperty, new Binding(nameof(HeaderColumnWidth)) { Source = this });
+        label.SetBinding(FontSizeProperty, new Binding(nameof(LabelFontSize)) { Source = this });
         return label;
     }
 
@@ -430,6 +454,7 @@ public partial class VariableGridView
     {
         var label = new Label { Content = text, Style = (Style)FindResource("HeaderLabelStyle") };
         label.SetBinding(WidthProperty, new Binding(nameof(FooterColumnWidth)) { Source = this });
+        label.SetBinding(FontSizeProperty, new Binding(nameof(LabelFontSize)) { Source = this });
         return label;
     }
 
@@ -437,6 +462,7 @@ public partial class VariableGridView
     {
         var label = new Label { Content = text, Style = (Style)FindResource("HeaderLabelStyle") };
         label.SetBinding(HeightProperty, new Binding(nameof(FooterRowHeight)) { Source = this });
+        label.SetBinding(FontSizeProperty, new Binding(nameof(LabelFontSize)) { Source = this });
         return label;
     }
 }
