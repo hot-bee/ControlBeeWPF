@@ -7,14 +7,13 @@ using ControlBeeWPF.ViewModels;
 using Button = System.Windows.Controls.Button;
 using Dict = System.Collections.Generic.Dictionary<string, object?>;
 using Panel = System.Windows.Forms.Panel;
-using UserControl = System.Windows.Controls.UserControl;
 
 namespace ControlBeeWPF.Views;
 
 /// <summary>
 ///     Interaction logic for InspectionContainerView.xaml
 /// </summary>
-public partial class InspectionContainerView : UserControl, IRefreshable, INotifyPropertyChanged
+public partial class InspectionContainerView : IRefreshable, INotifyPropertyChanged
 {
     private readonly string _mode;
     private readonly Dict _options;
@@ -36,21 +35,23 @@ public partial class InspectionContainerView : UserControl, IRefreshable, INotif
         var channelCount = systemConfigurations.VisionChannelCount;
         if (_mode == "VisionFrame" && 1 < channelCount)
         {
-            var allButton = new Button { Content = "All" };
+            var allButton = new Button { Content = "All", Tag = true };
             allButton.Click += (sender, args) =>
             {
                 ActiveChannel = -1;
+                SetActiveButton((Button)sender!);
                 Refresh();
             };
             ChannelPanel.Children.Add(allButton);
 
             for (var channel = 0; channel < channelCount; channel++)
             {
-                var button = new Button { Content = $"Ch. {channel}" };
+                var button = new Button { Content = $"Ch. {channel}", Tag = false };
                 var channel1 = channel;
                 button.Click += (sender, args) =>
                 {
                     ActiveChannel = channel1;
+                    SetActiveButton((Button)sender!);
                     Refresh();
                 };
                 ChannelPanel.Children.Add(button);
@@ -77,6 +78,12 @@ public partial class InspectionContainerView : UserControl, IRefreshable, INotif
         _viewModel.EmbedVisionCommand.Execute((HostHandle, _options));
         if (_mode == "VisionFrame" && _options.GetValueOrDefault("Channel") is int channel)
             _viewModel.StartContinuousCommand.Execute(channel);
+    }
+
+    private void SetActiveButton(Button selected)
+    {
+        foreach (var button in ChannelPanel.Children.OfType<Button>())
+            button.Tag = ReferenceEquals(button, selected);
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
