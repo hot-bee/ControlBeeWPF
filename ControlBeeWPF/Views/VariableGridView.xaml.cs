@@ -238,6 +238,8 @@ public partial class VariableGridView
 
     private void RenderCornerCell(int gridRow, int gridCol, string text = "")
     {
+        if (string.IsNullOrEmpty(text))
+            return;
         var corner = CreateHeaderLabel(text);
         corner.Margin = GetTableMargin(gridRow, gridCol);
         Grid.SetRow(corner, gridRow);
