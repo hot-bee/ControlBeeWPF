@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 using ControlBeeWPF.ViewModels;
 
 namespace ControlBeeWPF.Views;
@@ -14,5 +15,10 @@ public partial class LoginView : Window
         DataContext = viewModel;
 
         viewModel.LoginSucceeded += (_, _) => DialogResult = true;
+    }
+
+    private void Header_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        DragMove();
     }
 }
