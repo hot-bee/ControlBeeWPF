@@ -67,14 +67,21 @@ public partial class TeachingView : UserControl, IDisposable
         {
             var itemPath = _viewModel.PositionItemPaths[PositionItemList.SelectedIndex].itemPath;
             var location = _viewModel.PositionItemPaths[PositionItemList.SelectedIndex].location;
-            if (!_dataViews.TryGetValue(itemPath, out var view))
+            var viewKey =
+                location.Length > 0 ? $"{itemPath}[{string.Join(",", location)}]" : itemPath;
+            if (!_dataViews.TryGetValue(viewKey, out var view))
             {
                 view = _teachingViewFactory.CreateData(_actorName, itemPath, location);
-                _dataViews[itemPath] = view;
+                _dataViews[viewKey] = view;
             }
 
             DataContent.Content = view;
-            JogContent.Content = _viewFactory.Create(typeof(TeachingJogView), _actorName, itemPath, location); // TODO: risk of memory leak
+            JogContent.Content = _viewFactory.Create(
+                typeof(TeachingJogView),
+                _actorName,
+                itemPath,
+                location
+            ); // TODO: risk of memory leak
         }
         catch (ArgumentOutOfRangeException exception)
         {
