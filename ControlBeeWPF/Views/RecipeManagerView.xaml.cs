@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using ControlBee.Interfaces;
-using ControlBeeWPF.Components;
+using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.ViewModels;
 using MessageBox = System.Windows.MessageBox;
 using UserControl = System.Windows.Controls.UserControl;
@@ -14,13 +14,19 @@ namespace ControlBeeWPF.Views;
 public partial class RecipeManagerView : UserControl
 {
     private readonly IVariableManager _variableManager;
+    private readonly IViewFactory _viewFactory;
     private readonly RecipeManagerViewModel _viewModel;
 
-    public RecipeManagerView(RecipeManagerViewModel viewModel, IVariableManager variableManager)
+    public RecipeManagerView(
+        RecipeManagerViewModel viewModel,
+        IVariableManager variableManager,
+        IViewFactory viewFactory
+    )
     {
         DataContext = viewModel;
         _viewModel = viewModel;
         _variableManager = variableManager;
+        _viewFactory = viewFactory;
         InitializeComponent();
     }
 
@@ -40,10 +46,10 @@ public partial class RecipeManagerView : UserControl
 
     private void SaveAsButton_OnClick(object sender, RoutedEventArgs e)
     {
-        var inputBox = new InputBox();
-        if (inputBox.ShowDialog() is not true)
+        var keyboardView = _viewFactory.Create<KeyboardView>()!;
+        if (keyboardView.ShowDialog() is not true)
             return;
-        var recipeName = inputBox.ResponseText;
+        var recipeName = keyboardView.Value;
         if (string.IsNullOrEmpty(recipeName))
             return;
         if (_variableManager.LocalNames.Contains(recipeName))
