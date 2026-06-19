@@ -75,11 +75,15 @@ public partial class PositionVariableListView
         grid.ColumnDefinitions.Add(
             new ColumnDefinition { Width = GridLength.Auto, SharedSizeGroup = "SetButton" }
         );
+        grid.ColumnDefinitions.Add(
+            new ColumnDefinition { Width = GridLength.Auto, SharedSizeGroup = "MoveButton" }
+        );
         return grid;
     }
 
     private int AxisColumnOffset => 2;
     private int SetButtonColumn => 2 + _axisLabels.Length + 1;
+    private int MoveButtonColumn => SetButtonColumn + 1;
 
     private void RenderHeader()
     {
@@ -140,6 +144,7 @@ public partial class PositionVariableListView
                     continue;
 
                 var view = _viewFactory.Create<VariableItemView>(variableViewModel)!;
+                view.BorderMargin = new Thickness(2, 0, 2, 0);
                 view.DisplayConverter = valueObject =>
                     valueObject is double doubleValue ? doubleValue.ToString("F3") : valueObject;
                 view.Refresh();
@@ -147,14 +152,23 @@ public partial class PositionVariableListView
                 grid.Children.Add(view);
             }
 
-            var button = new Button
+            var setButton = new Button
             {
                 Content = "Set",
                 Style = (Style)FindResource("RoundButtonStyle"),
             };
-            button.Click += (_, _) => SetPosition(row);
-            Grid.SetColumn(button, SetButtonColumn);
-            grid.Children.Add(button);
+            setButton.Click += (_, _) => SetPosition(row);
+            Grid.SetColumn(setButton, SetButtonColumn);
+            grid.Children.Add(setButton);
+
+            var moveButton = new Button
+            {
+                Content = "Move",
+                Style = (Style)FindResource("RoundButtonStyle"),
+            };
+            moveButton.Click += (_, _) => MoveToPosition(row);
+            Grid.SetColumn(moveButton, MoveButtonColumn);
+            grid.Children.Add(moveButton);
 
             RowsControl.Items.Add(grid);
         }
@@ -173,5 +187,21 @@ public partial class PositionVariableListView
             return;
 
         _viewModel.SetPosition(row);
+    }
+
+    private void MoveToPosition(PositionVariableListViewModel.Row row)
+    {
+        if (
+            MessageBox.Show(
+                "Do you want to move to saved position?",
+                "Move to position",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question,
+                MessageBoxResult.No
+            ) == MessageBoxResult.No
+        )
+            return;
+
+        _viewModel.MoveToPosition(row);
     }
 }
