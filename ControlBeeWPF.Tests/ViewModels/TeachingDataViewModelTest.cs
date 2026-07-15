@@ -46,6 +46,31 @@ public class TeachingDataViewModelTest
             );
     }
 
+    private static void RaiseAxisMetaDataChanged(IUiActor uiActor, IActor actor, Dict payload)
+    {
+        Mock.Get(uiActor)
+            .Raise(
+                m => m.MessageArrived += null,
+                uiActor,
+                new ActorItemMessage(actor, "/X", "_itemMetaDataChanged", payload)
+            );
+    }
+
+    private static void RaiseAxisDataChanged(IUiActor uiActor, IActor actor, double commandPosition)
+    {
+        Mock.Get(uiActor)
+            .Raise(
+                m => m.MessageArrived += null,
+                uiActor,
+                new ActorItemMessage(
+                    actor,
+                    "/X",
+                    "_itemDataChanged",
+                    new Dict { ["CommandPosition"] = commandPosition }
+                )
+            );
+    }
+
     private static Array1D<Position1D> MakeArray(params double[] values)
     {
         var array = new Array1D<Position1D>(values.Length);
@@ -103,5 +128,49 @@ public class TeachingDataViewModelTest
         var pos = new Position1D(DenseVector.OfArray([44.0]));
         RaiseDataChanged(ui, actor, new ValueChangedArgs([0], null, pos));
         Assert.Equal(44.0, vm.TableData.Rows[1][1]);
+    }
+
+    [Fact]
+    public void CurrentPositionIsScaledByDisplayResolution()
+    {
+        var (vm, ui, actor) = Setup([0]);
+        RaiseAxisMetaDataChanged(
+            ui,
+            actor,
+            new Dict { ["Name"] = "X", ["DisplayResolution"] = 0.001 }
+        );
+        RaiseAxisDataChanged(ui, actor, 1000.0);
+        Assert.Equal(1.0, vm.TableData.Rows[0][1]);
+    }
+
+    [Fact]
+    public void ItemValueIsScaledByDisplayResolution()
+    {
+        var (vm, ui, actor) = Setup([0]);
+        RaiseAxisMetaDataChanged(
+            ui,
+            actor,
+            new Dict { ["Name"] = "X", ["DisplayResolution"] = 0.001 }
+        );
+        RaiseDataChanged(ui, actor, new ValueChangedArgs([], null, MakeArray(2000.0)));
+        Assert.Equal(2.0, vm.TableData.Rows[1][1]);
+    }
+
+    [Fact]
+    public void LateMetaDataRescalesExistingValues()
+    {
+        var (vm, ui, actor) = Setup([0]);
+        RaiseAxisDataChanged(ui, actor, 1000.0);
+        RaiseDataChanged(ui, actor, new ValueChangedArgs([], null, MakeArray(2000.0)));
+        Assert.Equal(1000.0, vm.TableData.Rows[0][1]);
+        Assert.Equal(2000.0, vm.TableData.Rows[1][1]);
+
+        RaiseAxisMetaDataChanged(
+            ui,
+            actor,
+            new Dict { ["Name"] = "X", ["DisplayResolution"] = 0.001 }
+        );
+        Assert.Equal(1.0, vm.TableData.Rows[0][1]);
+        Assert.Equal(2.0, vm.TableData.Rows[1][1]);
     }
 }

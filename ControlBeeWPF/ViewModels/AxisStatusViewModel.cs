@@ -19,6 +19,19 @@ public partial class AxisStatusViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     private double _commandPosition;
 
+    /// <summary>
+    ///     Command position in the axis coordinate, before <see cref="DisplayResolution" /> is
+    ///     applied. Use this for logic that compares against business values.
+    /// </summary>
+    [ObservableProperty]
+    private double _rawCommandPosition;
+
+    [ObservableProperty]
+    private double _displayResolution = 1.0;
+
+    [ObservableProperty]
+    private double _rawActualPosition;
+
     [ObservableProperty]
     private string _desc = string.Empty;
 
@@ -71,12 +84,17 @@ public partial class AxisStatusViewModel : ObservableObject, IDisposable
     {
         Name = e["Name"] as string ?? _itemPath;
         Desc = e["Desc"] as string ?? string.Empty;
+        DisplayResolution = e.GetValueOrDefault(nameof(DisplayResolution)) as double? ?? 1.0;
+        CommandPosition = RawCommandPosition * DisplayResolution;
+        ActualPosition = RawActualPosition * DisplayResolution;
     }
 
     private void Binder_DataChanged(object? sender, Dict e)
     {
-        CommandPosition = (double)e[nameof(CommandPosition)]!;
-        ActualPosition = (double)e[nameof(ActualPosition)]!;
+        RawCommandPosition = (double)e[nameof(CommandPosition)]!;
+        RawActualPosition = (double)e[nameof(ActualPosition)]!;
+        CommandPosition = RawCommandPosition * DisplayResolution;
+        ActualPosition = RawActualPosition * DisplayResolution;
         IsMoving = (bool)e[nameof(IsMoving)]!;
         IsAlarmed = (bool)e[nameof(IsAlarmed)]!;
         IsEnabled = (bool)e[nameof(IsEnabled)]!;

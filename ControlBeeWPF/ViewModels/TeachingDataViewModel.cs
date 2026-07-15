@@ -17,6 +17,9 @@ public partial class TeachingDataViewModel : ObservableObject, IDisposable
     );
 
     private readonly List<ActorItemBinder> _axisItemBinderList = [];
+    private readonly List<double> _displayResolutions = [];
+    private readonly List<double?> _rawCurrentPositions = [];
+    private readonly List<double?> _rawItemValues = [];
     private readonly DataRow _currentPositionRow;
 
     private readonly DataRow _itemValueRow;
@@ -50,6 +53,9 @@ public partial class TeachingDataViewModel : ObservableObject, IDisposable
             TableData.Columns.Add(axisItemPath.Trim('/'), typeof(double));
             var axisItemBinder = new ActorItemBinder(actorRegistry, actorName, axisItemPath);
             _axisItemBinderList.Add(axisItemBinder);
+            _displayResolutions.Add(1.0);
+            _rawCurrentPositions.Add(null);
+            _rawItemValues.Add(null);
             axisItemBinder.MetaDataChanged += AxisItemBinderOnMetaDataChanged;
             axisItemBinder.DataChanged += AxisItemBinderOnDataChanged;
         }
@@ -76,13 +82,31 @@ public partial class TeachingDataViewModel : ObservableObject, IDisposable
         var index = _axisItemBinderList.IndexOf((ActorItemBinder)sender!);
         var name = (string)e["Name"]!;
         TableData.Columns[index + 1].ColumnName = name.Trim('/');
+        _displayResolutions[index] = e.GetValueOrDefault("DisplayResolution") as double? ?? 1.0;
+        if (_rawCurrentPositions[index] is { } rawCurrentPosition)
+            _currentPositionRow[index + 1] = rawCurrentPosition * _displayResolutions[index];
+        if (_rawItemValues[index] is { } rawItemValue)
+            _itemValueRow[index + 1] = rawItemValue * _displayResolutions[index];
     }
 
     private void AxisItemBinderOnDataChanged(object? sender, Dictionary<string, object?> e)
     {
         var index = _axisItemBinderList.IndexOf((ActorItemBinder)sender!);
-        var newValue = e["CommandPosition"];
-        _currentPositionRow[index + 1] = newValue;
+        var newValue = (double)e["CommandPosition"]!;
+        _rawCurrentPositions[index] = newValue;
+        _currentPositionRow[index + 1] = newValue * _displayResolutions[index];
+    }
+
+    private void SetItemValue(int axisIndex, object? value)
+    {
+        if (axisIndex >= _rawItemValues.Count || value is not double rawValue)
+        {
+            _itemValueRow[1 + axisIndex] = value;
+            return;
+        }
+
+        _rawItemValues[axisIndex] = rawValue;
+        _itemValueRow[1 + axisIndex] = rawValue * _displayResolutions[axisIndex];
     }
 
     private void PositionBinderOnMetaDataChanged(object? sender, Dictionary<string, object?> e)
@@ -116,31 +140,31 @@ public partial class TeachingDataViewModel : ObservableObject, IDisposable
         if (location?.Length > 0)
         {
             var index = (int)location[0]!;
-            _itemValueRow[1 + index] = newValue;
+            SetItemValue(index, newValue);
         }
         else
         {
             if (newValue is Position1D position1D)
             {
-                _itemValueRow[1] = position1D.Values[0];
+                SetItemValue(0, position1D.Values[0]);
             }
             else if (newValue is Position2D position2D)
             {
-                _itemValueRow[1] = position2D.Values[0];
-                _itemValueRow[2] = position2D.Values[1];
+                SetItemValue(0, position2D.Values[0]);
+                SetItemValue(1, position2D.Values[1]);
             }
             else if (newValue is Position3D position3D)
             {
-                _itemValueRow[1] = position3D.Values[0];
-                _itemValueRow[2] = position3D.Values[1];
-                _itemValueRow[3] = position3D.Values[2];
+                SetItemValue(0, position3D.Values[0]);
+                SetItemValue(1, position3D.Values[1]);
+                SetItemValue(2, position3D.Values[2]);
             }
             else if (newValue is Position4D position4D)
             {
-                _itemValueRow[1] = position4D.Values[0];
-                _itemValueRow[2] = position4D.Values[1];
-                _itemValueRow[3] = position4D.Values[2];
-                _itemValueRow[4] = position4D.Values[3];
+                SetItemValue(0, position4D.Values[0]);
+                SetItemValue(1, position4D.Values[1]);
+                SetItemValue(2, position4D.Values[2]);
+                SetItemValue(3, position4D.Values[3]);
             }
             else
             {

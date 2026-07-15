@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Windows;
 using ControlBee.Models;
-using ControlBeeTest.Utils;
+using ControlBee.TestUtils;
 using ControlBeeWPF.Models;
 using JetBrains.Annotations;
 using Xunit;

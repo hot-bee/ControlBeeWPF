@@ -62,7 +62,7 @@ public sealed class InPositionIndicatorViewModel : INotifyPropertyChanged
 
     private void AxisStatusViewModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName != nameof(AxisStatusViewModel.CommandPosition))
+        if (e.PropertyName != nameof(AxisStatusViewModel.RawCommandPosition))
             return;
         if (sender is not AxisStatusViewModel axisStatusViewModel)
             return;
@@ -74,7 +74,8 @@ public sealed class InPositionIndicatorViewModel : INotifyPropertyChanged
 
     private void UpdateCurrentPosition(int index, AxisStatusViewModel axisStatusViewModel)
     {
-        _positions[index].current = axisStatusViewModel.CommandPosition;
+        // Compare in the axis coordinate; DisplayResolution only affects what's shown on UIs.
+        _positions[index].current = axisStatusViewModel.RawCommandPosition;
         UpdateContent();
     }
 
