@@ -69,6 +69,8 @@ public partial class InspectionContainerView : IRefreshable, INotifyPropertyChan
         }
     }
 
+    public bool UseContinuous { get; set; } = true;
+
     public IntPtr HostHandle => HostControl.Child.Handle;
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -76,7 +78,11 @@ public partial class InspectionContainerView : IRefreshable, INotifyPropertyChan
     public void Refresh()
     {
         _viewModel.EmbedVisionCommand.Execute((HostHandle, _options));
-        if (_mode == "VisionFrame" && _options.GetValueOrDefault("Channel") is int channel)
+        if (
+            _mode == "VisionFrame"
+            && UseContinuous
+            && _options.GetValueOrDefault("Channel") is int channel
+        )
             _viewModel.StartContinuousCommand.Execute(channel);
     }
 
