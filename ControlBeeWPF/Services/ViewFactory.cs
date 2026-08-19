@@ -148,8 +148,14 @@ public class ViewFactory(IServiceProvider serviceProvider) : IViewFactory
             var options = (Dict)args[1]!;
             var deviceManager = serviceProvider.GetRequiredService<IDeviceManager>();
             var systemConfigurations = serviceProvider.GetRequiredService<ISystemConfigurations>();
+            var actorRegistry = serviceProvider.GetRequiredService<IActorRegistry>();
             var viewModel = new VisionStatusViewModel(visionDeviceName, deviceManager);
-            var view = new InspectionContainerView(viewModel, systemConfigurations, options);
+            var view = new InspectionContainerView(
+                viewModel,
+                systemConfigurations,
+                actorRegistry,
+                options
+            );
             return view;
         }
 

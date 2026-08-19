@@ -22,12 +22,13 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
-                            <Border x:Name="border"
-                                    Background="{TemplateBinding Background}"
-                                    BorderThickness="0,0,0,2"
-                                    BorderBrush="Transparent"
-                                    Padding="{TemplateBinding Padding}"
-                                    CornerRadius="3,3,0,0">
+                            <Border
+                                x:Name="border"
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="Transparent"
+                                BorderThickness="0,0,0,2"
+                                CornerRadius="3,3,0,0">
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                             <ControlTemplate.Triggers>
@@ -48,8 +49,14 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Border Grid.Row="0" BorderBrush="#FFE0E0E0" BorderThickness="0,0,0,1">
-            <StackPanel Name="ChannelPanel" Orientation="Horizontal" Margin="2,0" />
+        <Border
+            Grid.Row="0"
+            BorderBrush="#FFE0E0E0"
+            BorderThickness="0,0,0,1">
+            <StackPanel
+                Name="ChannelPanel"
+                Margin="2,0"
+                Orientation="Horizontal" />
         </Border>
         <WindowsFormsHost x:Name="HostControl" Grid.Row="1" />
     </Grid>

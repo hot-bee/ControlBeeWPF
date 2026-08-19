@@ -6,6 +6,7 @@ using ControlBeeWPF.Interfaces;
 using ControlBeeWPF.ViewModels;
 using Button = System.Windows.Controls.Button;
 using Dict = System.Collections.Generic.Dictionary<string, object?>;
+using Message = ControlBee.Models.Message;
 using Panel = System.Windows.Forms.Panel;
 
 namespace ControlBeeWPF.Views;
@@ -17,11 +18,14 @@ public partial class InspectionContainerView : IRefreshable, INotifyPropertyChan
 {
     private readonly string _mode;
     private readonly Dict _options;
+    private readonly IUiActor _uiActor;
     private readonly VisionStatusViewModel _viewModel;
+    private bool _autoRunning;
 
     public InspectionContainerView(
         VisionStatusViewModel viewModel,
         ISystemConfigurations systemConfigurations,
+        IActorRegistry actorRegistry,
         Dict options
     )
     {
@@ -57,6 +61,9 @@ public partial class InspectionContainerView : IRefreshable, INotifyPropertyChan
                 ChannelPanel.Children.Add(button);
             }
         }
+
+        _uiActor = (IUiActor)actorRegistry.Get("Ui")!;
+        _uiActor.MessageArrived += UiActorOnMessageArrived;
     }
 
     public int ActiveChannel
@@ -69,8 +76,6 @@ public partial class InspectionContainerView : IRefreshable, INotifyPropertyChan
         }
     }
 
-    public bool UseContinuous { get; set; } = true;
-
     public IntPtr HostHandle => HostControl.Child.Handle;
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -80,10 +85,17 @@ public partial class InspectionContainerView : IRefreshable, INotifyPropertyChan
         _viewModel.EmbedVisionCommand.Execute((HostHandle, _options));
         if (
             _mode == "VisionFrame"
-            && UseContinuous
+            && !_autoRunning
+            && _options.GetValueOrDefault("UseContinuous") is not false
             && _options.GetValueOrDefault("Channel") is int channel
         )
             _viewModel.StartContinuousCommand.Execute(channel);
+    }
+
+    private void UiActorOnMessageArrived(object? sender, Message message)
+    {
+        if (message.Name == "_status" && message.ActorName == "Syncer")
+            _autoRunning = message.DictPayload!.GetValueOrDefault("_auto") is true;
     }
 
     private void SetActiveButton(Button selected)
