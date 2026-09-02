@@ -36,7 +36,6 @@ public partial class InspectionContainerView : IRefreshable, INotifyPropertyChan
         Loaded += OnLoaded;
 
         _mode = (string)_options["Mode"]!;
-        UseContinuous = _options.GetValueOrDefault("Continuous") as bool? ?? true;
         var showChannelTabs = _options.GetValueOrDefault("ShowChannelTabs") as bool? ?? true;
         var channelCount = systemConfigurations.VisionChannelCount;
         if (_mode == "VisionFrame" && showChannelTabs && 1 < channelCount)
