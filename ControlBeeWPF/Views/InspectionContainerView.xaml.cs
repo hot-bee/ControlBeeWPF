@@ -36,8 +36,9 @@ public partial class InspectionContainerView : IRefreshable, INotifyPropertyChan
         Loaded += OnLoaded;
 
         _mode = (string)_options["Mode"]!;
+        var showChannelTabs = _options.GetValueOrDefault("ShowChannelTabs") as bool? ?? true;
         var channelCount = systemConfigurations.VisionChannelCount;
-        if (_mode == "VisionFrame" && 1 < channelCount)
+        if (_mode == "VisionFrame" && showChannelTabs && 1 < channelCount)
         {
             var allButton = new Button { Content = "All", Tag = true };
             allButton.Click += (sender, args) =>
