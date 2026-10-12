@@ -8,6 +8,7 @@ using ControlBee.Constants;
 using ControlBee.Services;
 using ControlBeeAbstract.Constants;
 using ControlBeeAbstract.Exceptions;
+using ControlBeeWPF.Utils;
 using ControlBeeWPF.ViewModels;
 using log4net;
 using Button = System.Windows.Controls.Button;
@@ -88,15 +89,6 @@ public partial class JogView : UserControl, IDisposable
     public void Dispose()
     {
         LocalizationManager.Instance.PropertyChanged -= OnLanguageChanged;
-        foreach (var button in _jogButtons.Keys)
-        {
-            button.MouseLeftButtonDown -= ContNegButtonOnMouseLeftButtonDown;
-            button.MouseLeftButtonDown -= ContPosButtonOnMouseLeftButtonDown;
-            button.MouseLeftButtonUp -= ContButtonOnMouseLeftButtonUp;
-            button.MouseRightButtonDown -= ContPosButtonOnMouseLeftButtonDown;
-            button.MouseRightButtonDown -= ContNegButtonOnMouseLeftButtonDown;
-            button.MouseRightButtonUp -= ContButtonOnMouseLeftButtonUp;
-        }
     }
 
     private void SetupDiscreteStepOptions()
@@ -171,15 +163,8 @@ public partial class JogView : UserControl, IDisposable
             switch (jogMode)
             {
                 case JogMode.Continuous:
-                    posButton.PreviewMouseLeftButtonDown += ContPosButtonOnMouseLeftButtonDown;
-                    posButton.PreviewMouseLeftButtonUp += ContButtonOnMouseLeftButtonUp;
-                    posButton.PreviewMouseRightButtonDown += ContNegButtonOnMouseLeftButtonDown;
-                    posButton.PreviewMouseRightButtonUp += ContButtonOnMouseLeftButtonUp;
-
-                    negButton.PreviewMouseLeftButtonDown += ContNegButtonOnMouseLeftButtonDown;
-                    negButton.PreviewMouseLeftButtonUp += ContButtonOnMouseLeftButtonUp;
-                    negButton.PreviewMouseRightButtonDown += ContPosButtonOnMouseLeftButtonDown;
-                    negButton.PreviewMouseRightButtonUp += ContButtonOnMouseLeftButtonUp;
+                    AttachContinuousJog(posButton, itemPath, AxisDirection.Positive);
+                    AttachContinuousJog(negButton, itemPath, AxisDirection.Negative);
                     break;
                 case JogMode.Step:
                     negButton.PreviewMouseLeftButtonDown += StepNegButtonOnMouseLeftButtonDown;
@@ -210,33 +195,19 @@ public partial class JogView : UserControl, IDisposable
         _viewModel.StepMoveStart(itemPath, AxisDirection.Positive, GetStepMoveLevel());
     }
 
-    private void ContNegButtonOnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    private void AttachContinuousJog(Button button, string itemPath, AxisDirection direction)
     {
-        Logger.Debug("Left button down on negative button.");
-        var itemPath = _jogButtons[(Button)sender];
-        _viewModel.ContinuousMoveStart(
-            itemPath,
-            AxisDirection.Negative,
-            GetContinuousMoveSpeedLevel()
+        HoldToJogBehavior.Attach(
+            button,
+            direction,
+            jogDirection =>
+                _viewModel.ContinuousMoveStart(
+                    itemPath,
+                    jogDirection,
+                    GetContinuousMoveSpeedLevel()
+                ),
+            () => _viewModel.ContinuousMoveStop(itemPath)
         );
-    }
-
-    private void ContPosButtonOnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-    {
-        Logger.Debug("Left button down on positive button.");
-        var itemPath = _jogButtons[(Button)sender];
-        _viewModel.ContinuousMoveStart(
-            itemPath,
-            AxisDirection.Positive,
-            GetContinuousMoveSpeedLevel()
-        );
-    }
-
-    private void ContButtonOnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-    {
-        Logger.Debug("Left Button Up.");
-        var itemPath = _jogButtons[(Button)sender];
-        _viewModel.ContinuousMoveStop(itemPath);
     }
 
     private JogSpeedLevel GetContinuousMoveSpeedLevel()

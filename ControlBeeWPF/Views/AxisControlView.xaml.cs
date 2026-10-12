@@ -8,6 +8,7 @@ using ControlBee.Models;
 using ControlBee.Variables;
 using ControlBeeAbstract.Constants;
 using ControlBeeWPF.Interfaces;
+using ControlBeeWPF.Utils;
 using ControlBeeWPF.ViewModels;
 using Button = System.Windows.Controls.Button;
 using ComboBox = System.Windows.Controls.ComboBox;
@@ -30,7 +31,6 @@ public partial class AxisControlView
     private int _axisCount;
     private bool _axesInitDone;
     private double _jogStepCustom;
-    private AxisDirection _currentAxisDirection;
     private JogSpeedLevel _currentJogSpeedLevel;
     private JogStep _currentJogStep;
     private JogType _currentJogType;
@@ -86,6 +86,31 @@ public partial class AxisControlView
         SmallRadioButton.IsChecked = true;
         InitRadioButton.IsChecked = true;
         JogStepCustomArea.Content = _jogStepCustom;
+
+        HoldToJogBehavior.Attach(
+            UpButton,
+            AxisDirection.Positive,
+            SendJogStartMessage,
+            SendJogStopMessage
+        );
+        HoldToJogBehavior.Attach(
+            RightButton,
+            AxisDirection.Positive,
+            SendJogStartMessage,
+            SendJogStopMessage
+        );
+        HoldToJogBehavior.Attach(
+            DownButton,
+            AxisDirection.Negative,
+            SendJogStartMessage,
+            SendJogStopMessage
+        );
+        HoldToJogBehavior.Attach(
+            LeftButton,
+            AxisDirection.Negative,
+            SendJogStartMessage,
+            SendJogStopMessage
+        );
 
         _repeatStartPosition = new VariableViewModel(
             _actorRegistry,
@@ -620,20 +645,8 @@ public partial class AxisControlView
         };
     }
 
-    private void SendJogStartMessage(Button button, bool isRightClick)
+    private void SendJogStartMessage(AxisDirection direction)
     {
-        _currentAxisDirection = button switch
-        {
-            not null when button == LeftButton || button == DownButton => AxisDirection.Negative,
-
-            not null when button == RightButton || button == UpButton => AxisDirection.Positive,
-
-            _ => throw new ArgumentOutOfRangeException(nameof(button)),
-        };
-
-        if (isRightClick)
-            _currentAxisDirection = (AxisDirection)((int)_currentAxisDirection * -1);
-
         var selectedAxis = _viewModel.SelectedAxis!;
         var actor = _actorRegistry.Get(selectedAxis.ActorName!)!;
 
@@ -648,7 +661,7 @@ public partial class AxisControlView
                         new Dict
                         {
                             ["Type"] = "Step",
-                            ["Direction"] = _currentAxisDirection,
+                            ["Direction"] = direction,
                             ["JogStep"] = JogStep.Custom,
                             ["CustomStepSize"] = _jogStepCustom,
                         }
@@ -664,7 +677,7 @@ public partial class AxisControlView
                         new Dict
                         {
                             ["Type"] = "Step",
-                            ["Direction"] = _currentAxisDirection,
+                            ["Direction"] = direction,
                             ["JogStep"] = _currentJogStep,
                         }
                     )
@@ -679,7 +692,7 @@ public partial class AxisControlView
                         new Dict
                         {
                             ["Type"] = "Continuous",
-                            ["Direction"] = _currentAxisDirection,
+                            ["Direction"] = direction,
                             ["JogSpeed"] = _currentJogSpeedLevel,
                         }
                     )
@@ -688,19 +701,10 @@ public partial class AxisControlView
         }
     }
 
-    private void JogButton_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    private void SendJogStopMessage()
     {
-        SendJogStartMessage((Button)sender, false);
-    }
-
-    private void JogButton_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e)
-    {
-        SendJogStartMessage((Button)sender, true);
-    }
-
-    private void JogButton_OnMouseUp(object sender, MouseButtonEventArgs e)
-    {
-        if (_currentJogType != JogType.Continuous) return;
+        if (_currentJogType != JogType.Continuous)
+            return;
         var selectedAxis = _viewModel.SelectedAxis!;
         var actor = _actorRegistry.Get(selectedAxis.ActorName!)!;
         actor.Send(new ActorItemMessage(_ui, selectedAxis.ItemPath, "_jogStop"));

@@ -778,9 +778,6 @@
                                 Name="UpButton"
                                 Grid.Row="0"
                                 Grid.Column="1"
-                                PreviewMouseLeftButtonDown="JogButton_OnMouseLeftButtonDown"
-                                PreviewMouseRightButtonDown="JogButton_OnMouseRightButtonDown"
-                                PreviewMouseUp="JogButton_OnMouseUp"
                                 Style="{StaticResource JogButtonStyle}">
                                 <Image Source="/ControlBeeWPF;component/Images/Direction.png" />
                             </Button>
@@ -788,9 +785,6 @@
                                 Name="LeftButton"
                                 Grid.Row="1"
                                 Grid.Column="0"
-                                PreviewMouseLeftButtonDown="JogButton_OnMouseLeftButtonDown"
-                                PreviewMouseRightButtonDown="JogButton_OnMouseRightButtonDown"
-                                PreviewMouseUp="JogButton_OnMouseUp"
                                 Style="{StaticResource JogButtonStyle}">
                                 <Image RenderTransformOrigin="0.5,0.5" Source="/ControlBeeWPF;component/Images/Direction.png">
                                     <Image.RenderTransform>
@@ -802,9 +796,6 @@
                                 Name="DownButton"
                                 Grid.Row="1"
                                 Grid.Column="1"
-                                PreviewMouseLeftButtonDown="JogButton_OnMouseLeftButtonDown"
-                                PreviewMouseRightButtonDown="JogButton_OnMouseRightButtonDown"
-                                PreviewMouseUp="JogButton_OnMouseUp"
                                 Style="{StaticResource JogButtonStyle}">
                                 <Image RenderTransformOrigin="0.5,0.5" Source="/ControlBeeWPF;component/Images/Direction.png">
                                     <Image.RenderTransform>
@@ -816,9 +807,6 @@
                                 Name="RightButton"
                                 Grid.Row="1"
                                 Grid.Column="2"
-                                PreviewMouseLeftButtonDown="JogButton_OnMouseLeftButtonDown"
-                                PreviewMouseRightButtonDown="JogButton_OnMouseRightButtonDown"
-                                PreviewMouseUp="JogButton_OnMouseUp"
                                 Style="{StaticResource JogButtonStyle}">
                                 <Image RenderTransformOrigin="0.5,0.5" Source="/ControlBeeWPF;component/Images/Direction.png">
                                     <Image.RenderTransform>
