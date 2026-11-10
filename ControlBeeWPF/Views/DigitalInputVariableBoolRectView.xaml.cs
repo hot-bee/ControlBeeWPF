@@ -56,8 +56,28 @@ public partial class DigitalInputVariableBoolRectView : INotifyPropertyChanged
         new PropertyMetadata(10.0)
     );
 
+    public Brush DigitalInputOnBrush
+    {
+        get => (Brush)GetValue(DigitalInputOnBrushProperty);
+        set => SetValue(DigitalInputOnBrushProperty, value);
+    }
+
+    public static readonly DependencyProperty DigitalInputOnBrushProperty =
+        DependencyProperty.Register(
+            nameof(DigitalInputOnBrush),
+            typeof(Brush),
+            typeof(DigitalInputVariableBoolRectView),
+            new PropertyMetadata(
+                Brushes.Red,
+                (dependencyObject, _) =>
+                    ((DigitalInputVariableBoolRectView)dependencyObject).OnPropertyChanged(
+                        nameof(DigitalInputBrush)
+                    )
+            )
+        );
+
     public Brush DigitalInputBrush =>
-        _digitalInputViewModel.Value is true ? Brushes.Red : Brushes.LightGray;
+        _digitalInputViewModel.Value is true ? DigitalInputOnBrush : Brushes.LightGray;
 
     public Brush VariableBrush =>
         _variableViewModel.Value is true ? Brushes.LawnGreen : Brushes.White;
