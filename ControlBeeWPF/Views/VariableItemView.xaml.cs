@@ -154,6 +154,12 @@ public partial class VariableItemView
             return;
         }
 
+        // Opened after this input event so a touch that pressed here does not swallow the first tap in the dialog.
+        Dispatcher.BeginInvoke(EditValueInDialog);
+    }
+
+    private void EditValueInDialog()
+    {
         var newValue = "";
         if (_viewModel.Value is string stringValue)
         {
