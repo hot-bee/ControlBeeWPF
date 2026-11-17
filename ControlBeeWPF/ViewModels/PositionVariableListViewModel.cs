@@ -43,6 +43,22 @@ public sealed class PositionVariableListViewModel(IActorRegistry actorRegistry)
         Rows.Add(new Row(rowName, keys, axisStatusViewModels, variableViewModels, axisItemPaths));
     }
 
+    public void MoveToPosition(Row row)
+    {
+        foreach (var positionVariableItemKey in row.PositionVariableItemKeys)
+        {
+            var actor = actorRegistry.Get(positionVariableItemKey.ActorName);
+            actor?.Send(
+                new VariableActorItemMessage(
+                    _uiActor,
+                    positionVariableItemKey.ItemPath,
+                    positionVariableItemKey.SubItemPath,
+                    "MoveToSavedPos"
+                )
+            );
+        }
+    }
+
     public void SetPosition(Row row)
     {
         foreach (var positionVariableItemKey in row.PositionVariableItemKeys)
