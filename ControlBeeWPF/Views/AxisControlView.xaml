@@ -191,6 +191,17 @@
             </Style.Triggers>
         </Style>
 
+        <Style
+            x:Key="AxisAlarmLabelStyle"
+            BasedOn="{StaticResource AxisStatusLabelStyle}"
+            TargetType="Label">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding}" Value="True">
+                    <Setter Property="Background" Value="OrangeRed" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
         <Style TargetType="Rectangle">
             <Setter Property="Margin" Value="0,10" />
             <Setter Property="Height" Value="1" />
@@ -243,6 +254,14 @@
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Background" Value="White" />
             <Setter Property="Margin" Value="7" />
+        </Style>
+
+        <Style
+            x:Key="MotorCommandButtonStyle"
+            BasedOn="{StaticResource BaseButtonStyle}"
+            TargetType="Button">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Height" Value="30" />
         </Style>
 
         <Style x:Key="SpeedProfileStyle" TargetType="ContentControl">
@@ -448,6 +467,7 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
@@ -529,13 +549,46 @@
                                 Style="{StaticResource AxisStatusLabelStyle}" />
                         </Grid>
 
-                        <Rectangle
+                        <Grid
                             Grid.Row="1"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+
+                            <Label
+                                Grid.Column="0"
+                                Content="Servo"
+                                DataContext="{Binding SelectedAxis.AxisStatusViewModel.IsEnabled}"
+                                Style="{StaticResource AxisStatusLabelStyle}" />
+                            <Button
+                                Grid.Column="1"
+                                Command="{Binding SelectedAxis.AxisStatusViewModel.SwitchEnableCommand}"
+                                Content="Servo On/Off"
+                                Style="{StaticResource MotorCommandButtonStyle}" />
+                            <Label
+                                Grid.Column="2"
+                                Content="Alarm"
+                                DataContext="{Binding SelectedAxis.AxisStatusViewModel.IsAlarmed}"
+                                Style="{StaticResource AxisAlarmLabelStyle}" />
+                            <Button
+                                Grid.Column="3"
+                                Command="{Binding SelectedAxis.AxisStatusViewModel.ClearAlarmCommand}"
+                                Content="Alarm Clear"
+                                Style="{StaticResource MotorCommandButtonStyle}" />
+                        </Grid>
+
+                        <Rectangle
+                            Grid.Row="2"
                             Grid.Column="0"
                             Grid.ColumnSpan="2" />
 
                         <Grid
-                            Grid.Row="2"
+                            Grid.Row="3"
                             Grid.Column="0"
                             Grid.ColumnSpan="2">
                             <Grid.RowDefinitions>
@@ -573,12 +626,12 @@
                         </Grid>
 
                         <Rectangle
-                            Grid.Row="3"
+                            Grid.Row="4"
                             Grid.Column="0"
                             Grid.ColumnSpan="2" />
 
                         <Grid
-                            Grid.Row="4"
+                            Grid.Row="5"
                             Grid.Column="0"
                             Grid.ColumnSpan="2">
                             <StackPanel Name="StepJogPanel">
@@ -756,12 +809,12 @@
                         </Grid>
 
                         <Rectangle
-                            Grid.Row="5"
+                            Grid.Row="6"
                             Grid.Column="0"
                             Grid.ColumnSpan="2" />
 
                         <Grid
-                            Grid.Row="6"
+                            Grid.Row="7"
                             Grid.Column="0"
                             Grid.ColumnSpan="2">
                             <Grid.RowDefinitions>
