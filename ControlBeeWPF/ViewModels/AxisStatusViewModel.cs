@@ -119,6 +119,19 @@ public partial class AxisStatusViewModel : ObservableObject, IDisposable
     }
 
     [RelayCommand]
+    private void ClearAlarm()
+    {
+        _actor.Send(
+            new ActorItemMessage(
+                _uiActor,
+                _itemPath,
+                "_itemDataWrite",
+                new Dict { ["ClearAlarm"] = true }
+            )
+        );
+    }
+
+    [RelayCommand]
     private void Initialize()
     {
         _actor.Send(new ActorItemMessage(_uiActor, _itemPath, "_initialize"));

@@ -139,4 +139,26 @@ public class AxisStatusViewModelTest
         Assert.Equal(100.0, vm.CommandPosition);
         Assert.Equal(50.0, vm.ActualPosition);
     }
+
+    [Fact]
+    public void ClearAlarmCommandAsksTheAxisToClearItsAlarm()
+    {
+        var (vm, ui, actor) = Setup();
+
+        vm.ClearAlarmCommand.Execute(null);
+
+        Mock.Get(actor)
+            .Verify(
+                m =>
+                    m.Send(
+                        It.Is<ActorItemMessage>(message =>
+                            message.Sender == ui
+                            && message.ItemPath == "/X"
+                            && message.Name == "_itemDataWrite"
+                            && Equals(message.DictPayload!["ClearAlarm"], true)
+                        )
+                    ),
+                Times.Once
+            );
+    }
 }
