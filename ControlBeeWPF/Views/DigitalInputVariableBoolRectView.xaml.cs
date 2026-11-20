@@ -10,6 +10,10 @@ namespace ControlBeeWPF.Views;
 
 public partial class DigitalInputVariableBoolRectView : INotifyPropertyChanged
 {
+    private const double DefaultVariableRectSize = 20.0;
+    private const double DefaultInputRectSize = 10.0;
+    private static readonly Brush DefaultDigitalInputOnBrush = Brushes.Red;
+
     private readonly DigitalInputViewModel _digitalInputViewModel;
     private readonly VariableViewModel _variableViewModel;
 
@@ -40,7 +44,7 @@ public partial class DigitalInputVariableBoolRectView : INotifyPropertyChanged
             nameof(VariableRectSize),
             typeof(double),
             typeof(DigitalInputVariableBoolRectView),
-            new PropertyMetadata(20.0)
+            new PropertyMetadata(DefaultVariableRectSize)
         );
 
     public double InputRectSize
@@ -53,7 +57,7 @@ public partial class DigitalInputVariableBoolRectView : INotifyPropertyChanged
         nameof(InputRectSize),
         typeof(double),
         typeof(DigitalInputVariableBoolRectView),
-        new PropertyMetadata(10.0)
+        new PropertyMetadata(DefaultInputRectSize)
     );
 
     public Brush DigitalInputOnBrush
@@ -68,7 +72,7 @@ public partial class DigitalInputVariableBoolRectView : INotifyPropertyChanged
             typeof(Brush),
             typeof(DigitalInputVariableBoolRectView),
             new PropertyMetadata(
-                Brushes.Red,
+                DefaultDigitalInputOnBrush,
                 (dependencyObject, _) =>
                     ((DigitalInputVariableBoolRectView)dependencyObject).OnPropertyChanged(
                         nameof(DigitalInputBrush)
