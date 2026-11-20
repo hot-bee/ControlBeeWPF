@@ -10,6 +10,10 @@ namespace ControlBeeWPF.Views;
 
 public partial class DigitalInputVariableBoolRectView : INotifyPropertyChanged
 {
+    private const double DefaultVariableRectSize = 20.0;
+    private const double DefaultInputRectSize = 10.0;
+    private static readonly Brush DefaultDigitalInputOnBrush = Brushes.Red;
+
     private readonly DigitalInputViewModel _digitalInputViewModel;
     private readonly VariableViewModel _variableViewModel;
 
@@ -40,7 +44,7 @@ public partial class DigitalInputVariableBoolRectView : INotifyPropertyChanged
             nameof(VariableRectSize),
             typeof(double),
             typeof(DigitalInputVariableBoolRectView),
-            new PropertyMetadata(20.0)
+            new PropertyMetadata(DefaultVariableRectSize)
         );
 
     public double InputRectSize
@@ -53,11 +57,31 @@ public partial class DigitalInputVariableBoolRectView : INotifyPropertyChanged
         nameof(InputRectSize),
         typeof(double),
         typeof(DigitalInputVariableBoolRectView),
-        new PropertyMetadata(10.0)
+        new PropertyMetadata(DefaultInputRectSize)
     );
 
+    public Brush DigitalInputOnBrush
+    {
+        get => (Brush)GetValue(DigitalInputOnBrushProperty);
+        set => SetValue(DigitalInputOnBrushProperty, value);
+    }
+
+    public static readonly DependencyProperty DigitalInputOnBrushProperty =
+        DependencyProperty.Register(
+            nameof(DigitalInputOnBrush),
+            typeof(Brush),
+            typeof(DigitalInputVariableBoolRectView),
+            new PropertyMetadata(
+                DefaultDigitalInputOnBrush,
+                (dependencyObject, _) =>
+                    ((DigitalInputVariableBoolRectView)dependencyObject).OnPropertyChanged(
+                        nameof(DigitalInputBrush)
+                    )
+            )
+        );
+
     public Brush DigitalInputBrush =>
-        _digitalInputViewModel.Value is true ? Brushes.Red : Brushes.LightGray;
+        _digitalInputViewModel.Value is true ? DigitalInputOnBrush : Brushes.LightGray;
 
     public Brush VariableBrush =>
         _variableViewModel.Value is true ? Brushes.LawnGreen : Brushes.White;
